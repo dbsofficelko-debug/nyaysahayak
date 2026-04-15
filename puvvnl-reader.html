@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PUVVNL विधिक पुस्तकालय — न्यायसहायक</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#0D1B2A; --navy2:#1B2F4A; --gold:#C9981E; --gold-l:#E8B84B;
+  --parchment:#F6F2EB; --paper:#fff; --border:#DDD8CE; --muted:#7A8899;
+  --ink:#0D1B2A; --red:#C62828;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--parchment);color:var(--ink);height:100vh;display:flex;flex-direction:column;}
+
+/* Header */
+.hdr{background:var(--navy);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.hdr-left{display:flex;align-items:center;gap:12px;}
+.hdr-ico{width:36px;height:36px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.hdr-title{color:#fff;font-size:17px;font-weight:700;}
+.hdr-sub{color:var(--gold-l);font-size:11px;margin-top:2px;}
+.back-btn{color:var(--gold-l);text-decoration:none;font-size:13px;font-weight:600;border:1px solid rgba(201,152,30,.4);padding:5px 12px;border-radius:6px;}
+.back-btn:hover{background:rgba(201,152,30,.1);}
+
+/* Layout */
+.body{display:flex;flex:1;overflow:hidden;}
+
+/* Sidebar */
+.sidebar{width:280px;background:var(--navy2);overflow-y:auto;flex-shrink:0;border-right:1px solid rgba(255,255,255,.08);}
+.sidebar-head{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08);}
+.search-box{width:100%;padding:8px 12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-size:13px;outline:none;font-family:inherit;}
+.search-box::placeholder{color:rgba(255,255,255,.4);}
+.sidebar-stats{padding:10px 16px;font-size:11px;color:rgba(255,255,255,.4);border-bottom:1px solid rgba(255,255,255,.06);}
+
+.book-group{padding:10px 0;}
+.book-label{padding:6px 16px;font-size:10px;font-weight:800;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;}
+.entry-btn{width:100%;text-align:left;padding:8px 16px;background:none;border:none;color:rgba(255,255,255,.75);font-size:12.5px;cursor:pointer;font-family:inherit;transition:background .15s;border-left:3px solid transparent;}
+.entry-btn:hover{background:rgba(255,255,255,.06);}
+.entry-btn.active{background:rgba(201,152,30,.15);color:var(--gold-l);border-left-color:var(--gold);}
+.entry-btn .entry-num{font-size:10px;color:rgba(255,255,255,.35);display:block;margin-top:1px;}
+
+/* Main content */
+.main{flex:1;overflow-y:auto;padding:24px;}
+.welcome{text-align:center;padding:60px 20px;color:var(--muted);}
+.welcome-ico{font-size:48px;margin-bottom:16px;}
+.welcome-title{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.welcome-sub{font-size:14px;line-height:1.6;}
+
+.content-card{background:var(--paper);border-radius:14px;padding:28px;box-shadow:0 2px 16px rgba(0,0,0,.06);border:1px solid var(--border);}
+.content-tag{font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+.content-book{font-size:13px;color:var(--muted);margin-bottom:4px;}
+.content-title{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.content-chapter{display:inline-block;background:#EDE9E1;color:var(--navy2);font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:20px;}
+.content-keywords{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
+.kw{background:#F4EFFF;color:#5B2D8E;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600;}
+.divider{border:none;border-top:1px solid var(--border);margin:20px 0;}
+.content-body{font-size:14px;line-height:1.9;color:var(--ink);white-space:pre-wrap;font-family:'Noto Sans Devanagari','Segoe UI',sans-serif;}
+
+/* Loading */
+.loading{text-align:center;padding:40px;color:var(--muted);font-size:14px;}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.error{color:var(--red);text-align:center;padding:20px;font-size:14px;}
+
+@media(max-width:600px){
+  .sidebar{width:100%;max-height:200px;}
+  .body{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="hdr-ico">⚡</div>
+    <div>
+      <div class="hdr-title">PUVVNL विधिक पुस्तकालय</div>
+      <div class="hdr-sub">विद्युत अधिनियम · आपूर्ति संहिता · CGRF · सेवा नियम</div>
+    </div>
+  </div>
+  <a href="library.html" class="back-btn">← पुस्तक सूची</a>
+</div>
+
+<div class="body">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-head">
+      <input class="search-box" id="searchBox" placeholder="खोजें..." oninput="filterEntries()">
+    </div>
+    <div class="sidebar-stats" id="sidebarStats">लोड हो रहा है...</div>
+    <div id="entryList"></div>
+  </div>
+
+  <!-- Main -->
+  <div class="main" id="main">
+    <div class="welcome">
+      <div class="welcome-ico">⚡</div>
+      <div class="welcome-title">PUVVNL विधिक पुस्तकालय</div>
+      <p class="welcome-sub">बायीं ओर से कोई प्रविष्टि चुनें<br>विद्युत अधिनियम, आपूर्ति संहिता, CGRF नियम पढ़ें</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '/.netlify/functions/railway';
+let allEntries = [];
+let filtered = [];
+
+// Load entries
+async function load() {
+  document.getElementById('sidebarStats').textContent = 'लोड हो रहा है...';
+  try {
+    const resp = await fetch(`${API}/puvvnl`);
+    if (!resp.ok) throw new Error('API error ' + resp.status);
+    const data = await resp.json();
+    allEntries = data.chapters || data.entries || [];
+    filtered = [...allEntries];
+    renderList();
+    document.getElementById('sidebarStats').textContent = `कुल ${allEntries.length} प्रविष्टियाँ`;
+  } catch(e) {
+    document.getElementById('sidebarStats').textContent = 'लोड विफल';
+    document.getElementById('entryList').innerHTML = `<div style="padding:16px;color:#ff6b6b;font-size:12px;">❌ ${e.message}</div>`;
+  }
+}
+
+function renderList() {
+  // Group by book
+  const groups = {};
+  filtered.forEach(e => {
+    const b = e.book || 'अन्य';
+    if (!groups[b]) groups[b] = [];
+    groups[b].push(e);
+  });
+
+  let html = '';
+  Object.entries(groups).forEach(([book, entries]) => {
+    html += `<div class="book-group">
+      <div class="book-label">${book}</div>`;
+    entries.forEach(e => {
+      html += `<button class="entry-btn" onclick="openEntry('${e.filename}')" id="btn_${e.filename}">
+        ${e.topic || e.title || e.filename}
+        <span class="entry-num">${e.chapter || ''}</span>
+      </button>`;
+    });
+    html += '</div>';
+  });
+  document.getElementById('entryList').innerHTML = html || '<div style="padding:16px;color:#aaa;font-size:12px;">कोई प्रविष्टि नहीं</div>';
+}
+
+function filterEntries() {
+  const q = document.getElementById('searchBox').value.toLowerCase().trim();
+  if (!q) { filtered = [...allEntries]; }
+  else {
+    filtered = allEntries.filter(e =>
+      (e.topic||'').toLowerCase().includes(q) ||
+      (e.chapter||'').toLowerCase().includes(q) ||
+      (e.book||'').toLowerCase().includes(q)
+    );
+  }
+  renderList();
+}
+
+async function openEntry(filename) {
+  // Highlight active
+  document.querySelectorAll('.entry-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('btn_' + filename);
+  if (btn) btn.classList.add('active');
+
+  const main = document.getElementById('main');
+  main.innerHTML = '<div class="loading"><div class="spinner"></div>लोड हो रही है...</div>';
+
+  try {
+    const resp = await fetch(`${API}/puvvnl/${filename}`);
+    if (!resp.ok) throw new Error('Not found');
+    const e = await resp.json();
+
+    const kws = (e.keywords||'').split(' ').filter(k=>k.length>2).slice(0,8)
+      .map(k => `<span class="kw">${k}</span>`).join('');
+
+    main.innerHTML = `
+      <div class="content-card">
+        <div class="content-tag">${e.type || 'प्रविष्टि'}</div>
+        <div class="content-book">📚 ${e.book || ''}</div>
+        <div class="content-title">${e.topic || e.title || filename}</div>
+        <span class="content-chapter">${e.chapter || ''}</span>
+        ${kws ? `<div class="content-keywords">${kws}</div>` : ''}
+        <hr class="divider">
+        <div class="content-body">${e.content || 'सामग्री उपलब्ध नहीं'}</div>
+      </div>`;
+    main.scrollTop = 0;
+  } catch(e) {
+    main.innerHTML = `<div class="error">❌ प्रविष्टि लोड नहीं हो सकी।<br>${e.message}</div>`;
+  }
+}
+
+load();
+</script>
+</body>
+</html>

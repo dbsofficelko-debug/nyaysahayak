@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>वित्तीय हस्तपुस्तिका खंड-२ — Nyaysahayak</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap');
+
+  :root {
+    --ink: #1c1a16;
+    --paper: #faf8f3;
+    --gold: #b8860b;
+    --gold-light: #f0e6c0;
+    --rust: #8b3a0f;
+    --navy: #1a2e4a;
+    --muted: #6b6355;
+    --border: #ddd5c0;
+    --card: #ffffff;
+    --sidebar-w: 320px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: 'Crimson Pro', 'Noto Serif Devanagari', Georgia, serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--navy);
+    color: #fff;
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .topbar-logo { font-size: 1.4rem; }
+  .topbar-title { font-size: 1rem; font-weight: 600; letter-spacing: 0.3px; }
+  .topbar-sub { font-size: 0.72rem; color: rgba(255,255,255,0.55); margin-top: 1px; }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .btn-home {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.8rem;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 5px 14px;
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  .btn-home:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .btn-toggle-sidebar {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    display: none;
+  }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: flex;
+    flex: 1;
+    height: calc(100vh - 56px);
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: #f2ede3;
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar-header {
+    padding: 20px 18px 12px;
+    border-bottom: 1px solid var(--border);
+    background: #ede7d9;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .sidebar-header h2 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .search-box {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    background: #fff;
+    color: var(--ink);
+    outline: none;
+    font-family: inherit;
+  }
+  .search-box:focus { border-color: var(--gold); }
+
+  .chapter-list { padding: 8px 0; }
+  .chapter-item {
+    padding: 10px 18px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .chapter-item:hover { background: #e8e0d0; border-left-color: var(--gold); }
+  .chapter-item.active { background: #fff; border-left-color: var(--rust); }
+  .chapter-pages {
+    font-size: 0.68rem;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    margin-top: 3px;
+    font-family: 'Crimson Pro', monospace;
+  }
+  .chapter-name {
+    font-size: 0.88rem;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .chapter-item.active .chapter-name { font-weight: 600; color: var(--rust); }
+
+  /* ── READER ── */
+  .reader {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--paper);
+  }
+
+  /* WELCOME SCREEN */
+  .welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100%;
+    padding: 60px 40px;
+    text-align: center;
+  }
+  .welcome-emblem { font-size: 5rem; margin-bottom: 24px; opacity: 0.6; }
+  .welcome h1 {
+    font-size: 2rem;
+    color: var(--navy);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .welcome p { font-size: 1.1rem; color: var(--muted); max-width: 400px; line-height: 1.7; }
+  .welcome-stats {
+    margin-top: 32px;
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .welcome-stat { text-align: center; }
+  .welcome-stat-num { font-size: 2rem; font-weight: 700; color: var(--gold); }
+  .welcome-stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+
+  /* ARTICLE */
+  .article {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 48px 80px;
+  }
+
+  /* Chapter header */
+  .article-header {
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 24px;
+    margin-bottom: 36px;
+  }
+  .article-pages {
+    font-size: 0.75rem;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .article-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .article-nav {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .nav-btn {
+    padding: 7px 16px;
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    color: var(--navy);
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .nav-btn:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* CONTENT RENDERING */
+  .article-body {
+    font-size: 1.08rem;
+    line-height: 1.85;
+    color: #2a2620;
+  }
+
+  .article-body .rule-block {
+    margin: 28px 0;
+    padding: 0;
+  }
+  .article-body .rule-num {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--rust);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .article-body .rule-num::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gold-light);
+  }
+  .article-body .rule-text {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: var(--ink);
+    text-align: justify;
+  }
+  .article-body .chapter-heading {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 32px 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--gold-light);
+  }
+  .article-body .section-heading {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--rust);
+    margin: 24px 0 8px;
+    font-style: italic;
+  }
+  .article-body .para {
+    margin: 14px 0;
+    text-align: justify;
+  }
+  .article-body .note-block {
+    background: #fef9ec;
+    border-left: 3px solid var(--gold);
+    padding: 12px 18px;
+    margin: 20px 0;
+    font-size: 0.95rem;
+    color: #5a4a1a;
+    border-radius: 0 4px 4px 0;
+    font-style: italic;
+  }
+  .article-body .rule-number-inline {
+    font-weight: 700;
+    color: var(--rust);
+    font-size: 1rem;
+  }
+
+  /* Loading */
+  .loading-art {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--muted);
+  }
+  .loading-art .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* FOOTER */
+  .article-footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* Floating sticky nav bar */
+  .floating-nav {
+    position: fixed;
+    bottom: 0;
+    left: var(--sidebar-w);
+    right: 0;
+    background: rgba(248,245,238,0.97);
+    border-top: 2px solid var(--gold);
+    padding: 10px 32px;
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  }
+  .floating-nav.visible { display: flex; }
+  .floating-nav .fn-title {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-family: 'Crimson Pro', serif;
+    flex: 1;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 12px;
+    font-style: italic;
+  }
+  .floating-nav .nav-btn { white-space: nowrap; flex-shrink: 0; }
+  @media (max-width: 768px) {
+    .floating-nav { left: 0; padding: 10px 16px; }
+    .floating-nav .fn-title { display: none; }
+  }
+
+  /* Scrollbar */
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .reader::-webkit-scrollbar { width: 6px; }
+  .reader::-webkit-scrollbar-track { background: var(--paper); }
+  .reader::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 768px) {
+    :root { --sidebar-w: 280px; }
+    .sidebar { position: fixed; left: -280px; top: 56px; height: calc(100vh - 56px); z-index: 50; transition: left 0.3s; }
+    .sidebar.open { left: 0; box-shadow: 4px 0 20px rgba(0,0,0,0.2); }
+    .btn-toggle-sidebar { display: block; }
+    .article { padding: 32px 20px 60px; }
+    .article-title { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-logo">⚖️</span>
+    <div>
+      <div class="topbar-title">वित्तीय हस्तपुस्तिका — खंड २</div>
+      <div class="topbar-sub">Financial Handbook Vol-2 · DBS Nyaysahayak</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-toggle-sidebar" onclick="toggleSidebar()">☰ अध्याय</button>
+    <a href="/library.html" class="btn-home">← पुस्तकालय</a>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>अध्याय सूची</h2>
+      <input class="search-box" type="text" placeholder="अध्याय खोजें..." oninput="filterChapters(this.value)" id="chapterSearch">
+    </div>
+    <div class="chapter-list" id="chapterList">
+      <div class="loading-art" style="padding:40px 20px">
+        <div class="spinner"></div>
+        <div style="font-size:0.85rem">लोड हो रहा है...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reader" id="reader">
+    <div class="welcome" id="welcomeScreen">
+      <div class="welcome-emblem">📜</div>
+      <h1>वित्तीय हस्तपुस्तिका</h1>
+      <p>उत्तर प्रदेश शासन के वित्तीय नियमों का सम्पूर्ण संकलन। बायीं ओर से अध्याय चुनें।</p>
+      <div class="welcome-stats" id="welcomeStats"></div>
+    </div>
+    <div class="article" id="articleView" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+const API = '/.netlify/functions/railway';
+let chapters = [];
+let currentIdx = -1;
+
+// ── LOAD CHAPTERS ──
+async function loadChapters() {
+  try {
+    const res = await fetch(`${API}/fhb`);
+    const data = await res.json();
+    chapters = data.chapters || [];
+    renderSidebar(chapters);
+    document.getElementById('welcomeStats').innerHTML = `
+      <div class="welcome-stat"><div class="welcome-stat-num">${chapters.length}</div><div class="welcome-stat-label">अध्याय</div></div>
+      <div class="welcome-stat"><div class="welcome-stat-num">750+</div><div class="welcome-stat-label">पृष्ठ</div></div>
+      <div class="welcome-stat"><div class="welcome-stat-num">🟢</div><div class="welcome-stat-label">Live</div></div>
+    `;
+  } catch(e) {
+    document.getElementById('chapterList').innerHTML = `<div style="padding:20px;color:#c00;font-size:0.85rem">API से कनेक्ट नहीं हो पाया।</div>`;
+  }
+}
+
+function renderSidebar(list) {
+  document.getElementById('chapterList').innerHTML = list.map((ch, i) => `
+    <div class="chapter-item" onclick="loadChapter(${chapters.indexOf(ch)})" id="ci-${chapters.indexOf(ch)}">
+      <div>
+        <div class="chapter-pages">${ch.pages}</div>
+        <div class="chapter-name">${ch.topic}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterChapters(q) {
+  const filtered = q ? chapters.filter(c => c.topic.toLowerCase().includes(q.toLowerCase()) || c.pages.includes(q)) : chapters;
+  renderSidebar(filtered);
+}
+
+// ── LOAD CHAPTER CONTENT ──
+async function loadChapter(idx) {
+  currentIdx = idx;
+  const ch = chapters[idx];
+
+  // Sidebar highlight
+  document.querySelectorAll('.chapter-item').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById(`ci-${idx}`);
+  if (el) { el.classList.add('active'); el.scrollIntoView({ block: 'nearest' }); }
+
+  // Show loader
+  document.getElementById('welcomeScreen').style.display = 'none';
+  const av = document.getElementById('articleView');
+  av.style.display = 'block';
+  av.innerHTML = `<div class="loading-art"><div class="spinner"></div><div>${ch.topic} लोड हो रहा है...</div></div>`;
+
+  // Close sidebar on mobile
+  if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+
+  try {
+    const res = await fetch(`${API}/fhb/${encodeURIComponent(ch.filename)}`);
+    const data = await res.json();
+    renderChapter(data, idx);
+  } catch(e) {
+    av.innerHTML = `<div class="loading-art" style="color:#c00">सामग्री लोड नहीं हो पाई।</div>`;
+  }
+}
+
+// ── RENDER CHAPTER ──
+function renderChapter(data, idx) {
+  const av = document.getElementById('articleView');
+  const prevCh = chapters[idx - 1];
+  const nextCh = chapters[idx + 1];
+
+  const html = formatContent(data.content || '');
+
+  av.innerHTML = `
+    <div class="article-header">
+      <div class="article-pages">📖 ${data.pages}</div>
+      <div class="article-title">${data.topic}</div>
+      <div class="article-nav">
+        <button class="nav-btn" onclick="loadChapter(${idx-1})" ${!prevCh?'disabled':''}>
+          ← ${prevCh ? prevCh.topic.substring(0,30)+'...' : 'प्रथम अध्याय'}
+        </button>
+        <button class="nav-btn" onclick="loadChapter(${idx+1})" ${!nextCh?'disabled':''}>
+          ${nextCh ? nextCh.topic.substring(0,30)+'...' : 'अंतिम अध्याय'} →
+        </button>
+      </div>
+    </div>
+    <div class="article-body">${html}</div>
+    <div class="article-footer">
+      <button class="nav-btn" onclick="loadChapter(${idx-1})" ${!prevCh?'disabled':''}>← पूर्व अध्याय</button>
+      <button class="nav-btn" onclick="window.scrollTo(0,0)">↑ ऊपर</button>
+      <button class="nav-btn" onclick="loadChapter(${idx+1})" ${!nextCh?'disabled':''}>अगला अध्याय →</button>
+    </div>
+  `;
+  av.parentElement.scrollTop = 0;
+  updateFloatingNav(idx);
+}
+
+// ── FORMAT CONTENT ──
+function formatContent(raw) {
+  // Fix literal \n and \t from Railway API (JSON-escaped strings stored as text)
+  let text = raw.replace(/\\n/g, '\n').replace(/\\t/g, '\t');
+
+  // Strip YAML frontmatter (---...---) at top
+  text = text.replace(/^---[\s\S]*?---\n*/m, '');
+
+  // Remove price/metadata lines at start
+  text = text.replace(/^[\s\S]*?(?=अध्याय|CHAPTER|Chapter|\n1\.\n|\n1\.[ \t])/m, '');
+  
+  // Fix OCR spacing issues - "ल ा ग ू" → "लागू"
+  // Already in md form so might be ok
+  
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  let html = '';
+  let inNote = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    // Skip clearly bad metadata lines
+    if (line.match(/^मू ल्य|^Price|^ISBN|^\*\*\*|^---/i)) continue;
+    if (line.match(/^\d{3,4}[\s]*₹|^₹\s*\d/)) continue;
+
+    // Chapter/Adhyay heading
+    if (line.match(/^अध्याय\s+\d|^CHAPTER\s+\d|^Chapter\s+\d/i)) {
+      html += `<div class="chapter-heading">${esc(line)}</div>`;
+      continue;
+    }
+
+    // Section name (all caps or Hindi bold title — short line, no punctuation)
+    if (line.length < 80 && line === line.toUpperCase() && line.match(/[A-Z]{3,}/)) {
+      html += `<div class="section-heading">${esc(line)}</div>`;
+      continue;
+    }
+
+    // Note / टिप्पणी
+    if (line.match(/^टिप्पणी|^Note|^नोट/i) || inNote) {
+      if (!inNote) { html += `<div class="note-block">`; inNote = true; }
+      html += esc(line) + ' ';
+      if (i+1 >= lines.length || lines[i+1].match(/^\d+\.|^अध्याय/)) {
+        html += `</div>`; inNote = false;
+      }
+      continue;
+    }
+
+    // Numbered rules like "1." or "2." at start
+    const ruleMatch = line.match(/^(\d{1,3})\.\s*(.*)/);
+    if (ruleMatch) {
+      html += `
+        <div class="rule-block">
+          <div class="rule-num">नियम ${ruleMatch[1]}</div>
+          <div class="rule-text">${esc(ruleMatch[2])}</div>
+        </div>`;
+      continue;
+    }
+
+    // Sub-rules like "(1)" "(क)" "(a)"
+    if (line.match(/^\([१-९\dकखगघa-z]\)/)) {
+      html += `<div class="para" style="padding-left:20px">${esc(line)}</div>`;
+      continue;
+    }
+
+    // Regular paragraph
+    html += `<div class="para">${esc(line)}</div>`;
+  }
+
+  return html || `<div class="para" style="color:#999;font-style:italic">सामग्री उपलब्ध नहीं है।</div>`;
+}
+
+
+function floatNav(dir) {
+  const newIdx = currentIdx + dir;
+  if (newIdx >= 0 && newIdx < chapters.length) loadChapter(newIdx);
+}
+function updateFloatingNav(idx) {
+  const fn = document.getElementById('floatingNav');
+  const prev = chapters[idx - 1];
+  const next = chapters[idx + 1];
+  document.getElementById('fnPrev').disabled = !prev;
+  document.getElementById('fnNext').disabled = !next;
+  document.getElementById('fnTitle').textContent = chapters[idx]?.topic || '';
+  fn.classList.add('visible');
+}
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+loadChapters();
+</script>
+
+<!-- Floating Nav -->
+<div class="floating-nav" id="floatingNav">
+  <button class="nav-btn" id="fnPrev" onclick="floatNav(-1)">← पूर्व अध्याय</button>
+  <span class="fn-title" id="fnTitle"></span>
+  <button class="nav-btn" id="fnNext" onclick="floatNav(1)">अगला अध्याय →</button>
+</div>
+</body>
+</html>

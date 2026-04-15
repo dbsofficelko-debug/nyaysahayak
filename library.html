@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ज्ञान पुस्तकालय — Nyaysahayak</title>
+<style>
+  :root {
+    --primary: #1a3a5c;
+    --accent: #c9a84c;
+    --bg: #f5f3ee;
+    --card: #ffffff;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --border: #e2d9c8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  .header {
+    background: var(--primary);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .header-brand { display: flex; align-items: center; gap: 14px; }
+  .header-logo { width: 44px; height: 44px; background: var(--accent); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .header-title { color: #fff; }
+  .header-title h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.5px; }
+  .header-title p { font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
+  .back-btn {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .back-btn:hover { background: rgba(255,255,255,0.22); }
+
+  /* MAIN */
+  .main { max-width: 1100px; margin: 0 auto; padding: 32px 20px; }
+
+  /* STATS BAR */
+  .stats-bar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 24px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-num { font-size: 1.6rem; font-weight: 700; color: var(--primary); }
+  .stat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+  .stat-divider { width: 1px; height: 40px; background: var(--border); }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* BOOK GRID */
+  .books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+  }
+  .book-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .book-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform 0.2s;
+    transform-origin: left;
+  }
+  .book-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); border-color: var(--accent); }
+  .book-card:hover::before { transform: scaleX(1); }
+  .book-icon { font-size: 2rem; margin-bottom: 12px; }
+  .book-name { font-size: 0.95rem; font-weight: 600; color: var(--primary); margin-bottom: 8px; line-height: 1.4; }
+  .book-count {
+    display: inline-block;
+    background: #eef3f8;
+    color: var(--primary);
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  .book-arrow { position: absolute; bottom: 16px; right: 18px; color: var(--accent); font-size: 1.1rem; }
+
+  /* READER SECTION */
+  .reader-section { display: none; }
+  .reader-section.active { display: block; }
+  .books-section { }
+  .books-section.hidden { display: none; }
+
+  .reader-header {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .reader-book-name { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+  .reader-meta { font-size: 0.8rem; color: var(--muted); margin-top: 3px; }
+
+  /* SEARCH */
+  .search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .search-bar input {
+    flex: 1;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background: var(--card);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-bar input:focus { border-color: var(--primary); }
+  .search-bar button {
+    padding: 10px 20px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  /* ENTRIES */
+  .entries-list { display: flex; flex-direction: column; gap: 12px; }
+  .entry-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    transition: box-shadow 0.15s;
+  }
+  .entry-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+  .entry-num { font-size: 0.7rem; color: var(--accent); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .entry-question { font-size: 0.95rem; font-weight: 600; color: var(--primary); margin-bottom: 10px; line-height: 1.5; }
+  .entry-answer { font-size: 0.88rem; color: #374151; line-height: 1.7; }
+  .entry-tags { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { background: #f0f4f8; color: var(--muted); font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; }
+
+  /* PAGINATION */
+  .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 28px; flex-wrap: wrap; }
+  .page-btn {
+    padding: 7px 13px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.15s;
+    color: var(--text);
+  }
+  .page-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); font-weight: 700; }
+  .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* LOADING */
+  .loading { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-msg { text-align: center; padding: 40px; color: #dc2626; font-size: 0.9rem; }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 0.75rem;
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+  .footer span { color: var(--primary); font-weight: 600; }
+
+  @media (max-width: 600px) {
+    .header { padding: 14px 16px; }
+    .main { padding: 20px 12px; }
+    .stats-bar { gap: 16px; }
+    .reader-header { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brand">
+    <div class="header-logo">⚖️</div>
+    <div class="header-title">
+      <h1>ज्ञान पुस्तकालय</h1>
+      <p>DBS · Nyaysahayak Knowledge Library</p>
+    </div>
+  </div>
+  <a href="/" class="back-btn">← मुख्य पृष्ठ</a>
+</div>
+
+<div class="main">
+
+  <!-- BOOKS SECTION -->
+  <div class="books-section" id="booksSection">
+    <div class="stats-bar" id="statsBar">
+      <div class="loading" style="padding:10px 0; text-align:left;">
+        <div class="spinner" style="width:22px;height:22px;border-width:2px;display:inline-block;vertical-align:middle;margin:0 10px 0 0"></div>
+        डेटा लोड हो रहा है...
+      </div>
+    </div>
+    <div class="section-title">📚 उपलब्ध पुस्तकें एवं मैनुअल</div>
+    <div class="books-grid" id="booksGrid">
+      <div class="loading"><div class="spinner"></div>पुस्तकें लोड हो रही हैं...</div>
+    </div>
+  </div>
+
+  <!-- READER SECTION -->
+  <div class="reader-section" id="readerSection">
+    <div class="reader-header">
+      <div>
+        <div class="reader-book-name" id="readerBookName">—</div>
+        <div class="reader-meta" id="readerMeta">—</div>
+      </div>
+      <button class="back-btn" style="background:#1a3a5c;border-color:#1a3a5c;" onclick="goBack()">← पुस्तक सूची</button>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="इस पुस्तक में खोजें..." onkeydown="if(event.key==='Enter')doSearch()">
+      <button onclick="doSearch()">खोजें</button>
+    </div>
+
+    <div id="entriesContainer">
+      <div class="loading"><div class="spinner"></div>प्रविष्टियाँ लोड हो रही हैं...</div>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>DBS · न्यायसहायक</span> — Dhriti Business Solutions Pvt. Ltd. | Lucknow, UP
+</div>
+
+<script>
+const API = 'https://nyaysahayak-api-production.up.railway.app';
+const BOOK_ICONS = ['📘','📗','📙','📕','📓','📔','📒','📃'];
+
+let allEntries = [];
+let currentPage = 1;
+let currentBook = '';
+let totalPages = 1;
+const PAGE_SIZE = 30;
+
+// ── LOAD BOOKS — hardcoded (no API needed) ──
+async function loadBooks() {
+  const data = {
+    total_books: 10,
+    books: [
+      { name: 'Financial Handbook Vol-2', count: 412 },
+      { name: 'SAD Manual (Sachivalaya)', count: 389 },
+      { name: 'Seva Vidhi', count: 351 },
+      { name: 'UP Procurement Manual', count: 146 },
+      { name: 'Electricity Act 2003', count: 8 },
+      { name: 'UP Electricity Supply Code 2005', count: 5 },
+      { name: 'CGRF & Ombudsman Regulations', count: 3 },
+      { name: 'UPERC SoP Regulations', count: 1 },
+      { name: 'PUVVNL Service Regulations', count: 2 },
+      { name: 'PUVVNL Legal Strategy', count: 6 },
+    ]
+  };
+  renderStats(data);
+  renderBooks(data.books);
+}
+
+function renderStats(data) {
+  const totalEntries = data.books.reduce((s,b) => s + b.count, 0);
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat"><div class="stat-num">${data.total_books}</div><div class="stat-label">पुस्तकें</div></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><div class="stat-num">${totalEntries.toLocaleString('hi-IN')}</div><div class="stat-label">कुल प्रविष्टियाँ</div></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><div class="stat-num">🟢 LIVE</div><div class="stat-label">Railway API</div></div>
+  `;
+}
+
+function renderBooks(books) {
+  if (!books || books.length === 0) {
+    document.getElementById('booksGrid').innerHTML = '<div class="error-msg">कोई पुस्तक नहीं मिली।</div>';
+    return;
+  }
+  document.getElementById('booksGrid').innerHTML = books.map((b, i) => `
+    <div class="book-card" onclick="openBook('${escapeAttr(b.name)}')">
+      <div class="book-icon">${BOOK_ICONS[i % BOOK_ICONS.length]}</div>
+      <div class="book-name">${escapeHtml(b.name)}</div>
+      <span class="book-count">${b.count} प्रविष्टियाँ</span>
+      <div class="book-arrow">→</div>
+    </div>
+  `).join('');
+}
+
+// ── OPEN BOOK — redirect to proper reader ──
+function openBook(bookName) {
+  const n = bookName.toLowerCase();
+  if (n.includes('financial') || n.includes('fhb')) { window.location.href = '/fhb-reader.html'; return; }
+  if (n.includes('sad') || n.includes('sachivalaya') || n.includes('secretariat')) { window.location.href = '/sad-reader.html'; return; }
+  if (n.includes('seva') || n.includes('service law')) { window.location.href = '/sv-reader.html'; return; }
+  if (n.includes('procurement') || n.includes('kray')) { window.location.href = '/pm-reader.html'; return; }
+  if (n.includes('electricity') || n.includes('supply code') || n.includes('cgrf') || n.includes('uperc') || n.includes('puvvnl')) { window.location.href = '/puvvnl-reader.html'; return; }
+  // fallback for unknown books
+  currentBook = bookName;
+  currentPage = 1;
+  document.getElementById('searchInput').value = '';
+  document.getElementById('booksSection').classList.add('hidden');
+  document.getElementById('readerSection').classList.add('active');
+  document.getElementById('readerBookName').textContent = bookName;
+  loadEntries();
+}
+
+async function loadEntries(searchQuery = '') {
+  document.getElementById('entriesContainer').innerHTML =
+    '<div class="loading"><div class="spinner"></div>प्रविष्टियाँ लोड हो रही हैं...</div>';
+  document.getElementById('pagination').innerHTML = '';
+
+  try {
+    let url;
+    if (searchQuery) {
+      // use main search endpoint filtered by book
+      url = `${API}/search?q=${encodeURIComponent(searchQuery)}&book=${encodeURIComponent(currentBook)}&limit=100`;
+    } else {
+      url = `${API}/browse/${encodeURIComponent(currentBook)}?page=${currentPage}&limit=${PAGE_SIZE}`;
+    }
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('API error ' + res.status);
+    const data = await res.json();
+
+    // handle both /browse/:book and /search response shapes
+    const entries = data.entries || data.results || [];
+    const total = data.total || entries.length;
+    totalPages = data.total_pages || Math.ceil(total / PAGE_SIZE);
+
+    document.getElementById('readerMeta').textContent =
+      `कुल ${total} प्रविष्टियाँ${searchQuery ? ' (खोज परिणाम)' : ` • पृष्ठ ${currentPage}/${totalPages}`}`;
+
+    renderEntries(entries, total);
+    if (!searchQuery) renderPagination();
+  } catch(e) {
+    document.getElementById('entriesContainer').innerHTML =
+      `<div class="error-msg">❌ प्रविष्टियाँ लोड नहीं हुईं।<br><small>${e.message}</small></div>`;
+  }
+}
+
+function renderEntries(entries, total) {
+  // metadata entries filter karo
+  const filtered = entries.filter(e => {
+    const c = e.content || '';
+    return !c.startsWith('---') && c.trim().length > 50;
+  });
+  if (!filtered.length) {
+    document.getElementById('entriesContainer').innerHTML =
+      '<div class="error-msg">कोई प्रविष्टि नहीं मिली।</div>';
+    return;
+  }
+  const offset = (currentPage - 1) * PAGE_SIZE;
+  document.getElementById('entriesContainer').innerHTML = `
+    <div class="entries-list">
+      ${filtered.map((e, i) => {
+        const chapter = e.chapter || '';
+        const content = e.content || '';
+        const preview = content.substring(0, 350);
+        return `
+        <div class="entry-card">
+          <div class="entry-num">अनुच्छेद ${offset + i + 1}</div>
+          ${chapter ? `<div class="entry-question">${escapeHtml(chapter)}</div>` : ''}
+          <div class="entry-answer">${escapeHtml(preview)}${content.length > 350 ? '...' : ''}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function renderPagination() {
+  if (totalPages <= 1) return;
+  const container = document.getElementById('pagination');
+  let html = '';
+  html += `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹ पूर्व</button>`;
+  const start = Math.max(1, currentPage - 2);
+  const end = Math.min(totalPages, currentPage + 2);
+  if (start > 1) html += `<button class="page-btn" onclick="goPage(1)">1</button>${start > 2 ? '<span>…</span>' : ''}`;
+  for (let i = start; i <= end; i++) {
+    html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  }
+  if (end < totalPages) html += `${end < totalPages-1 ? '<span>…</span>' : ''}<button class="page-btn" onclick="goPage(${totalPages})">${totalPages}</button>`;
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>अगला ›</button>`;
+  container.innerHTML = html;
+}
+
+function goPage(p) {
+  currentPage = p;
+  loadEntries();
+  window.scrollTo(0, 200);
+}
+
+function doSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  currentPage = 1;
+  loadEntries(q);
+}
+
+function goBack() {
+  document.getElementById('booksSection').classList.remove('hidden');
+  document.getElementById('readerSection').classList.remove('active');
+  allEntries = [];
+}
+
+// helpers
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escapeAttr(s) {
+  return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;');
+}
+
+// ── INIT ──
+loadBooks();
+</script>
+</body>
+</html>

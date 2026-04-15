@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>सचिवालय मैनुअल — Nyaysahayak</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap');
+
+  :root {
+    --ink: #1c1a16;
+    --paper: #f8f6f0;
+    --saffron: #c85a00;
+    --saffron-light: #fdf0e6;
+    --green: #1a4a2e;
+    --gold: #9a7500;
+    --gold-light: #fef4d0;
+    --muted: #6b6355;
+    --border: #ddd5c0;
+    --sidebar-w: 310px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Crimson Pro','Noto Serif Devanagari',Georgia,serif; background: var(--paper); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* TOPBAR */
+  .topbar {
+    background: var(--green);
+    color: #fff;
+    padding: 0 24px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 14px; }
+  .topbar-icon {
+    width: 40px; height: 40px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+  }
+  .topbar-name { font-size: 1.05rem; font-weight: 700; }
+  .topbar-sub { font-size: 0.7rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
+  .topbar-right { display: flex; gap: 10px; align-items: center; }
+  .btn-lib { color: rgba(255,255,255,0.8); font-size: 0.8rem; text-decoration: none; border: 1px solid rgba(255,255,255,0.3); padding: 5px 14px; border-radius: 4px; transition: all 0.2s; }
+  .btn-lib:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .btn-menu { display: none; background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+
+  /* LAYOUT */
+  .layout { display: flex; flex: 1; height: calc(100vh - 58px); }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: #f0ebe0;
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar-head {
+    padding: 18px 16px 12px;
+    background: #e6dfcf;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .sidebar-head h2 {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--saffron);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .search-box {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    background: #fff;
+    outline: none;
+    font-family: inherit;
+  }
+  .search-box:focus { border-color: var(--saffron); }
+
+  .ch-list { padding: 6px 0; }
+  .ch-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .ch-item:hover { background: #e2d9c8; border-left-color: var(--saffron); }
+  .ch-item.active { background: #fff; border-left-color: var(--green); }
+  .ch-badge {
+    background: var(--saffron);
+    color: #fff;
+    font-size: 0.62rem;
+    padding: 2px 7px;
+    border-radius: 20px;
+    white-space: nowrap;
+    margin-top: 3px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+  }
+  .ch-item.active .ch-badge { background: var(--green); }
+  .ch-name { font-size: 0.87rem; line-height: 1.4; color: var(--ink); }
+  .ch-item.active .ch-name { font-weight: 600; color: var(--green); }
+
+  /* READER */
+  .reader { flex: 1; overflow-y: auto; }
+
+  /* WELCOME */
+  .welcome {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100%; padding: 60px 32px; text-align: center;
+  }
+  .welcome-seal {
+    width: 120px; height: 120px;
+    background: linear-gradient(135deg, var(--saffron-light), var(--gold-light));
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3.5rem;
+    margin-bottom: 28px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  .welcome h1 { font-size: 2.2rem; color: var(--green); margin-bottom: 10px; }
+  .welcome .sub { font-size: 1rem; color: var(--muted); margin-bottom: 6px; }
+  .welcome .year { font-size: 0.85rem; color: var(--saffron); font-weight: 600; letter-spacing: 1px; }
+  .welcome-desc { font-size: 1rem; color: var(--muted); max-width: 460px; line-height: 1.7; margin-top: 16px; }
+  .welcome-stats { display: flex; gap: 28px; margin-top: 32px; flex-wrap: wrap; justify-content: center; }
+  .ws { text-align: center; }
+  .ws-num { font-size: 1.8rem; font-weight: 700; color: var(--saffron); }
+  .ws-label { font-size: 0.75rem; color: var(--muted); margin-top: 3px; }
+
+  /* ARTICLE */
+  .article { max-width: 800px; margin: 0 auto; padding: 48px 52px 80px; }
+
+  .art-header { margin-bottom: 36px; }
+  .art-badge {
+    display: inline-block;
+    background: var(--saffron);
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  .art-title {
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: var(--green);
+    line-height: 1.3;
+    border-bottom: 3px solid var(--saffron);
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+  }
+  .art-nav { display: flex; gap: 10px; flex-wrap: wrap; }
+  .nav-btn {
+    padding: 7px 16px;
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    color: var(--green);
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .nav-btn:hover { background: var(--green); color: #fff; border-color: var(--green); }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* BODY */
+  .art-body { font-size: 1.1rem; line-height: 1.9; color: #2a2620; }
+
+  .art-body .ch-head {
+    font-size: 1.5rem; font-weight: 700; color: var(--green);
+    margin: 36px 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--gold-light);
+  }
+  .art-body .sec-head {
+    font-size: 1.15rem; font-weight: 600; color: var(--saffron);
+    margin: 28px 0 8px;
+    font-style: italic;
+  }
+  .art-body .rule-block { margin: 24px 0; }
+  .art-body .rule-label {
+    font-size: 0.68rem; font-weight: 700; color: var(--saffron);
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .art-body .rule-label::after { content: ''; flex: 1; height: 1px; background: var(--gold-light); }
+  .art-body .rule-text { font-size: 1.05rem; line-height: 1.9; text-align: justify; }
+  .art-body .para { margin: 14px 0; text-align: justify; }
+  .art-body .sub-para { padding-left: 22px; margin: 10px 0; }
+  .art-body .note {
+    background: var(--saffron-light);
+    border-left: 4px solid var(--saffron);
+    padding: 14px 18px;
+    margin: 20px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.95rem;
+    color: #6a2800;
+    font-style: italic;
+  }
+  .art-body .note strong { font-style: normal; color: var(--saffron); }
+  .art-body .important {
+    background: var(--gold-light);
+    border: 1px solid #d4b800;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 20px 0;
+    font-size: 0.98rem;
+    color: #5a4a00;
+  }
+  .art-body table {
+    width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem;
+  }
+  .art-body td, .art-body th {
+    border: 1px solid var(--border); padding: 8px 12px; text-align: left;
+  }
+  .art-body th { background: var(--green); color: #fff; font-weight: 600; }
+  .art-body tr:nth-child(even) td { background: #f8f5ee; }
+
+  /* FOOTER NAV */
+  .art-footer {
+    margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+
+  /* LOADING */
+  .loader { text-align: center; padding: 80px 20px; color: var(--muted); }
+  .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--saffron); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* SCROLLBAR */
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .reader::-webkit-scrollbar { width: 6px; }
+  .reader::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 768px) {
+    .sidebar { position: fixed; left: calc(0px - var(--sidebar-w)); top: 58px; height: calc(100vh - 58px); z-index: 50; transition: left 0.3s; }
+    .sidebar.open { left: 0; box-shadow: 4px 0 24px rgba(0,0,0,0.2); }
+    .btn-menu { display: block; }
+    .article { padding: 28px 16px 60px; }
+    .art-title { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-icon">🏛️</div>
+    <div>
+      <div class="topbar-name">सचिवालय मैनुअल</div>
+      <div class="topbar-sub">Secretariat Administration Department · DBS Nyaysahayak</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-menu" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <a href="/library.html" class="btn-lib">← पुस्तकालय</a>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <h2>विषय सूची</h2>
+      <input class="search-box" type="text" id="searchBox" placeholder="अध्याय खोजें..." oninput="filter(this.value)">
+    </div>
+    <div class="ch-list" id="chList">
+      <div class="loader"><div class="spinner"></div><div style="font-size:0.85rem">लोड हो रहा है...</div></div>
+    </div>
+  </div>
+
+  <div class="reader" id="reader">
+    <div class="welcome" id="welcome">
+      <div class="welcome-seal">🏛️</div>
+      <h1>सचिवालय मैनुअल</h1>
+      <div class="sub">Secretariat Administration Department Manual</div>
+      <div class="year">संस्करण · 2004 | उत्तर प्रदेश शासन</div>
+      <p class="welcome-desc">
+        सचिवालय, राज्यसरकार का मुख्यालय है। इस मैनुअल में सचिवालय की कार्यप्रणाली, अनुशासन, अवकाश, अभिलेख एवं अंतर्विभागीय संदर्भ से संबंधित समस्त नियमों का विस्तृत विवरण है।
+      </p>
+      <div class="welcome-stats" id="wStats"></div>
+    </div>
+    <div id="artView" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+const API = '/.netlify/functions/railway';
+let chapters = [], curIdx = -1;
+
+async function init() {
+  try {
+    const r = await fetch(`${API}/sad`);
+    const d = await r.json();
+    chapters = d.chapters || [];
+    renderSidebar(chapters);
+    document.getElementById('wStats').innerHTML = `
+      <div class="ws"><div class="ws-num">${chapters.length}</div><div class="ws-label">अध्याय</div></div>
+      <div class="ws"><div class="ws-num">3,685</div><div class="ws-label">पंक्तियाँ</div></div>
+      <div class="ws"><div class="ws-num">🟢</div><div class="ws-label">Live API</div></div>`;
+  } catch(e) {
+    document.getElementById('chList').innerHTML = `<div style="padding:20px;color:#c00;font-size:0.85rem">API से कनेक्ट नहीं हो पाया।</div>`;
+  }
+}
+
+function renderSidebar(list) {
+  document.getElementById('chList').innerHTML = list.map(ch => {
+    const idx = chapters.indexOf(ch);
+    const label = `${ch.type} ${ch.num}`;
+    return `<div class="ch-item" id="ci-${idx}" onclick="open_ch(${idx})">
+      <span class="ch-badge">${label}</span>
+      <span class="ch-name">${ch.topic}</span>
+    </div>`;
+  }).join('');
+}
+
+function filter(q) {
+  const f = q ? chapters.filter(c => c.topic.toLowerCase().includes(q.toLowerCase()) || `${c.type} ${c.num}`.includes(q)) : chapters;
+  renderSidebar(f);
+}
+
+async function open_ch(idx) {
+  curIdx = idx;
+  const ch = chapters[idx];
+  document.querySelectorAll('.ch-item').forEach(e => e.classList.remove('active'));
+  const el = document.getElementById(`ci-${idx}`);
+  if (el) { el.classList.add('active'); el.scrollIntoView({block:'nearest'}); }
+  document.getElementById('welcome').style.display = 'none';
+  const av = document.getElementById('artView');
+  av.style.display = 'block';
+  av.innerHTML = `<div class="loader" style="margin-top:60px"><div class="spinner"></div><div>${ch.type} ${ch.num} लोड हो रहा है...</div></div>`;
+  if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+  try {
+    const r = await fetch(`${API}/sad/${encodeURIComponent(ch.filename)}`);
+    const d = await r.json();
+    render_ch(d, idx);
+  } catch(e) {
+    av.innerHTML = `<div class="loader" style="color:#c00">सामग्री लोड नहीं हो पाई।</div>`;
+  }
+}
+
+function render_ch(d, idx) {
+  const av = document.getElementById('artView');
+  const prev = chapters[idx-1], next = chapters[idx+1];
+  const label = `${d.type} ${d.num}`;
+  av.innerHTML = `
+    <div class="article">
+      <div class="art-header">
+        <div class="art-badge">${label}</div>
+        <div class="art-title">${d.topic}</div>
+        <div class="art-nav">
+          <button class="nav-btn" onclick="open_ch(${idx-1})" ${!prev?'disabled':''}>← ${prev?trunc(prev.topic,25):'प्रथम'}</button>
+          <button class="nav-btn" onclick="open_ch(${idx+1})" ${!next?'disabled':''}>${next?trunc(next.topic,25):'अंतिम'} →</button>
+        </div>
+      </div>
+      <div class="art-body">${fmt(d.content||'')}</div>
+      <div class="art-footer">
+        <button class="nav-btn" onclick="open_ch(${idx-1})" ${!prev?'disabled':''}>← पूर्व अध्याय</button>
+        <button class="nav-btn" onclick="document.getElementById('reader').scrollTop=0">↑ ऊपर</button>
+        <button class="nav-btn" onclick="open_ch(${idx+1})" ${!next?'disabled':''}>अगला अध्याय →</button>
+      </div>
+    </div>`;
+  document.getElementById('reader').scrollTop = 0;
+}
+
+function fmt(raw) {
+  const lines = raw.split('\n').map(l=>l.trim()).filter(l=>l.length>1);
+  let html = '', inNote = false;
+  for (let i=0; i<lines.length; i++) {
+    const l = lines[i];
+    // Skip junk
+    if (l.match(/^---|\*\*\*|^#{3,}/)) continue;
+    // Chapter heading
+    if (l.match(/^(अध्याय|भाग|अनुभाग)\s*[\d०-९\-–IVX]/i)) {
+      html += `<div class="ch-head">${esc(l)}</div>`; continue;
+    }
+    // ALL CAPS section (English)
+    if (l.length<70 && l===l.toUpperCase() && l.match(/[A-Z]{4,}/)) {
+      html += `<div class="sec-head">${esc(l)}</div>`; continue;
+    }
+    // Note
+    if (l.match(/^(टिप्पणी|नोट|Note)\s*[:\-–]/i)) {
+      html += `<div class="note"><strong>टिप्पणी:</strong> ${esc(l.replace(/^(टिप्पणी|नोट|Note)\s*[:\-–]\s*/i,''))}</div>`; continue;
+    }
+    // Numbered rule
+    const rm = l.match(/^(\d{1,3})\.\s+(.+)/);
+    if (rm) {
+      html += `<div class="rule-block"><div class="rule-label">नियम ${rm[1]}</div><div class="rule-text">${esc(rm[2])}</div></div>`; continue;
+    }
+    // Sub clause
+    if (l.match(/^\([क-हa-z०-९\d]\)\s/i)) {
+      html += `<div class="sub-para">${esc(l)}</div>`; continue;
+    }
+    // Important keyword lines
+    if (l.match(/महत्वपूर्ण|Important|आवश्यक|अनिवार्य/i) && l.length < 120) {
+      html += `<div class="important">⚠️ ${esc(l)}</div>`; continue;
+    }
+    html += `<div class="para">${esc(l)}</div>`;
+  }
+  return html || `<div class="para" style="color:#999;font-style:italic">सामग्री उपलब्ध नहीं है।</div>`;
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function trunc(s,n) { return s.length>n ? s.substring(0,n)+'…' : s; }
+
+init();
+</script>
+</body>
+</html>

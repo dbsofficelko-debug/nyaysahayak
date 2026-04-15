@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>न्यायसहायक — DBS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   DESIGN SYSTEM — न्यायसहायक
+   Palette: Justice Navy + Ashoka Gold + Parchment
+   Tone: Refined Indian Legal — Authoritative, Clean
+═══════════════════════════════════════════════════ */
+:root {
+  --navy:       #0D1B2A;
+  --navy-mid:   #1B2F4A;
+  --navy-soft:  #2C4265;
+  --gold:       #C9981E;
+  --gold-light: #E8B84B;
+  --gold-pale:  #FDF3DC;
+  --parchment:  #F6F2EB;
+  --paper:      #FFFFFF;
+  --ink:        #0D1B2A;
+  --ink-soft:   #3D4F63;
+  --muted:      #7A8899;
+  --border:     #DDD8CE;
+  --border-soft:#EDE9E1;
+  --user-bg:    #0D1B2A;
+  --bot-bg:     #EDE9E1;
+  --danger:     #991B1B;
+  --r: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: 'DM Sans', 'Noto Sans Devanagari', sans-serif;
+  background: var(--parchment);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+/* ── Layout shell ─────────────────────────────── */
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-width: 820px;
+  margin: 0 auto;
+  background: var(--paper);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+/* ── Header ───────────────────────────────────── */
+.hdr {
+  background: var(--navy);
+  padding: 14px 18px 0;
+  flex-shrink: 0;
+}
+
+.hdr-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.logo-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  width: 38px; height: 38px;
+  background: var(--gold);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: .3px;
+}
+
+.logo-tagline {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gold-light);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.hdr-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge-dbs {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 3px 8px;
+  border-radius: 20px;
+  letter-spacing: .5px;
+}
+
+/* ── Library bar ──────────────────────────────── */
+.lib-bar {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 10px 18px;
+  background: var(--navy-mid);
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+.lib-bar::-webkit-scrollbar { display: none; }
+
+.lib-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  background: rgba(201,152,30,.12);
+  border: 1px solid rgba(201,152,30,.3);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .15s;
+  font-family: inherit;
+}
+.lib-btn:hover { background: rgba(201,152,30,.25); }
+.lib-btn .lib-ico { font-size: 13px; }
+
+/* ── Dept selector ────────────────────────────── */
+.dept-bar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 10px 18px;
+  background: var(--navy);
+  border-top: 1px solid rgba(255,255,255,.06);
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+.dept-bar::-webkit-scrollbar { display: none; }
+
+.dept-pill {
+  padding: 5px 13px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1.5px solid rgba(255,255,255,.18);
+  color: rgba(255,255,255,.7);
+  background: transparent;
+  transition: all .15s;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+.dept-pill:hover { border-color: var(--gold); color: var(--gold-light); }
+.dept-pill.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy);
+  font-weight: 700;
+}
+
+/* ── Messages ─────────────────────────────────── */
+.msgs {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 18px;
+  display: block;            /* CRITICAL: not flex — scroll fix */
+  background: var(--parchment);
+  scroll-behavior: smooth;
+}
+
+/* Welcome state */
+.welcome {
+  text-align: center;
+  padding: 40px 20px;
+}
+.welcome-ico {
+  font-size: 44px;
+  margin-bottom: 16px;
+  display: block;
+}
+.welcome-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+.welcome-sub {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 340px;
+  margin: 0 auto 28px;
+}
+.quick-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+.quick-btn {
+  padding: 10px 16px;
+  background: var(--paper);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  font-size: 13px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: border-color .15s, color .15s;
+}
+.quick-btn:hover { border-color: var(--gold); color: var(--navy); }
+
+/* Message bubbles */
+.msg-row {
+  display: flex;
+  margin-bottom: 14px;
+}
+.msg-row.user { justify-content: flex-end; }
+.msg-row.bot  { justify-content: flex-start; }
+
+.bubble {
+  max-width: 80%;
+  padding: 11px 15px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.65;
+  font-family: 'Noto Sans Devanagari', 'DM Sans', sans-serif;
+}
+.msg-row.user .bubble {
+  background: var(--user-bg);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.msg-row.bot .bubble {
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+
+/* Typing indicator */
+.typing {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 12px 16px;
+}
+.typing span {
+  width: 7px; height: 7px;
+  background: var(--muted);
+  border-radius: 50%;
+  animation: bounce .9s infinite;
+}
+.typing span:nth-child(2) { animation-delay: .15s; }
+.typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes bounce {
+  0%,60%,100% { transform: translateY(0); opacity:.4; }
+  30% { transform: translateY(-6px); opacity:1; }
+}
+
+/* PDF attachment indicator */
+.pdf-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  background: var(--gold-pale);
+  border: 1px solid var(--gold);
+  color: var(--navy);
+  padding: 3px 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+/* ── Input area ───────────────────────────────── */
+.input-area {
+  flex-shrink: 0;
+  background: var(--paper);
+  border-top: 1px solid var(--border);
+  padding: 10px 14px 14px;
+}
+
+.pdf-chip {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--gold);
+  background: var(--gold-pale);
+  border: 1px solid var(--gold);
+  padding: 4px 10px 4px 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  width: fit-content;
+}
+.pdf-chip .chip-remove {
+  cursor: pointer;
+  color: var(--danger);
+  font-size: 14px;
+  line-height: 1;
+  margin-left: 2px;
+}
+
+.input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  background: var(--parchment);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 8px 8px 8px 12px;
+  transition: border-color .15s;
+}
+.input-row:focus-within { border-color: var(--gold); }
+
+.attach-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--muted);
+  font-size: 18px;
+  flex-shrink: 0;
+  transition: color .15s;
+  display: flex; align-items: center;
+}
+.attach-btn:hover { color: var(--gold); }
+
+#msgInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 16px; /* 16px = no iOS zoom */
+  font-family: 'Noto Sans Devanagari', 'DM Sans', sans-serif;
+  color: var(--ink);
+  resize: none;
+  outline: none;
+  max-height: 120px;
+  line-height: 1.5;
+  padding: 2px 0;
+}
+#msgInput::placeholder { color: var(--muted); }
+
+.send-btn {
+  width: 38px; height: 38px;
+  background: var(--navy);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background .15s, transform .1s;
+  color: #fff;
+  font-size: 18px;
+}
+.send-btn:hover { background: var(--navy-soft); }
+.send-btn:active { transform: scale(.95); }
+.send-btn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+.input-hint {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 6px;
+}
+
+#fileInput { display: none; }
+
+.source-badge {
+  display: inline-block;
+  font-size: 11px;
+  background: var(--gold-pale);
+  border: 1px solid var(--gold);
+  color: var(--navy);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+/* ── Scrollbar ────────────────────────────────── */
+.msgs::-webkit-scrollbar { width: 4px; }
+.msgs::-webkit-scrollbar-track { background: transparent; }
+.msgs::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── Mobile ───────────────────────────────────── */
+@media (max-width: 600px) {
+  .logo-name { font-size: 17px; }
+  .logo-tagline { font-size: 10px; }
+  .bubble { max-width: 90%; font-size: 13px; }
+  .shell { border: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ── Header ──────────────────────────────── -->
+  <div class="hdr">
+    <div class="hdr-top">
+      <div class="logo-block">
+        <div class="logo-icon">⚖</div>
+        <div class="logo-text">
+          <span class="logo-name">न्यायसहायक</span>
+          <span class="logo-tagline">सतर्क सेवा &nbsp;·&nbsp; सक्षम सेवा</span>
+        </div>
+      </div>
+      <div class="hdr-right">
+        <span class="badge-dbs">DBS</span>
+      </div>
+    </div>
+
+    <!-- Library bar -->
+    <div class="lib-bar">
+      <a class="lib-btn" href="fhb-reader.html" target="_blank">
+        <span class="lib-ico">📒</span> FHB Vol-2
+      </a>
+      <a class="lib-btn" href="sad-reader.html" target="_blank">
+        <span class="lib-ico">📗</span> SAD Manual
+      </a>
+      <a class="lib-btn" href="sv-reader.html" target="_blank">
+        <span class="lib-ico">📘</span> Seva Vidhi
+      </a>
+      <a class="lib-btn" href="pm-reader.html" target="_blank">
+        <span class="lib-ico">📙</span> Procurement
+      </a>
+      <a class="lib-btn" href="puvvnl-reader.html" target="_blank">
+        <span class="lib-ico">⚡</span> PUVVNL Laws
+      </a>
+    </div>
+
+    <!-- Dept selector -->
+    <div class="dept-bar" id="deptBar"></div>
+  </div>
+
+  <!-- ── Messages ────────────────────────────── -->
+  <div class="msgs" id="msgs">
+    <div class="welcome" id="welcome">
+      <span class="welcome-ico">⚖️</span>
+      <div class="welcome-title">न्यायसहायक में स्वागत है</div>
+      <p class="welcome-sub">विभाग चुनें और प्रश्न पूछें — न्यायिक सहायता तत्काल उपलब्ध है</p>
+      <a href="Nyaysahayak_PUVVNL_Docx.html" target="_blank" style="
+      display:inline-flex;align-items:center;gap:8px;
+      margin-bottom:16px;padding:11px 20px;
+      background:linear-gradient(135deg,#C9981E,#E8B84B);
+      color:#0D1B2A;border-radius:10px;text-decoration:none;
+      font-size:14px;font-weight:800;letter-spacing:.3px;
+    ">📄 PUVVNL DOCX Generator →</a>
+    <div class="quick-btns" id="quickBtns"></div>
+    </div>
+  </div>
+
+  <!-- ── Input ────────────────────────────────── -->
+  <div class="input-area">
+    <div class="pdf-chip" id="pdfChip">
+      <span>📎</span>
+      <span id="pdfName">—</span>
+      <span class="chip-remove" onclick="removePdf()">✕</span>
+    </div>
+
+    <div class="input-row">
+      <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="PDF संलग्न करें">
+        📎
+      </button>
+      <textarea id="msgInput" rows="1" placeholder="यहाँ प्रश्न लिखें…" maxlength="2000"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="send()" title="भेजें">
+        ➤
+      </button>
+    </div>
+    <div class="input-hint">Enter = भेजें &nbsp;·&nbsp; Shift+Enter = नई पंक्ति</div>
+    <input type="file" id="fileInput" accept=".pdf" onchange="onPdfSelect(this)">
+  </div>
+
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   CONFIG — यहाँ बदलो
+════════════════════════════════════════════════ */
+const CFG = {
+  API: '/.netlify/functions/ai',
+  MODEL: 'claude-haiku-4-5-20251001',
+  MAX_TOKENS: 2000,
+  PDF_MAX_MB: 4,
+};
+
+const DEPTS = [
+  { id:'puvvnl',     label:'PUVVNL',          prompt:'आप PUVVNL (पूर्वांचल विद्युत वितरण निगम लिमिटेड) के वरिष्ठ विधिक अधिकारी हैं। जब भी पैरावार टिप्पणी, Brief History, या सशक्त बिंदु माँगे जाएं — तुरंत पूर्ण प्रारूप तैयार करें, केवल निर्देश न दें। PUVVNL की ओर से विभागीय पक्ष मजबूत करें।' },
+
+  { id:'sainik_up',  label:'Sainik School UP',  prompt:'आप उत्तर प्रदेश शासन के सैनिक स्कूल विभाग के विधिक अधिकारी हैं।' },
+  { id:'sainik_mod', label:'Sainik School MoD', prompt:'आप रक्षा मंत्रालय के सैनिक स्कूल सोसाइटी के विधिक अधिकारी हैं।' },
+  { id:'madhyamik',  label:'माध्यमिक शिक्षा',  prompt:'आप उत्तर प्रदेश माध्यमिक शिक्षा विभाग के वरिष्ठ विधिक अधिकारी हैं।' },
+  { id:'cel',        label:'CEL',               prompt:'आप Central Electronics Limited (CEL) के वरिष्ठ विधिक अधिकारी हैं।' },
+  { id:'uppcl',      label:'UPPCL',             prompt:'आप UPPCL (उत्तर प्रदेश पावर कॉर्पोरेशन) के वरिष्ठ विधिक अधिकारी हैं।' },
+  { id:'procurement',label:'Procurement',        prompt:'आप UP Procurement Manual के विशेषज्ञ हैं।' },
+  { id:'general',    label:'सामान्य',           prompt:'आप उत्तर प्रदेश शासन के एक वरिष्ठ विधिक विशेषज्ञ हैं।' },
+];
+
+// ── Department → Book mapping (RAG source control) ──────────
+const DEPT_BOOKS = {
+  'puvvnl':     ['Electricity Act 2003', 'UP Electricity Supply Code 2005', 'CGRF & Ombudsman Regulations', 'UPERC SoP Regulations', 'PUVVNL Service Regulations', 'PUVVNL Legal Strategy', 'Financial Handbook Vol-2'],
+  'sainik_up':  ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi'],
+  'sainik_mod': ['Financial Handbook Vol-2', 'UP Procurement Manual'],
+  'madhyamik':  ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi'],
+  'cel':        ['Financial Handbook Vol-2', 'UP Procurement Manual'],
+  'uppcl':      ['Financial Handbook Vol-2', 'UP Procurement Manual'],
+  'procurement':['UP Procurement Manual', 'Financial Handbook Vol-2'],
+  'general':    ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi', 'UP Procurement Manual'],
+};
+
+const QUICK = [
+  'पैरावार टिप्पणी का model draft तैयार करें — 5 अनुच्छेदों के साथ',
+  'संक्षिप्त वाद इतिहास (Brief History) का प्रारूप दें',
+  'विभाग के पक्ष में 8 सशक्त विधिक बिंदु तैयार करें',
+  'प्रति शपथ पत्र का पूर्ण प्रारूप दें',
+];
+
+const BASE_SYSTEM = `आप DBS · न्यायसहायक हैं — उत्तर प्रदेश सरकार के न्यायिक कार्यों में सहायता करने वाला AI सिस्टम।
+नियम:
+1. सभी उत्तर शुद्ध सरकारी हिंदी में दें — कभी स्पष्टीकरण मत माँगो, सीधे उत्तर दो
+2. कभी भी "Claude AI" का उल्लेख न करें
+3. यदि नीचे "ज्ञान आधार" दिया हो तो उसी से उत्तर दो और स्रोत बताओ — वरना अपने ज्ञान से उत्तर दो
+4. SAD Manual Prastar 127-136 के अनुसार नोटिंग प्रारूप
+5. पैरावार टिप्पणी: Para 1, Para 2... क्रमबद्ध लिखें (अनुच्छेद शब्द नहीं, Para लिखें)
+6. जब स्रोत उपलब्ध हो तो उत्तर के अंत में: 📚 स्रोत: [पुस्तक नाम]`;
+
+/* ════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════ */
+let activeDept = DEPTS[0];
+let history    = [];  // {role, content}
+let pdfBase64  = null;
+let pdfMime    = 'application/pdf';
+
+/* ════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════ */
+(function init() {
+  // Build dept pills
+  const bar = document.getElementById('deptBar');
+  DEPTS.forEach(d => {
+    const btn = document.createElement('button');
+    btn.className = 'dept-pill' + (d.id === activeDept.id ? ' active' : '');
+    btn.textContent = d.label;
+    btn.onclick = () => selectDept(d);
+    bar.appendChild(btn);
+  });
+
+  // Build quick buttons
+  const qb = document.getElementById('quickBtns');
+  QUICK.forEach(q => {
+    const btn = document.createElement('button');
+    btn.className = 'quick-btn';
+    btn.textContent = q;
+    btn.onclick = () => { setInput(q); send(); };
+    qb.appendChild(btn);
+  });
+
+  // Auto-resize textarea
+  const ta = document.getElementById('msgInput');
+  ta.addEventListener('input', () => {
+    ta.style.height = 'auto';
+    ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+  });
+
+  // Enter = send, Shift+Enter = newline
+  ta.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      send();
+    }
+  });
+})();
+
+/* ════════════════════════════════════════════════
+   DEPT SELECTION
+════════════════════════════════════════════════ */
+function selectDept(d) {
+  activeDept = d;
+  history = []; // reset chat on dept change
+  document.querySelectorAll('.dept-pill').forEach((p, i) => {
+    p.className = 'dept-pill' + (DEPTS[i].id === d.id ? ' active' : '');
+  });
+  // Clear messages, show welcome
+  const msgs = document.getElementById('msgs');
+  msgs.innerHTML = '';
+  const w = document.createElement('div');
+  w.className = 'welcome';
+  w.innerHTML = `
+    <span class="welcome-ico">⚖️</span>
+    <div class="welcome-title">${d.label}</div>
+    <p class="welcome-sub">विभाग चुना गया — प्रश्न पूछें</p>
+  `;
+  msgs.appendChild(w);
+}
+
+/* ════════════════════════════════════════════════
+   PDF
+════════════════════════════════════════════════ */
+function onPdfSelect(input) {
+  const f = input.files[0];
+  if (!f) return;
+  if (f.size > CFG.PDF_MAX_MB * 1024 * 1024) {
+    alert(`PDF ${CFG.PDF_MAX_MB}MB से बड़ी है। पहले compress करें।`);
+    input.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    pdfBase64 = reader.result.split(',')[1];
+    document.getElementById('pdfName').textContent = f.name;
+    document.getElementById('pdfChip').style.display = 'flex';
+  };
+  reader.readAsDataURL(f);
+  input.value = '';
+}
+
+function removePdf() {
+  pdfBase64 = null;
+  document.getElementById('pdfChip').style.display = 'none';
+}
+
+/* ════════════════════════════════════════════════
+   RAG — Railway Knowledge Search
+════════════════════════════════════════════════ */
+async function searchKnowledge(query, deptId) {
+  const books = DEPT_BOOKS[deptId] || DEPT_BOOKS['general'];
+  const allResults = [];
+
+  // Search top 2 dept-specific books in parallel
+  const searches = books.slice(0, 2).map(async (book) => {
+    try {
+      const url = `/.netlify/functions/railway/search?q=${encodeURIComponent(query)}&book=${encodeURIComponent(book)}&limit=3`;
+      const resp = await fetch(url, { signal: AbortSignal.timeout(2500) });
+      if (!resp.ok) return [];
+      const data = await resp.json();
+      return (data.results || data.entries || []).map(r => ({ ...r, _book: book }));
+    } catch { return []; }
+  });
+
+  const results = await Promise.all(searches);
+  results.forEach(r => allResults.push(...r));
+
+  // Fallback: if no results, try general search without book filter
+  if (allResults.length === 0) {
+    try {
+      const url = `/.netlify/functions/railway/search?q=${encodeURIComponent(query)}&limit=5`;
+      const resp = await fetch(url);
+      if (resp.ok) {
+        const data = await resp.json();
+        (data.results || data.entries || []).forEach(r => allResults.push({ ...r, _book: r.book || 'ज्ञान आधार' }));
+      }
+    } catch {}
+  }
+
+  return allResults.slice(0, 6);
+}
+
+function buildContext(chunks) {
+  if (!chunks || chunks.length === 0) return '';
+  return '\n\n---\nज्ञान आधार से प्रासंगिक प्रावधान:\n' +
+    chunks.map((c, i) => {
+      const title   = c.section || c.title || c.filename || '';
+      const text    = (c.content || c.text || '').slice(0, 600);
+      const book    = c._book || c.book || '';
+      return `[स्रोत ${i+1}: ${book}${title ? ' — ' + title : ''}]\n${text}`;
+    }).join('\n\n');
+}
+
+/* ════════════════════════════════════════════════
+   SEND MESSAGE
+════════════════════════════════════════════════ */
+async function send() {
+  const ta   = document.getElementById('msgInput');
+  const text = ta.value.trim();
+  const pdf  = pdfBase64;
+
+  if (!text && !pdf) return;
+
+  // Hide welcome
+  const w = document.getElementById('welcome');
+  if (w) w.remove();
+
+  // Show user message
+  addBubble('user', text || '📎 PDF भेजी');
+  ta.value = '';
+  ta.style.height = 'auto';
+  if (pdf) removePdf();
+
+  // Disable send
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+
+  // Show typing
+  const typingEl = addTyping();
+
+  // Build content for API
+  const userContent = [];
+  if (pdf) {
+    userContent.push({ type:'document', source:{ type:'base64', media_type:'application/pdf', data:pdf } });
+  }
+  if (text) {
+    userContent.push({ type:'text', text });
+  }
+
+  // Add to history
+  history.push({ role:'user', content: pdf ? userContent : text });
+
+  try {
+    // RAG: search dept knowledge base (with 3s timeout)
+    let knowledgeContext = '';
+    if (text) {
+      try {
+        const chunks = await Promise.race([
+          searchKnowledge(text, activeDept.id),
+          new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 3000))
+        ]);
+        knowledgeContext = buildContext(chunks);
+      } catch { /* Railway search failed — continue without context */ }
+    }
+
+    // Trim history to last 8 messages to prevent overflow
+    if (history.length > 8) history = history.slice(-8);
+
+    const reply = await callAPI(knowledgeContext);
+    typingEl.remove();
+    addBubble('bot', reply);
+    history.push({ role:'assistant', content: reply });
+  } catch(e) {
+    typingEl.remove();
+    addBubble('bot', `⚠️ त्रुटि: ${e.message}\n\nकृपया पुनः प्रयास करें।`);
+  }
+
+  btn.disabled = false;
+  ta.focus();
+}
+
+/* ════════════════════════════════════════════════
+   API CALL
+════════════════════════════════════════════════ */
+async function callAPI(knowledgeContext = '') {
+  const system = BASE_SYSTEM + '\n\nविभाग संदर्भ: ' + activeDept.prompt + knowledgeContext;
+
+  const resp = await fetch(CFG.API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    signal: AbortSignal.timeout(55000),
+    body: JSON.stringify({
+      model:      CFG.MODEL,
+      max_tokens: CFG.MAX_TOKENS,
+      system,
+      messages:   history,
+    })
+  });
+
+  if (!resp.ok) {
+    const t = await resp.text().catch(() => '');
+    throw new Error(`API ${resp.status}${t ? ' — ' + t.slice(0, 80) : ''}`);
+  }
+
+  const data = await resp.json();
+
+  // Handle response shapes
+  if (data.content && Array.isArray(data.content))
+    return data.content.filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
+  if (typeof data.content === 'string') return data.content;
+  if (data.reply)   return data.reply;
+  if (data.message) return data.message;
+  if (data.text)    return data.text;
+  throw new Error('Response format अज्ञात');
+}
+
+/* ════════════════════════════════════════════════
+   DOM HELPERS
+════════════════════════════════════════════════ */
+function mdToHtml(text) {
+  var s = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/[*][*](.+?)[*][*]/g, '<strong>$1</strong>')
+    .replace(/[*](.+?)[*]/g, '<em>$1</em>')
+    .replace(/^#{1,3}\s+(.+)$/gm, '<strong>$1</strong>')
+    .replace(/^---+$/gm, '<hr style="border:none;border-top:1px solid #ddd;margin:8px 0">')
+    .replace(/^- (.+)$/gm, '&nbsp;&bull; $1')
+    .replace(/\n/g, '<br>');
+  return s;
+}
+
+function addBubble(role, text) {
+  const msgs = document.getElementById('msgs');
+  const row  = document.createElement('div');
+  row.className = `msg-row ${role}`;
+
+  const bub = document.createElement('div');
+  bub.className = 'bubble';
+  if (role === 'bot') {
+    bub.innerHTML = mdToHtml(text);
+  } else {
+    bub.style.whiteSpace = 'pre-wrap';
+    bub.textContent = text;
+  }
+
+  row.appendChild(bub);
+  msgs.appendChild(row);
+  scrollDown();
+  return row;
+}
+
+function addTyping() {
+  const msgs = document.getElementById('msgs');
+  const row  = document.createElement('div');
+  row.className = 'msg-row bot';
+  row.innerHTML = `<div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(row);
+  scrollDown();
+  return row;
+}
+
+function scrollDown() {
+  const msgs = document.getElementById('msgs');
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function setInput(text) {
+  const ta = document.getElementById('msgInput');
+  ta.value = text;
+  ta.style.height = 'auto';
+  ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+}
+</script>
+</body>
+</html>

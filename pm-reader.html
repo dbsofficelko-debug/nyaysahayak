@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSME Procurement Manual — Nyaysahayak</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap');
+
+  :root {
+    --ink: #0f1923;
+    --paper: #f4f7fb;
+    --blue: #1a4480;
+    --blue-dark: #0d2d5e;
+    --blue-light: #e8f0fb;
+    --cyan: #0077b6;
+    --gold: #c9a84c;
+    --gold-light: #fef9ed;
+    --muted: #5a6a7a;
+    --border: #d0dae8;
+    --card: #ffffff;
+    --sidebar-w: 320px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* TOPBAR */
+  .topbar {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 100%);
+    color: #fff;
+    padding: 0 28px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(13,45,94,0.4);
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 14px; }
+  .topbar-icon {
+    width: 42px; height: 42px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+  }
+  .topbar-name { font-size: 1rem; font-weight: 700; letter-spacing: 0.2px; }
+  .topbar-sub { font-size: 0.68rem; color: rgba(255,255,255,0.55); margin-top: 2px; letter-spacing: 0.3px; }
+  .topbar-right { display: flex; gap: 10px; align-items: center; }
+  .btn-lib { color: rgba(255,255,255,0.8); font-size: 0.78rem; text-decoration: none; border: 1px solid rgba(255,255,255,0.25); padding: 6px 14px; border-radius: 6px; transition: all 0.2s; font-weight: 500; }
+  .btn-lib:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .btn-menu { display: none; background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+
+  /* LAYOUT */
+  .layout { display: flex; flex: 1; height: calc(100vh - 60px); }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: #fff;
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar-head {
+    padding: 18px 16px 12px;
+    background: var(--blue-light);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .sidebar-head h2 {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--blue);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .search-box {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.83rem;
+    background: #fff;
+    outline: none;
+    font-family: inherit;
+    color: var(--ink);
+  }
+  .search-box:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(26,68,128,0.1); }
+
+  .ch-list { padding: 6px 0; }
+  .ch-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .ch-item:hover { background: var(--blue-light); border-left-color: var(--cyan); }
+  .ch-item.active { background: #e8f4ff; border-left-color: var(--blue); }
+  .ch-num {
+    background: var(--blue);
+    color: #fff;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin-top: 2px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .ch-item.active .ch-num { background: var(--blue-dark); }
+  .ch-name { font-size: 0.83rem; line-height: 1.4; color: var(--ink); font-weight: 400; }
+  .ch-item.active .ch-name { font-weight: 600; color: var(--blue-dark); }
+
+  /* READER */
+  .reader { flex: 1; overflow-y: auto; }
+
+  /* WELCOME */
+  .welcome {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100%; padding: 60px 32px; text-align: center;
+  }
+  .welcome-badge {
+    background: var(--blue-light);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 8px 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .welcome-icon { font-size: 4rem; margin-bottom: 20px; }
+  .welcome h1 { font-size: 2rem; font-weight: 700; color: var(--blue-dark); margin-bottom: 12px; }
+  .welcome-desc { font-size: 0.95rem; color: var(--muted); max-width: 460px; line-height: 1.7; margin-top: 8px; font-family: 'Crimson Pro', serif; font-size: 1.05rem; }
+  .welcome-stats { display: flex; gap: 24px; margin-top: 32px; flex-wrap: wrap; justify-content: center; }
+  .ws { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 100px; }
+  .ws-num { font-size: 1.8rem; font-weight: 700; color: var(--blue); }
+  .ws-label { font-size: 0.72rem; color: var(--muted); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ARTICLE */
+  .article { max-width: 820px; margin: 0 auto; padding: 44px 52px 80px; }
+
+  .art-header { margin-bottom: 32px; }
+  .art-breadcrumb {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.72rem; color: var(--muted); font-weight: 500;
+    margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .art-breadcrumb span { color: var(--blue); }
+  .art-title {
+    font-size: 2rem; font-weight: 700; color: var(--blue-dark); line-height: 1.3;
+    border-bottom: 3px solid var(--blue);
+    padding-bottom: 16px; margin-bottom: 16px;
+    font-family: 'Crimson Pro', serif;
+  }
+  .art-nav { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .nav-btn {
+    padding: 7px 16px; border: 1px solid var(--border); background: #fff;
+    border-radius: 6px; cursor: pointer; font-size: 0.78rem; color: var(--blue);
+    font-family: inherit; transition: all 0.15s; font-weight: 500;
+  }
+  .nav-btn:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* BODY */
+  .art-body { font-family: 'Crimson Pro', serif; font-size: 1.1rem; line-height: 1.9; color: #1a2530; }
+
+  .art-body .sec-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.25rem; font-weight: 700; color: var(--blue-dark);
+    margin: 32px 0 10px;
+    padding: 10px 16px;
+    background: var(--blue-light);
+    border-left: 4px solid var(--blue);
+    border-radius: 0 6px 6px 0;
+  }
+  .art-body .sub-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem; font-weight: 600; color: var(--cyan);
+    margin: 22px 0 8px;
+    text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem;
+  }
+  .art-body .rule-block { margin: 20px 0; }
+  .art-body .rule-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem; font-weight: 700; color: var(--blue);
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .art-body .rule-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .art-body .rule-text { font-size: 1.05rem; line-height: 1.85; text-align: justify; }
+  .art-body .para { margin: 12px 0; text-align: justify; }
+  .art-body .sub-para { padding-left: 24px; margin: 8px 0; }
+  .art-body .note {
+    background: var(--gold-light);
+    border-left: 4px solid var(--gold);
+    padding: 14px 18px; margin: 20px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.95rem; color: #5a4400;
+    font-family: 'Inter', sans-serif; font-size: 0.88rem;
+  }
+  .art-body .note strong { color: #8a6000; }
+  .art-body .definition {
+    background: #f0f7ff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px; margin: 16px 0;
+    font-size: 0.95rem;
+  }
+  .art-body .definition .def-term {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700; color: var(--blue-dark);
+    font-size: 0.9rem; margin-bottom: 4px;
+  }
+  .art-body .page-ref {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem; color: #aaa;
+    font-style: normal;
+  }
+
+  /* FOOTER NAV */
+  .art-footer {
+    margin-top: 48px; padding-top: 20px; border-top: 2px solid var(--blue-light);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+
+  /* LOADING */
+  .loader { text-align: center; padding: 80px 20px; color: var(--muted); }
+  .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .reader::-webkit-scrollbar { width: 6px; }
+  .reader::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 768px) {
+    .sidebar { position: fixed; left: calc(0px - var(--sidebar-w)); top: 60px; height: calc(100vh - 60px); z-index: 50; transition: left 0.3s; box-shadow: none; }
+    .sidebar.open { left: 0; box-shadow: 4px 0 24px rgba(0,0,0,0.15); }
+    .btn-menu { display: block; }
+    .article { padding: 28px 16px 60px; }
+    .art-title { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-icon">📋</div>
+    <div>
+      <div class="topbar-name">MSME Procurement Manual</div>
+      <div class="topbar-sub">Uttar Pradesh Government · DBS Nyaysahayak</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-menu" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <a href="/library.html" class="btn-lib">← Library</a>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <h2>Chapter Index</h2>
+      <input class="search-box" type="text" id="searchBox" placeholder="Search chapters..." oninput="filter(this.value)">
+    </div>
+    <div class="ch-list" id="chList">
+      <div class="loader"><div class="spinner"></div><div style="font-size:0.85rem">Loading...</div></div>
+    </div>
+  </div>
+
+  <div class="reader" id="reader">
+    <div class="welcome" id="welcome">
+      <div class="welcome-badge">UP Government · MSME</div>
+      <div class="welcome-icon">📋</div>
+      <h1>Procurement Manual</h1>
+      <p class="welcome-desc">
+        A comprehensive guide to procurement rules and procedures for Uttar Pradesh Government departments. Select a chapter from the left to begin reading.
+      </p>
+      <div class="welcome-stats" id="wStats"></div>
+    </div>
+    <div id="artView" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+const API = '/.netlify/functions/railway';
+let chapters = [], curIdx = -1;
+
+async function init() {
+  try {
+    const r = await fetch(`${API}/pm`);
+    const d = await r.json();
+    chapters = d.chapters || [];
+    renderSidebar(chapters);
+    document.getElementById('wStats').innerHTML = `
+      <div class="ws"><div class="ws-num">${chapters.length}</div><div class="ws-label">Chapters</div></div>
+      <div class="ws"><div class="ws-num">336</div><div class="ws-label">Pages</div></div>
+      <div class="ws"><div class="ws-num">🟢</div><div class="ws-label">Live</div></div>`;
+  } catch(e) {
+    document.getElementById('chList').innerHTML = `<div style="padding:20px;color:#c00;font-size:0.85rem">API connection failed.</div>`;
+  }
+}
+
+function renderSidebar(list) {
+  document.getElementById('chList').innerHTML = list.map(ch => {
+    const idx = chapters.indexOf(ch);
+    return `<div class="ch-item" id="ci-${idx}" onclick="open_ch(${idx})">
+      <span class="ch-num">Ch ${ch.num}</span>
+      <span class="ch-name">${ch.topic}</span>
+    </div>`;
+  }).join('');
+}
+
+function filter(q) {
+  const f = q ? chapters.filter(c => c.topic.toLowerCase().includes(q.toLowerCase()) || `chapter ${c.num}`.includes(q.toLowerCase())) : chapters;
+  renderSidebar(f);
+}
+
+async function open_ch(idx) {
+  curIdx = idx;
+  const ch = chapters[idx];
+  document.querySelectorAll('.ch-item').forEach(e => e.classList.remove('active'));
+  const el = document.getElementById(`ci-${idx}`);
+  if (el) { el.classList.add('active'); el.scrollIntoView({block:'nearest'}); }
+  document.getElementById('welcome').style.display = 'none';
+  const av = document.getElementById('artView');
+  av.style.display = 'block';
+  av.innerHTML = `<div class="loader" style="margin-top:60px"><div class="spinner"></div><div>Loading Chapter ${ch.num}...</div></div>`;
+  if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+  try {
+    const r = await fetch(`${API}/pm/${encodeURIComponent(ch.filename)}`);
+    const d = await r.json();
+    render_ch(d, idx);
+  } catch(e) {
+    av.innerHTML = `<div class="loader" style="color:#c00">Failed to load content.</div>`;
+  }
+}
+
+function render_ch(d, idx) {
+  const av = document.getElementById('artView');
+  const prev = chapters[idx-1], next = chapters[idx+1];
+  av.innerHTML = `
+    <div class="article">
+      <div class="art-header">
+        <div class="art-breadcrumb">Procurement Manual <span>›</span> <span>Chapter ${d.num}</span></div>
+        <div class="art-title">${d.topic}</div>
+        <div class="art-nav">
+          <button class="nav-btn" onclick="open_ch(${idx-1})" ${!prev?'disabled':''}>← ${prev?trunc(prev.topic,28):'First Chapter'}</button>
+          <button class="nav-btn" onclick="open_ch(${idx+1})" ${!next?'disabled':''}>${next?trunc(next.topic,28):'Last Chapter'} →</button>
+        </div>
+      </div>
+      <div class="art-body">${fmt(d.content||'')}</div>
+      <div class="art-footer">
+        <button class="nav-btn" onclick="open_ch(${idx-1})" ${!prev?'disabled':''}>← Previous</button>
+        <button class="nav-btn" onclick="document.getElementById('reader').scrollTop=0">↑ Top</button>
+        <button class="nav-btn" onclick="open_ch(${idx+1})" ${!next?'disabled':''}>Next →</button>
+      </div>
+    </div>`;
+  document.getElementById('reader').scrollTop = 0;
+}
+
+function fmt(raw) {
+  const lines = raw.split('\n').map(l=>l.trim());
+
+  // Step 1: Join broken sentence lines into proper paragraphs
+  const blocks = [];
+  let buf = '';
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i];
+    if (!l) {
+      if (buf) { blocks.push(buf.trim()); buf = ''; }
+      continue;
+    }
+    // Page marker — flush and skip
+    if (l.match(/^--- Page \d+/)) { if (buf) { blocks.push(buf.trim()); buf = ''; } continue; }
+    // Pure number — skip
+    if (l.match(/^\d{1,3}$/) ) continue;
+    // ALL CAPS heading — flush buffer first, then add as heading
+    if (l === l.toUpperCase() && l.match(/[A-Z]{4,}/) && l.length < 90 && !l.match(/^Chapter/i)) {
+      if (buf) { blocks.push(buf.trim()); buf = ''; }
+      blocks.push('§HEADING§' + l);
+      continue;
+    }
+    // Numbered rule start
+    if (l.match(/^\d{1,3}\.\d?\s+[A-Z]/)) {
+      if (buf) { blocks.push(buf.trim()); buf = ''; }
+      buf = l;
+      continue;
+    }
+    // Sub clause
+    if (l.match(/^\([a-z\d]\)\s/i)) {
+      if (buf) { blocks.push(buf.trim()); buf = ''; }
+      blocks.push('§SUB§' + l);
+      continue;
+    }
+    // Note
+    if (l.match(/^Note\s*[:\-–]/i)) {
+      if (buf) { blocks.push(buf.trim()); buf = ''; }
+      blocks.push('§NOTE§' + l);
+      continue;
+    }
+    // Join to buffer — if prev line ended mid-sentence
+    if (buf) {
+      const lastChar = buf.slice(-1);
+      if (lastChar.match(/[a-z,;0-9\)]/i)) {
+        buf += ' ' + l;
+      } else {
+        blocks.push(buf.trim());
+        buf = l;
+      }
+    } else {
+      buf = l;
+    }
+  }
+  if (buf) blocks.push(buf.trim());
+
+  // Step 2: Render blocks
+  let html = '';
+  for (const block of blocks) {
+    if (!block) continue;
+    if (block.startsWith('§HEADING§')) {
+      html += `<div class="sec-title">${esc(block.replace('§HEADING§',''))}</div>`; continue;
+    }
+    if (block.startsWith('§SUB§')) {
+      html += `<div class="sub-para">${esc(block.replace('§SUB§',''))}</div>`; continue;
+    }
+    if (block.startsWith('§NOTE§')) {
+      html += `<div class="note"><strong>Note:</strong> ${esc(block.replace('§NOTE§','').replace(/^Note\s*[:\-–]\s*/i,''))}</div>`; continue;
+    }
+    const rm = block.match(/^(\d{1,3})\.\d?\s+(.+)/);
+    if (rm && parseInt(rm[1]) < 300) {
+      html += `<div class="rule-block"><div class="rule-label">Rule ${rm[1]}</div><div class="rule-text">${esc(rm[2])}</div></div>`; continue;
+    }
+    if (block.match(/"\w+"\s+means/i)) {
+      const term = (block.match(/"([^"]+)"/) || ['',''])[1];
+      html += `<div class="definition"><div class="def-term">"${term}"</div>${esc(block)}</div>`; continue;
+    }
+    html += `<div class="para">${esc(block)}</div>`;
+  }
+  return html || `<div class="para" style="color:#999;font-style:italic">Content not available.</div>`;
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function trunc(s,n) { return s.length>n ? s.substring(0,n)+'…' : s; }
+
+init();
+</script>
+</body>
+</html>

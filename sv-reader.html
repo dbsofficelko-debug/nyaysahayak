@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>सेवा विधि — Nyaysahayak</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap');
+
+  :root {
+    --ink: #1a0a0a;
+    --paper: #fdf8f4;
+    --maroon: #7b1c1c;
+    --maroon-dark: #4a0e0e;
+    --maroon-light: #f9eded;
+    --gold: #c9a84c;
+    --gold-light: #fef9ed;
+    --muted: #6b5555;
+    --border: #e0cece;
+    --sidebar-w: 310px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Crimson Pro','Noto Serif Devanagari',Georgia,serif; background: var(--paper); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* TOPBAR */
+  .topbar {
+    background: linear-gradient(135deg, var(--maroon-dark) 0%, var(--maroon) 100%);
+    color: #fff;
+    padding: 0 28px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(74,14,14,0.5);
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 14px; }
+  .topbar-icon {
+    width: 42px; height: 42px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+  }
+  .topbar-name { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.3px; }
+  .topbar-sub { font-size: 0.68rem; color: rgba(255,255,255,0.55); margin-top: 2px; }
+  .topbar-right { display: flex; gap: 10px; align-items: center; }
+  .btn-lib { color: rgba(255,255,255,0.8); font-size: 0.78rem; text-decoration: none; border: 1px solid rgba(255,255,255,0.25); padding: 6px 14px; border-radius: 6px; transition: all 0.2s; }
+  .btn-lib:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .btn-menu { display: none; background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+
+  /* LAYOUT */
+  .layout { display: flex; flex: 1; height: calc(100vh - 60px); }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: #f5eded;
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar-head {
+    padding: 18px 16px 12px;
+    background: #eddada;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .sidebar-head h2 {
+    font-size: 0.68rem; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--maroon);
+    font-weight: 700; margin-bottom: 10px;
+    font-family: 'Crimson Pro', sans-serif;
+  }
+  .search-box {
+    width: 100%; padding: 8px 12px;
+    border: 1px solid var(--border); border-radius: 6px;
+    font-size: 0.85rem; background: #fff; outline: none;
+    font-family: inherit; color: var(--ink);
+  }
+  .search-box:focus { border-color: var(--maroon); }
+
+  .ch-list { padding: 6px 0; }
+  .ch-item {
+    padding: 11px 16px; cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .ch-item:hover { background: #edd8d8; border-left-color: var(--maroon); }
+  .ch-item.active { background: #fff; border-left-color: var(--maroon-dark); }
+  .ch-badge {
+    background: var(--maroon);
+    color: #fff; font-size: 0.62rem;
+    padding: 2px 8px; border-radius: 4px;
+    white-space: nowrap; margin-top: 3px;
+    font-weight: 700; flex-shrink: 0;
+    font-family: 'Crimson Pro', serif;
+  }
+  .ch-item.active .ch-badge { background: var(--maroon-dark); }
+  .ch-name { font-size: 0.9rem; line-height: 1.4; color: var(--ink); }
+  .ch-item.active .ch-name { font-weight: 700; color: var(--maroon-dark); }
+
+  /* READER */
+  .reader { flex: 1; overflow-y: auto; }
+
+  /* WELCOME */
+  .welcome {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 100%; padding: 60px 32px; text-align: center;
+  }
+  .welcome-emblem {
+    width: 130px; height: 130px;
+    background: linear-gradient(135deg, var(--maroon-light), var(--gold-light));
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 4rem; margin-bottom: 28px;
+    box-shadow: 0 6px 30px rgba(123,28,28,0.12);
+  }
+  .welcome h1 { font-size: 2.4rem; font-weight: 700; color: var(--maroon-dark); margin-bottom: 8px; }
+  .welcome .sub { font-size: 1rem; color: var(--muted); font-style: italic; margin-bottom: 4px; }
+  .welcome .tagline { font-size: 0.85rem; font-weight: 700; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+  .welcome-desc { font-size: 1.05rem; color: var(--muted); max-width: 480px; line-height: 1.7; }
+  .welcome-stats { display: flex; gap: 24px; margin-top: 32px; flex-wrap: wrap; justify-content: center; }
+  .ws { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 110px; }
+  .ws-num { font-size: 1.8rem; font-weight: 700; color: var(--maroon); }
+  .ws-label { font-size: 0.7rem; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .welcome-note {
+    margin-top: 24px;
+    background: var(--gold-light);
+    border: 1px solid #e8d080;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 0.85rem;
+    color: #5a4400;
+    max-width: 480px;
+  }
+
+  /* ARTICLE */
+  .article { max-width: 800px; margin: 0 auto; padding: 48px 52px 80px; }
+
+  .art-header { margin-bottom: 32px; }
+  .art-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--maroon); color: #fff;
+    font-size: 0.7rem; padding: 4px 14px;
+    border-radius: 20px; font-weight: 700;
+    letter-spacing: 0.5px; margin-bottom: 14px;
+    font-family: 'Crimson Pro', serif;
+  }
+  .art-title {
+    font-size: 2.1rem; font-weight: 700;
+    color: var(--maroon-dark); line-height: 1.3;
+    border-bottom: 3px solid var(--maroon);
+    padding-bottom: 16px; margin-bottom: 16px;
+  }
+  .art-nav { display: flex; gap: 8px; flex-wrap: wrap; }
+  .nav-btn {
+    padding: 7px 16px; border: 1px solid var(--border);
+    background: #fff; border-radius: 6px; cursor: pointer;
+    font-size: 0.82rem; color: var(--maroon);
+    font-family: inherit; transition: all 0.15s; font-weight: 500;
+  }
+  .nav-btn:hover { background: var(--maroon); color: #fff; border-color: var(--maroon); }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* BODY */
+  .art-body { font-size: 1.1rem; line-height: 1.9; color: #2a1010; }
+
+  .art-body .ch-head {
+    font-size: 1.4rem; font-weight: 700; color: var(--maroon-dark);
+    margin: 32px 0 10px;
+    padding: 10px 18px;
+    background: var(--maroon-light);
+    border-left: 4px solid var(--maroon);
+    border-radius: 0 6px 6px 0;
+  }
+  .art-body .sec-head {
+    font-size: 1.1rem; font-weight: 600;
+    color: var(--maroon); margin: 24px 0 8px;
+    font-style: italic;
+  }
+  .art-body .rule-block { margin: 22px 0; }
+  .art-body .rule-label {
+    font-size: 0.68rem; font-weight: 700;
+    color: var(--maroon); letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 5px;
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Crimson Pro', serif;
+  }
+  .art-body .rule-label::after { content: ''; flex: 1; height: 1px; background: #e8d0d0; }
+  .art-body .rule-text { font-size: 1.05rem; line-height: 1.9; text-align: justify; }
+  .art-body .para { margin: 14px 0; text-align: justify; }
+  .art-body .sub-para { padding-left: 24px; margin: 10px 0; border-left: 2px solid #e8d0d0; }
+  .art-body .note {
+    background: var(--gold-light);
+    border-left: 4px solid var(--gold);
+    padding: 14px 18px; margin: 20px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.95rem; color: #5a4000;
+    font-style: italic;
+  }
+  .art-body .note strong { color: #8a6000; font-style: normal; }
+  .art-body .judgment {
+    background: #fff8f8;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px; margin: 20px 0;
+    font-size: 0.95rem;
+  }
+  .art-body .judgment .j-title {
+    font-size: 0.75rem; font-weight: 700;
+    color: var(--maroon); text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 6px;
+  }
+  .art-body .md-heading { font-size: 1.2rem; font-weight: 700; color: var(--maroon-dark); margin: 28px 0 10px; }
+  .art-body .md-subheading { font-size: 1rem; font-weight: 600; color: var(--maroon); margin: 20px 0 8px; font-style: italic; }
+  .art-body .md-bold { font-weight: 700; color: var(--maroon-dark); }
+  .art-body ul { padding-left: 24px; margin: 12px 0; }
+  .art-body ul li { margin: 6px 0; }
+
+  .art-footer {
+    margin-top: 48px; padding-top: 20px;
+    border-top: 2px solid var(--maroon-light);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+
+  .loader { text-align: center; padding: 80px 20px; color: var(--muted); }
+  .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--maroon); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .reader::-webkit-scrollbar { width: 6px; }
+  .reader::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 768px) {
+    .sidebar { position: fixed; left: calc(0px - var(--sidebar-w)); top: 60px; height: calc(100vh - 60px); z-index: 50; transition: left 0.3s; }
+    .sidebar.open { left: 0; box-shadow: 4px 0 24px rgba(0,0,0,0.15); }
+    .btn-menu { display: block; }
+    .article { padding: 28px 16px 60px; }
+    .art-title { font-size: 1.6rem; }
+  }
+
+  /* Floating sticky nav */
+  .floating-nav {
+    position: fixed;
+    bottom: 0;
+    left: var(--sidebar-w, 300px);
+    right: 0;
+    background: rgba(255,252,248,0.97);
+    border-top: 2px solid var(--maroon, #7b1c1c);
+    padding: 10px 24px;
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+  }
+  .floating-nav.visible { display: flex; }
+  .floating-nav .fn-info {
+    font-size: 0.82rem;
+    color: #7b1c1c;
+    font-style: italic;
+    flex: 1;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 8px;
+  }
+  .floating-nav .nav-btn { flex-shrink: 0; white-space: nowrap; }
+  @media (max-width: 768px) {
+    .floating-nav { left: 0; padding: 10px 12px; }
+    .floating-nav .fn-info { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-icon">⚖️</div>
+    <div>
+      <div class="topbar-name">सेवा विधि — Service Laws</div>
+      <div class="topbar-sub">नियुक्ति से पेंशन तक · DBS Nyaysahayak</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-menu" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <a href="/library.html" class="btn-lib">← पुस्तकालय</a>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <h2>अध्याय सूची</h2>
+      <input class="search-box" type="text" id="searchBox" placeholder="अध्याय खोजें..." oninput="filter(this.value)">
+    </div>
+    <div class="ch-list" id="chList">
+      <div class="loader"><div class="spinner"></div><div style="font-size:0.85rem">लोड हो रहा है...</div></div>
+    </div>
+  </div>
+
+  <div class="reader" id="reader">
+    <div class="welcome" id="welcome">
+      <div class="welcome-emblem">⚖️</div>
+      <h1>सेवा विधि</h1>
+      <div class="sub">Service Laws — V.K. Singh (Higher Judicial Service)</div>
+      <div class="tagline">नियुक्ति से पेंशन तक</div>
+      <p class="welcome-desc">उत्तर प्रदेश, उत्तराखण्ड, केन्द्रीय एवं अखिल भारतीय सेवाओं के लोक सेवकों के लिए सेवा विधि का सम्पूर्ण संकलन — संवैधानिक प्राविधान, नियमावलियाँ एवं उच्चतम न्यायालय के महत्वपूर्ण निर्णय।</p>
+      <div class="welcome-stats" id="wStats"></div>
+      
+    </div>
+    <div id="artView" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+const API = '/.netlify/functions/railway';
+let chapters = [], curIdx = -1;
+
+async function init() {
+  try {
+    const r = await fetch(`${API}/sv`);
+    const d = await r.json();
+    chapters = (d.chapters || []).filter(c => c && c.num && c.topic);
+    renderSidebar(chapters);
+    document.getElementById('wStats').innerHTML = `
+      <div class="ws"><div class="ws-num">${chapters.length}</div><div class="ws-label">अध्याय</div></div>
+      <div class="ws"><div class="ws-num">29</div><div class="ws-label">कुल अध्याय</div></div>
+      <div class="ws"><div class="ws-num">🟢</div><div class="ws-label">Live API</div></div>`;
+  } catch(e) {
+    document.getElementById('chList').innerHTML = `<div style="padding:20px;color:#c00;font-size:0.85rem">API से कनेक्ट नहीं हो पाया।</div>`;
+  }
+}
+
+function renderSidebar(list) {
+  document.getElementById('chList').innerHTML = list.map(ch => {
+    const idx = chapters.indexOf(ch);
+    return `<div class="ch-item" id="ci-${idx}" onclick="open_ch(${idx})">
+      <span class="ch-badge">अ. ${ch.num}</span>
+      <span class="ch-name">${ch.topic}</span>
+    </div>`;
+  }).join('');
+}
+
+function filter(q) {
+  const f = q ? chapters.filter(c => (c.topic||'').toLowerCase().includes(q.toLowerCase()) || (c.num||'').includes(q)) : chapters;
+  renderSidebar(f);
+}
+
+async function open_ch(idx) {
+  curIdx = idx;
+  const ch = chapters[idx];
+  document.querySelectorAll('.ch-item').forEach(e => e.classList.remove('active'));
+  const el = document.getElementById(`ci-${idx}`);
+  if (el) { el.classList.add('active'); el.scrollIntoView({block:'nearest'}); }
+  document.getElementById('welcome').style.display = 'none';
+  const av = document.getElementById('artView');
+  av.style.display = 'block';
+  av.innerHTML = `<div class="loader" style="margin-top:60px"><div class="spinner"></div><div>अध्याय ${ch.num} लोड हो रहा है...</div></div>`;
+  if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+  try {
+    const r = await fetch(`${API}/sv/${encodeURIComponent(ch.filename)}`);
+    const d = await r.json();
+    render_ch(d, idx);
+  } catch(e) {
+    av.innerHTML = `<div class="loader" style="color:#c00">सामग्री लोड नहीं हो पाई।</div>`;
+  }
+}
+
+let curPages = [], curPageIdx = 0, curChIdx = -1;
+const WORDS_PER_PAGE = 300;
+
+function splitIntoPages(content) {
+  // Split by double newline (paragraphs)
+  const paras = content.split(/\n{2,}/);
+  const pages = [];
+  let page = [], wordCount = 0;
+  for (const para of paras) {
+    const words = para.trim().split(/\s+/).length;
+    if (wordCount + words > WORDS_PER_PAGE && page.length > 0) {
+      pages.push(page.join('\n\n'));
+      page = [para];
+      wordCount = words;
+    } else {
+      page.push(para);
+      wordCount += words;
+    }
+  }
+  if (page.length) pages.push(page.join('\n\n'));
+  return pages.length ? pages : [content];
+}
+
+function render_ch(d, idx) {
+  // Skip empty chapters (not yet loaded in DB)
+  if (!d || !d.content) {
+    document.getElementById('artView').innerHTML = `<div style="padding:60px;text-align:center;color:#7b1c1c;font-family:'Noto Serif Devanagari',serif;"><div style="font-size:3rem;margin-bottom:16px;">⏳</div><div style="font-size:1.1rem;font-weight:600;">यह अध्याय शीघ्र उपलब्ध होगा</div><div style="font-size:0.9rem;color:#999;margin-top:8px;">सामग्री तैयार हो रही है।</div></div>`;
+    document.getElementById('welcomeScreen').style.display = 'none';
+    document.getElementById('artView').style.display = 'block';
+    return;
+  }
+  curChIdx = idx;
+  // Fix literal \n strings from Railway API
+  const rawContent = (d.content || '').replace(/\\n/g, '\n').replace(/\\t/g, '\t').replace(/^---[\s\S]*?---\n*/m, '');
+  curPages = splitIntoPages(rawContent);
+  curPageIdx = 0;
+  renderPage(d, idx);
+}
+
+function renderPage(d, idx) {
+  const av = document.getElementById('artView');
+  const prev = chapters[idx-1], next = chapters[idx+1];
+  const totalPages = curPages.length;
+  const pageContent = curPages[curPageIdx] || '';
+  const isFirstPage = curPageIdx === 0;
+  const isLastPage = curPageIdx === totalPages - 1;
+
+  av.innerHTML = `
+    <div class="article">
+      <div class="art-header">
+        <div class="art-badge">⚖️ अध्याय ${d.num}</div>
+        <div class="art-title">${d.topic}</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap;">
+          <button class="nav-btn" onclick="open_ch(${idx-1})" ${!prev?'disabled':''}>← पूर्व अध्याय</button>
+          <button class="nav-btn" onclick="open_ch(${idx+1})" ${!next?'disabled':''}>अगला अध्याय →</button>
+          ${totalPages > 1 ? `<span style="font-size:0.78rem;color:var(--muted);margin-left:8px;">पृष्ठ ${curPageIdx+1} / ${totalPages}</span>` : ''}
+        </div>
+      </div>
+      <div class="art-body">${fmt(pageContent)}</div>
+      <div class="art-footer">
+        <button class="nav-btn" onclick="prevPage(${idx})" ${isFirstPage?'disabled':''}>← पूर्व पृष्ठ</button>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          ${Array.from({length:Math.min(totalPages,8)},(_,i)=>`<button class="nav-btn${i===curPageIdx?' active-page':''}" style="${i===curPageIdx?'background:var(--maroon);color:#fff;':''}" onclick="goToPage(${idx},${i})">${i+1}</button>`).join('')}
+          ${totalPages > 8 ? `<span style="color:var(--muted)">...</span><button class="nav-btn" onclick="goToPage(${idx},${totalPages-1})">${totalPages}</button>` : ''}
+        </div>
+        <button class="nav-btn" onclick="nextPage(${idx})" ${isLastPage?'disabled':''}>अगला पृष्ठ →</button>
+      </div>
+    </div>`;
+  document.getElementById('reader').scrollTop = 0;
+  updateFloatingNav();
+}
+
+
+function updateFloatingNav() {
+  const fn = document.getElementById('floatingNav');
+  const totalPages = curPages.length;
+  const isFirstPage = curPageIdx === 0;
+  const isLastPage = curPageIdx === totalPages - 1;
+  const isFirstCh = curChIdx === 0;
+  const isLastCh = curChIdx === chapters.length - 1;
+
+  document.getElementById('fnPrevBtn').disabled = isFirstPage && isFirstCh;
+  document.getElementById('fnNextBtn').disabled = isLastPage && isLastCh;
+
+  let info = chapters[curChIdx]?.topic || '';
+  if (totalPages > 1) info += ` · पृष्ठ ${curPageIdx+1}/${totalPages}`;
+  document.getElementById('fnInfo').textContent = info;
+  fn.classList.add('visible');
+}
+function fnPrev() {
+  if (curPageIdx > 0) { curPageIdx--; renderPage(chapters[curChIdx], curChIdx); }
+  else if (curChIdx > 0) open_ch(curChIdx - 1);
+}
+function fnNext() {
+  if (curPageIdx < curPages.length - 1) { curPageIdx++; renderPage(chapters[curChIdx], curChIdx); }
+  else if (curChIdx < chapters.length - 1) open_ch(curChIdx + 1);
+}
+function prevPage(idx) { if (curPageIdx > 0) { curPageIdx--; renderPage(chapters[idx], idx); } }
+function nextPage(idx) { if (curPageIdx < curPages.length-1) { curPageIdx++; renderPage(chapters[idx], idx); } }
+function goToPage(idx, p) { curPageIdx = p; renderPage(chapters[idx], idx); }
+
+function fmt(raw) {
+  const lines = raw.split('\n');
+  let html = '', buf = '';
+  let inTable = false, tableRows = [], isFirstTable = true;
+
+  function flushBuf() {
+    if (buf.trim()) { html += `<div class="para">${renderInline(buf.trim())}</div>`; buf = ''; }
+  }
+
+  function flushTable() {
+    if (!tableRows.length) return;
+    // Skip TOC-type tables (क्र.सं./विषय/पृष्ठ) — ye sirf index hai
+    const isTOC = tableRows[0] && (tableRows[0].includes('क्र') || tableRows[0].includes('पृष्ठ') || tableRows[0].includes('Sr.') || tableRows[0].includes('Page'));
+    if (isTOC && isFirstTable) { tableRows = []; isFirstTable = false; return; }
+    isFirstTable = false;
+    let thtml = '<table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:0.95rem;">';
+    tableRows.forEach((row, ri) => {
+      if (row.match(/^[\s\|:\-]+$/)) return; // separator row skip
+      const cells = row.split('|').map(c=>c.trim()).filter(c=>c);
+      if (!cells.length) return;
+      const tag = ri === 0 ? 'th' : 'td';
+      const style = ri === 0 
+        ? 'background:#7b1c1c;color:#fff;padding:8px 12px;text-align:left;font-weight:600;'
+        : 'padding:8px 12px;border-bottom:1px solid #e0cece;' + (ri%2===0?'background:#fff8f8;':'');
+      thtml += '<tr>' + cells.map(c=>`<${tag} style="${style}">${renderInline(c)}</${tag}>`).join('') + '</tr>';
+    });
+    thtml += '</table>';
+    html += thtml;
+    tableRows = [];
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i];
+    const s = l.trim();
+
+    // Table detection
+    if (s.startsWith('|')) {
+      flushBuf();
+      inTable = true;
+      tableRows.push(s);
+      continue;
+    } else if (inTable) {
+      flushTable();
+      inTable = false;
+    }
+
+    if (!s) { flushBuf(); continue; }
+
+    // Skip metadata block
+    if (s.match(/^document:|^page_range:|^chapter:|^key_rules_covered:/)) continue;
+    if (s === '---') { flushBuf(); continue; }
+
+    // Markdown headings
+    if (s.startsWith('#### ')) { flushBuf(); html += `<div class="md-subheading">${renderInline(s.slice(5))}</div>`; continue; }
+    if (s.startsWith('### ')) { flushBuf(); html += `<div class="sec-head">${renderInline(s.slice(4))}</div>`; continue; }
+    if (s.startsWith('## ')) { flushBuf(); html += `<div class="ch-head">${renderInline(s.slice(3))}</div>`; continue; }
+    if (s.startsWith('# ')) { flushBuf(); html += `<div class="ch-head">${renderInline(s.slice(2))}</div>`; continue; }
+
+    // Note
+    if (s.match(/^\*\*(टिप्पणी|Note|नोट)\*\*/i) || s.startsWith('> ')) {
+      flushBuf();
+      const txt = s.replace(/^\*\*(टिप्पणी|Note|नोट)\*\*[:\-–]?\s*/i,'').replace(/^>\s*/,'');
+      html += `<div class="note"><strong>टिप्पणी:</strong> ${renderInline(txt)}</div>`; continue;
+    }
+
+    // Judgment citation
+    if (s.match(/AIR\s+\d{4}|\bSCC\b|\d{4}\s+\(\d+\)\s+SCC/)) {
+      flushBuf();
+      html += `<div class="judgment"><div class="j-title">⚖️ न्यायिक निर्णय</div><div>${renderInline(s)}</div></div>`; continue;
+    }
+
+    // Numbered rule **1.** or plain 1.
+    const rm = s.match(/^\*\*(\d{1,3})\.\*\*\s*(.*)|^(\d{1,3})\.\s{1,3}([^\d].*)/);
+    if (rm) {
+      flushBuf();
+      const num = rm[1] || rm[3];
+      const text = rm[2] || rm[4];
+      if (parseInt(num) < 500 && text && text.length > 3) {
+        html += `<div class="rule-block"><div class="rule-label">नियम ${num}</div><div class="rule-text">${renderInline(text)}</div></div>`; continue;
+      }
+    }
+
+    // Bullet
+    if (s.match(/^[\*\-]\s+/)) {
+      flushBuf();
+      html += `<div class="sub-para">${renderInline(s.replace(/^[\*\-]\s+/,''))}</div>`; continue;
+    }
+
+    // Sub clause
+    if (s.match(/^\([क-हa-z०-९\d]{1,2}\)\s/i)) {
+      flushBuf();
+      html += `<div class="sub-para">${renderInline(s)}</div>`; continue;
+    }
+
+    // Paragraph accumulation — join lines
+    const lastChar = buf ? buf.slice(-1) : '';
+    if (buf && lastChar.match(/[^\.\!\?।]/)) {
+      buf += ' ' + s;
+    } else {
+      flushBuf();
+      buf = s;
+    }
+  }
+  if (inTable) flushTable();
+  flushBuf();
+  return html || `<div class="para" style="color:#999;font-style:italic">सामग्री उपलब्ध नहीं है।</div>`;
+}
+
+function renderInline(s) {
+  return esc(s)
+    .replace(/\*\*(.+?)\*\*/g, '<span class="md-bold">$1</span>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\[Page\s*(\d+)\]/g, '<span style="font-size:0.65rem;color:#aaa">[पृ.$1]</span>');
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function trunc(s,n) { return s.length>n ? s.substring(0,n)+'…' : s; }
+
+init();
+</script>
+
+<div class="floating-nav" id="floatingNav">
+  <button class="nav-btn" id="fnPrevBtn" onclick="fnPrev()">← पूर्व</button>
+  <span class="fn-info" id="fnInfo"></span>
+  <button class="nav-btn" id="fnNextBtn" onclick="fnNext()">अगला →</button>
+</div>
+</body>
+</html>

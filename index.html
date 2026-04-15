@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>न्यायसहायक — UP Government Legal AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi:ital@0;1&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=JetBrains+Mono:wght@400;600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --maroon: #7A1515;
+  --maroon-deep: #4A0A0A;
+  --gold: #C8973A;
+  --gold-light: #E8B85A;
+  --cream: #FAF6EF;
+  --cream-dark: #F0E8D8;
+  --ink: #1A0A00;
+  --muted: #6B5744;
+  --border: #D4B896;
+  --white: #FFFFFF;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Crimson Pro', Georgia, serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+
+/* NAVBAR */
+nav {
+  position: fixed; top: 0; width: 100%; z-index: 1000;
+  background: rgba(26,10,0,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(200,151,58,0.3);
+  padding: 14px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--gold), var(--maroon)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.nav-logo-text { font-family: 'Tiro Devanagari Hindi', serif; font-size: 20px; color: var(--gold); }
+.nav-links { display: flex; align-items: center; gap: 32px; }
+.nav-links a { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(200,151,58,0.7); text-decoration: none; letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s; }
+.nav-links a:hover { color: var(--gold); }
+.nav-cta { background: var(--gold); color: var(--ink); padding: 8px 20px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; text-decoration: none; letter-spacing: 0.5px; transition: all 0.2s; }
+.nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  background: linear-gradient(160deg, var(--maroon-deep) 0%, #2A0808 40%, #1A0A00 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  padding: 120px 40px 80px;
+}
+.hero-pattern {
+  position: absolute; inset: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(200,151,58,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(122,21,21,0.3) 0%, transparent 50%);
+}
+.hero-lines {
+  position: absolute; inset: 0; opacity: 0.04;
+  background-image: repeating-linear-gradient(0deg, var(--gold) 0px, transparent 1px, transparent 60px, var(--gold) 61px);
+}
+.hero-content { position: relative; text-align: center; max-width: 900px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(200,151,58,0.15); border: 1px solid rgba(200,151,58,0.4);
+  border-radius: 40px; padding: 6px 18px;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--gold); letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 32px;
+  animation: fadeUp 0.6s ease both;
+}
+.hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #4CAF50; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+
+.hero-title {
+  font-family: 'Tiro Devanagari Hindi', serif;
+  font-size: clamp(42px, 7vw, 80px);
+  color: var(--gold);
+  line-height: 1.1;
+  margin-bottom: 16px;
+  animation: fadeUp 0.6s ease 0.1s both;
+}
+.hero-subtitle-en {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(18px, 3vw, 28px);
+  color: rgba(255,255,255,0.6);
+  font-style: italic;
+  margin-bottom: 24px;
+  animation: fadeUp 0.6s ease 0.2s both;
+}
+.hero-desc {
+  font-size: clamp(16px, 2vw, 20px);
+  color: rgba(255,255,255,0.75);
+  line-height: 1.7;
+  max-width: 650px; margin: 0 auto 48px;
+  animation: fadeUp 0.6s ease 0.3s both;
+}
+.hero-actions {
+  display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+  animation: fadeUp 0.6s ease 0.4s both;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--ink); padding: 16px 36px; border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;
+  text-decoration: none; letter-spacing: 0.5px;
+  box-shadow: 0 8px 30px rgba(200,151,58,0.4);
+  transition: all 0.3s;
+}
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(200,151,58,0.5); }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: rgba(255,255,255,0.8);
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 16px 36px; border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace; font-size: 13px;
+  text-decoration: none; letter-spacing: 0.5px;
+  transition: all 0.3s;
+}
+.btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+.hero-stats {
+  display: flex; gap: 48px; justify-content: center; margin-top: 64px;
+  border-top: 1px solid rgba(200,151,58,0.2); padding-top: 40px;
+  animation: fadeUp 0.6s ease 0.5s both;
+}
+.stat { text-align: center; }
+.stat-num { font-family: 'Playfair Display', serif; font-size: 36px; color: var(--gold); font-weight: 700; }
+.stat-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+/* PROBLEM SECTION */
+.problem {
+  background: var(--cream-dark);
+  padding: 100px 40px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+.section-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--maroon); letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.section-title {
+  font-family: 'Tiro Devanagari Hindi', serif;
+  font-size: clamp(28px, 4vw, 48px);
+  color: var(--maroon-deep);
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+.section-desc {
+  font-size: 18px; color: var(--muted); max-width: 600px;
+  margin: 0 auto 60px; line-height: 1.7;
+}
+.problem-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 24px; max-width: 900px; margin: 0 auto;
+}
+.problem-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 28px 24px;
+  text-align: left;
+  position: relative; overflow: hidden;
+}
+.problem-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--maroon), var(--gold));
+}
+.problem-icon { font-size: 28px; margin-bottom: 12px; }
+.problem-title { font-family: 'Crimson Pro', serif; font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+.problem-text { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+/* SOLUTION */
+.solution {
+  background: linear-gradient(135deg, var(--maroon-deep), #3A1010);
+  padding: 100px 40px;
+  position: relative; overflow: hidden;
+}
+.solution::before {
+  content: '⚖️';
+  position: absolute; right: -20px; top: 50%; transform: translateY(-50%);
+  font-size: 300px; opacity: 0.04; line-height: 1;
+}
+.solution-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.solution-text .section-label { color: var(--gold-light); }
+.solution-text .section-title { color: var(--gold); }
+.solution-text .section-desc { color: rgba(255,255,255,0.7); margin: 0 0 40px; }
+.feature-list { list-style: none; }
+.feature-list li {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 0; border-bottom: 1px solid rgba(200,151,58,0.15);
+  color: rgba(255,255,255,0.85); font-size: 16px; line-height: 1.5;
+}
+.feature-list li:last-child { border-bottom: none; }
+.feat-icon { width: 28px; height: 28px; background: rgba(200,151,58,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+
+.solution-visual {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(200,151,58,0.2);
+  border-radius: 12px; padding: 32px;
+}
+.doc-list { display: flex; flex-direction: column; gap: 12px; }
+.doc-item {
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(200,151,58,0.2);
+  border-radius: 8px; padding: 14px 16px;
+  transition: all 0.2s;
+}
+.doc-item:hover { background: rgba(200,151,58,0.1); border-color: rgba(200,151,58,0.4); }
+.doc-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--maroon), var(--gold)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.doc-name { font-family: 'Crimson Pro', serif; font-size: 16px; font-weight: 600; color: var(--gold); }
+.doc-desc { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 0.5px; margin-top: 2px; }
+.doc-count { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(200,151,58,0.6); }
+
+/* CLIENTS */
+.clients { padding: 100px 40px; background: var(--cream); }
+.clients-inner { max-width: 1100px; margin: 0 auto; text-align: center; }
+.clients-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 24px; margin-top: 60px;
+}
+.client-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 36px 28px;
+  text-align: left; transition: all 0.25s;
+  position: relative;
+}
+.client-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(122,21,21,0.1); border-color: var(--gold); }
+.client-icon { font-size: 36px; margin-bottom: 16px; }
+.client-name { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+.client-type { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--maroon); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+.client-desc { font-size: 15px; color: var(--muted); line-height: 1.6; }
+
+/* HOW IT WORKS */
+.how { background: var(--cream-dark); padding: 100px 40px; }
+.how-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 60px; position: relative; }
+.steps::before {
+  content: ''; position: absolute; top: 40px; left: 16%; right: 16%;
+  height: 2px; background: linear-gradient(90deg, var(--maroon), var(--gold), var(--maroon));
+}
+.step { position: relative; }
+.step-num {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--maroon), var(--maroon-deep));
+  border: 3px solid var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--gold);
+  margin: 0 auto 20px; position: relative; z-index: 1;
+}
+.step-title { font-family: 'Crimson Pro', serif; font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+.step-desc { font-size: 15px; color: var(--muted); line-height: 1.6; }
+
+/* CTA */
+.cta-section {
+  background: linear-gradient(135deg, var(--maroon-deep), #1A0A00);
+  padding: 100px 40px; text-align: center; position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(200,151,58,0.1) 0%, transparent 70%);
+}
+.cta-inner { position: relative; max-width: 700px; margin: 0 auto; }
+.cta-title { font-family: 'Tiro Devanagari Hindi', serif; font-size: clamp(28px, 4vw, 48px); color: var(--gold); margin-bottom: 20px; line-height: 1.2; }
+.cta-desc { font-size: 18px; color: rgba(255,255,255,0.7); margin-bottom: 48px; line-height: 1.7; }
+.cta-contact {
+  display: flex; gap: 16px; justify-content: center;
+  align-items: center; flex-wrap: wrap;
+}
+.contact-item {
+  display: flex; align-items: center; gap: 8px;
+  color: rgba(255,255,255,0.6); font-family: 'JetBrains Mono', monospace; font-size: 12px;
+}
+
+/* FOOTER */
+footer {
+  background: var(--maroon-deep);
+  border-top: 1px solid rgba(200,151,58,0.2);
+  padding: 40px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-brand { font-family: 'Tiro Devanagari Hindi', serif; font-size: 18px; color: var(--gold); }
+.footer-sub { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: rgba(200,151,58,0.4); letter-spacing: 2px; margin-top: 4px; }
+.footer-right { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.3); text-align: right; }
+.footer-right a { color: rgba(200,151,58,0.6); text-decoration: none; }
+
+/* BOT SECTION */
+.bot-section { background: var(--cream); padding: 80px 40px; }
+.bot-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+.bot-frame {
+  margin-top: 40px;
+  border: 2px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+  box-shadow: 0 20px 60px rgba(122,21,21,0.15);
+  height: 600px;
+}
+.bot-frame iframe { width: 100%; height: 100%; border: none; }
+
+/* RESPONSIVE */
+@media(max-width:768px) {
+  nav { padding: 12px 20px; }
+  .nav-links { display: none; }
+  .hero { padding: 100px 20px 60px; }
+  .hero-stats { gap: 24px; flex-wrap: wrap; }
+  .problem-grid, .clients-grid, .steps { grid-template-columns: 1fr; }
+  .steps::before { display: none; }
+  .solution-inner { grid-template-columns: 1fr; gap: 40px; }
+  .solution { padding: 60px 20px; }
+  .problem, .clients, .how, .cta-section, .bot-section { padding: 60px 20px; }
+  footer { flex-direction: column; gap: 16px; text-align: center; }
+  .footer-right { text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">⚖️</div>
+    <div class="nav-logo-text">न्यायसहायक</div>
+  </a>
+  <div class="nav-links">
+    <a href="#solution">पुस्तकालय</a>
+    <a href="#departments">संस्थाएं</a>
+    <a href="#how">प्रक्रिया</a>
+    <a href="Nyaysahayak_AI_v6.html">Demo</a>
+    <a href="Nyaysahayak_AI_v6.html" class="nav-cta" style="background:#c9a84c;color:#1a0a0a;padding:8px 20px;border-radius:6px;font-weight:700;text-decoration:none;font-size:0.85rem;">⚖️ Demo आज़माएं</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-pattern"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Live · 1,298 अनुभाग · 6 विभाग · निःशुल्क
+    </div>
+    <h1 class="hero-title">न्यायसहायक</h1>
+    <p class="hero-subtitle-en">Legal Intelligence for UP Government</p>
+    <p class="hero-desc">
+      Court case का जवाब 3 घंटे में लिखते थे?<br>
+      <strong style="color:var(--gold-light)">अब 3 मिनट में — PDF डालो, उत्तर पाओ।</strong>
+    </p>
+    <div class="hero-actions">
+      <a href="Nyaysahayak_AI_v6.html" class="btn-primary">⚖️ अभी आज़माएं — निःशुल्क</a>
+      <a href="#cta" class="btn-secondary">📞 Demo बुक करें</a>
+    </div>
+    <!-- Mock chat -->
+    <div style="margin-top:40px;max-width:520px;margin-left:auto;margin-right:auto;text-align:left;">
+      <div style="background:rgba(0,0,0,0.4);border:1px solid rgba(200,151,58,0.2);border-radius:14px;padding:20px;font-size:13px;">
+        <div style="display:flex;gap:10px;margin-bottom:14px;justify-content:flex-end;">
+          <div style="background:rgba(200,151,58,0.15);border:1px solid rgba(200,151,58,0.3);border-radius:10px 10px 2px 10px;padding:8px 14px;color:var(--gold-light);max-width:80%;">
+            अनुकम्पा नियुक्ति की पात्रता क्या है?
+          </div>
+          <div style="width:28px;height:28px;background:rgba(200,151,58,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">👤</div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <div style="width:28px;height:28px;background:linear-gradient(135deg,#8B0000,#c9a84c);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;">⚖️</div>
+          <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:2px 10px 10px 10px;padding:10px 14px;color:rgba(255,255,255,0.85);line-height:1.6;max-width:85%;">
+            <strong style="color:var(--gold)">नियम 5, अनुकम्पा नियुक्ति नियमावली 1974</strong> के अनुसार —<br>
+            सरकारी सेवक की मृत्यु/अक्षमता पर आश्रित परिवार के एक सदस्य को पात्रता है। आयु 18-35 वर्ष, शैक्षणिक योग्यता पद के अनुरूप अनिवार्य।
+            <div style="margin-top:8px;font-size:10px;color:rgba(200,151,58,0.6);">📌 Rule 5 · Anukampa Niyamavali 1974</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUE STRIP -->
+<section style="background:#0d0505;border-top:1px solid rgba(200,151,58,0.1);border-bottom:1px solid rgba(200,151,58,0.1);padding:28px 40px;">
+  <div style="max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;text-align:center;">
+    <div>
+      <div style="font-size:1.8rem;font-weight:700;color:var(--gold);font-family:'Crimson Pro',serif;">1,298</div>
+      <div style="font-size:0.75rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;">Indexed Sections</div>
+    </div>
+    <div>
+      <div style="font-size:1.8rem;font-weight:700;color:var(--gold);font-family:'Crimson Pro',serif;">4</div>
+      <div style="font-size:0.75rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;">Core Manuals</div>
+    </div>
+    <div>
+      <div style="font-size:1.8rem;font-weight:700;color:var(--gold);font-family:'Crimson Pro',serif;">6</div>
+      <div style="font-size:0.75rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;">Departments</div>
+    </div>
+    <div>
+      <div style="font-size:1.8rem;font-weight:700;color:var(--gold);font-family:'Crimson Pro',serif;">3 मिनट</div>
+      <div style="font-size:0.75rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;">Parawise Draft</div>
+    </div>
+    <div>
+      <div style="font-size:1.8rem;font-weight:700;color:var(--gold);font-family:'Crimson Pro',serif;">24/7</div>
+      <div style="font-size:0.75rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;">Available Free</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 CORE FEATURES -->
+<section style="padding:80px 40px;background:var(--maroon-deep);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:56px;">
+      <div class="section-label" style="color:var(--gold);">मुख्य सुविधाएं</div>
+      <h2 class="section-title">जो कोई नहीं करता — न्यायसहायक करता है</h2>
+      <p class="section-desc">Case की PDF डालें — तीन कार्य तत्काल</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px;">
+
+      <div style="background:rgba(200,151,58,0.05);border:1px solid rgba(200,151,58,0.2);border-radius:16px;padding:32px;border-top:3px solid var(--gold);">
+        <div style="font-size:2.4rem;margin-bottom:16px;">📋</div>
+        <h3 style="font-family:'Crimson Pro',serif;font-size:1.3rem;color:var(--gold);margin-bottom:12px;">संक्षिप्त इतिहास</h3>
+        <p style="color:var(--muted);font-size:0.9rem;line-height:1.7;">Case की PDF डालें — कालक्रमानुसार पूरा इतिहास तत्काल। दिनांक, घटना, वर्तमान स्थिति — सब एक जगह।</p>
+        <div style="margin-top:20px;padding:12px;background:rgba(200,151,58,0.08);border-radius:8px;font-size:0.78rem;color:var(--gold-light);font-family:'JetBrains Mono',monospace;">3 घंटे का काम → 3 मिनट</div>
+      </div>
+
+      <div style="background:rgba(200,151,58,0.05);border:1px solid rgba(200,151,58,0.2);border-radius:16px;padding:32px;border-top:3px solid var(--gold);">
+        <div style="font-size:2.4rem;margin-bottom:16px;">📝</div>
+        <h3 style="font-family:'Crimson Pro',serif;font-size:1.3rem;color:var(--gold);margin-bottom:12px;">पैरावार टिप्पणी</h3>
+        <p style="color:var(--muted);font-size:0.9rem;line-height:1.7;">याचिका के हर पैरे का क्रमवार उत्तर — शुद्ध सरकारी हिन्दी में। Rule number और Section reference सहित। Hallucination नहीं।</p>
+        <div style="margin-top:20px;padding:12px;background:rgba(200,151,58,0.08);border-radius:8px;font-size:0.78rem;color:var(--gold-light);font-family:'JetBrains Mono',monospace;">₹30-35K का काम → ₹0</div>
+      </div>
+
+      <div style="background:rgba(200,151,58,0.05);border:1px solid rgba(200,151,58,0.2);border-radius:16px;padding:32px;border-top:3px solid var(--gold);">
+        <div style="font-size:2.4rem;margin-bottom:16px;">💪</div>
+        <h3 style="font-family:'Crimson Pro',serif;font-size:1.3rem;color:var(--gold);margin-bottom:12px;">प्रभावी तर्क</h3>
+        <p style="color:var(--muted);font-size:0.9rem;line-height:1.7;">विभाग के पक्ष में मज़बूत कानूनी तर्क — 1,298 indexed sections से। कमज़ोर बिंदु भी इंगित करता है।</p>
+        <div style="margin-top:20px;padding:12px;background:rgba(200,151,58,0.08);border-radius:8px;font-size:0.78rem;color:var(--gold-light);font-family:'JetBrains Mono',monospace;">Skilled lawyer → AI powered</div>
+      </div>
+
+    </div>
+    <div style="text-align:center;margin-top:40px;">
+      <a href="Nyaysahayak_AI_v6.html" class="btn-primary">⚖️ अभी आज़माएं — PDF upload करें →</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- LIBRARY -->
+<section id="solution" style="padding:70px 40px;background:#f5f3ee;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:48px;">
+      <div style="font-size:0.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#b8860b;margin-bottom:12px;">DBS · न्यायसहायक</div>
+      <h2 style="font-size:2.2rem;font-weight:700;color:#1a2e4a;margin-bottom:16px;">ज्ञान पुस्तकालय</h2>
+      <p style="font-size:1rem;color:#6b6355;max-width:520px;margin:0 auto;line-height:1.7;">उत्तर प्रदेश शासन के प्रमुख नियम-संग्रहों का डिजिटल पुस्तकालय — पढ़ें, खोजें, समझें।</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;margin-bottom:36px;">
+      <a href="/fhb-reader.html" style="text-decoration:none;">
+        <div style="background:#fff;border:1px solid #ddd5c0;border-radius:14px;padding:24px;border-top:4px solid #1a4480;transition:all 0.2s;" onmouseover="this.style.boxShadow='0 8px 24px rgba(26,68,128,0.12)'" onmouseout="this.style.boxShadow='none'">
+          <div style="font-size:2rem;margin-bottom:12px;">📘</div>
+          <div style="font-size:0.95rem;font-weight:700;color:#1a4480;margin-bottom:6px;">वित्तीय हस्तपुस्तिका</div>
+          <div style="font-size:0.75rem;color:#6b6355;margin-bottom:8px;">92 अध्याय · 750+ पृष्ठ</div>
+          <div style="font-size:0.7rem;color:#1a4480;font-weight:600;">पढ़ें →</div>
+        </div>
+      </a>
+      <a href="/sad-reader.html" style="text-decoration:none;">
+        <div style="background:#fff;border:1px solid #ddd5c0;border-radius:14px;padding:24px;border-top:4px solid #1a4a2e;transition:all 0.2s;" onmouseover="this.style.boxShadow='0 8px 24px rgba(26,74,46,0.12)'" onmouseout="this.style.boxShadow='none'">
+          <div style="font-size:2rem;margin-bottom:12px;">🏛️</div>
+          <div style="font-size:0.95rem;font-weight:700;color:#1a4a2e;margin-bottom:6px;">सचिवालय मैनुअल</div>
+          <div style="font-size:0.75rem;color:#6b6355;margin-bottom:8px;">28 अध्याय · संस्करण 2004</div>
+          <div style="font-size:0.7rem;color:#1a4a2e;font-weight:600;">पढ़ें →</div>
+        </div>
+      </a>
+      <a href="/sv-reader.html" style="text-decoration:none;">
+        <div style="background:#fff;border:1px solid #ddd5c0;border-radius:14px;padding:24px;border-top:4px solid #7b1c1c;transition:all 0.2s;" onmouseover="this.style.boxShadow='0 8px 24px rgba(123,28,28,0.12)'" onmouseout="this.style.boxShadow='none'">
+          <div style="font-size:2rem;margin-bottom:12px;">⚖️</div>
+          <div style="font-size:0.95rem;font-weight:700;color:#7b1c1c;margin-bottom:6px;">सेवा विधि</div>
+          <div style="font-size:0.75rem;color:#6b6355;margin-bottom:8px;">46 अध्याय · नियुक्ति से पेंशन तक</div>
+          <div style="font-size:0.7rem;color:#7b1c1c;font-weight:600;">पढ़ें →</div>
+        </div>
+      </a>
+      <a href="/pm-reader.html" style="text-decoration:none;">
+        <div style="background:#fff;border:1px solid #ddd5c0;border-radius:14px;padding:24px;border-top:4px solid #0077b6;transition:all 0.2s;" onmouseover="this.style.boxShadow='0 8px 24px rgba(0,119,182,0.12)'" onmouseout="this.style.boxShadow='none'">
+          <div style="font-size:2rem;margin-bottom:12px;">📋</div>
+          <div style="font-size:0.95rem;font-weight:700;color:#0077b6;margin-bottom:6px;">क्रय नियमावली</div>
+          <div style="font-size:0.75rem;color:#6b6355;margin-bottom:8px;">49 अध्याय · 336 पृष्ठ</div>
+          <div style="font-size:0.7rem;color:#0077b6;font-weight:600;">पढ़ें →</div>
+        </div>
+      </a>
+    </div>
+    <div style="text-align:center;">
+      <a href="/library.html" style="display:inline-block;background:#1a2e4a;color:#fff;padding:14px 36px;border-radius:8px;text-decoration:none;font-size:0.9rem;font-weight:600;">सम्पूर्ण पुस्तकालय देखें →</a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS — tight 3 steps -->
+<section class="how" id="how">
+  <div class="how-inner">
+    <div class="section-label">प्रक्रिया</div>
+    <h2 class="section-title">तीन कदम — बस</h2>
+    <p class="section-desc">कोई training नहीं, कोई login नहीं।</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">१</div>
+        <div class="step-title">विभाग चुनें</div>
+        <div class="step-desc">अपना विभाग select करें — system prompt automatically set होगा।</div>
+      </div>
+      <div class="step">
+        <div class="step-num">२</div>
+        <div class="step-title">PDF डालें या प्रश्न पूछें</div>
+        <div class="step-desc">Case की PDF upload करें — या सीधे हिंदी में कोई भी विधिक प्रश्न टाइप करें।</div>
+      </div>
+      <div class="step">
+        <div class="step-num">३</div>
+        <div class="step-title">Court-ready उत्तर पाएं</div>
+        <div class="step-desc">Rule number, Section reference और सरकारी हिन्दी में — तत्काल।</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="departments" style="padding:70px 20px;background:#0a0308;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:48px;">
+      <div style="font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;color:rgba(160,80,255,0.6);margin-bottom:12px;">विभाग</div>
+      <h2 style="font-size:2rem;font-weight:700;color:#C080FF;margin-bottom:12px;">अपना विभाग चुनें</h2>
+      <p style="color:rgba(240,234,248,0.5);max-width:500px;margin:0 auto;">न्यायसहायक चरणबद्ध तरीके से UP के समस्त विभागों के लिए तैयार हो रहा है</p>
+    </div>
+
+    <!-- LIVE -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <div style="width:8px;height:8px;background:#00CC66;border-radius:50%;box-shadow:0 0 8px #00CC66;animation:pulse 2s ease infinite;"></div>
+      <span style="font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;color:#00CC66;font-weight:700;">Live — अभी उपलब्ध</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:40px;">
+      <a href="Nyaysahayak_AI_v6.html" style="text-decoration:none;">
+        <div style="background:rgba(0,204,102,0.06);border:1px solid rgba(0,204,102,0.25);border-radius:12px;padding:18px;transition:all 0.25s;position:relative;" onmouseover="this.style.background='rgba(0,204,102,0.14)';this.style.borderColor='rgba(0,204,102,0.5)'" onmouseout="this.style.background='rgba(0,204,102,0.06)';this.style.borderColor='rgba(0,204,102,0.25)'">
+          <div style="font-size:0.6rem;color:rgba(0,204,102,0.45);font-family:'JetBrains Mono',monospace;margin-bottom:8px;">01</div>
+          <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:4px;">सैनिक स्कूल लखनऊ</div>
+          <div style="font-size:0.68rem;color:rgba(0,204,102,0.6);">📍 लखनऊ · UP Govt</div>
+        </div>
+      </a>
+      <a href="Nyaysahayak_AI_v6.html" style="text-decoration:none;">
+        <div style="background:rgba(0,204,102,0.06);border:1px solid rgba(0,204,102,0.25);border-radius:12px;padding:18px;transition:all 0.25s;" onmouseover="this.style.background='rgba(0,204,102,0.14)';this.style.borderColor='rgba(0,204,102,0.5)'" onmouseout="this.style.background='rgba(0,204,102,0.06)';this.style.borderColor='rgba(0,204,102,0.25)'">
+          <div style="font-size:0.6rem;color:rgba(0,204,102,0.45);font-family:'JetBrains Mono',monospace;margin-bottom:8px;">02</div>
+          <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:4px;">सैनिक स्कूल गोरखपुर</div>
+          <div style="font-size:0.68rem;color:rgba(0,204,102,0.6);">📍 गोरखपुर · UP Govt</div>
+        </div>
+      </a>
+      <a href="Nyaysahayak_AI_v6.html" style="text-decoration:none;">
+        <div style="background:rgba(0,204,102,0.06);border:1px solid rgba(0,204,102,0.25);border-radius:12px;padding:18px;transition:all 0.25s;" onmouseover="this.style.background='rgba(0,204,102,0.14)';this.style.borderColor='rgba(0,204,102,0.5)'" onmouseout="this.style.background='rgba(0,204,102,0.06)';this.style.borderColor='rgba(0,204,102,0.25)'">
+          <div style="font-size:0.6rem;color:rgba(0,204,102,0.45);font-family:'JetBrains Mono',monospace;margin-bottom:8px;">03</div>
+          <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:4px;">सैनिक स्कूल (MoD)</div>
+          <div style="font-size:0.68rem;color:rgba(0,204,102,0.6);">📍 मैनपुरी · झाँसी · अमेठी</div>
+        </div>
+      </a>
+      <a href="Nyaysahayak_AI_v6.html" style="text-decoration:none;">
+        <div style="background:rgba(0,204,102,0.06);border:1px solid rgba(0,204,102,0.25);border-radius:12px;padding:18px;transition:all 0.25s;" onmouseover="this.style.background='rgba(0,204,102,0.14)';this.style.borderColor='rgba(0,204,102,0.5)'" onmouseout="this.style.background='rgba(0,204,102,0.06)';this.style.borderColor='rgba(0,204,102,0.25)'">
+          <div style="font-size:0.6rem;color:rgba(0,204,102,0.45);font-family:'JetBrains Mono',monospace;margin-bottom:8px;">04</div>
+          <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:4px;">माध्यमिक शिक्षा</div>
+          <div style="font-size:0.68rem;color:rgba(0,204,102,0.6);">📍 उत्तर प्रदेश · राज्यव्यापी</div>
+        </div>
+      </a>
+      <a href="Nyaysahayak_AI_v6.html" style="text-decoration:none;">
+        <div style="background:rgba(0,204,102,0.06);border:1px solid rgba(0,204,102,0.25);border-radius:12px;padding:18px;transition:all 0.25s;" onmouseover="this.style.background='rgba(0,204,102,0.14)';this.style.borderColor='rgba(0,204,102,0.5)'" onmouseout="this.style.background='rgba(0,204,102,0.06)';this.style.borderColor='rgba(0,204,102,0.25)'">
+          <div style="font-size:0.6rem;color:rgba(0,204,102,0.45);font-family:'JetBrains Mono',monospace;margin-bottom:8px;">05</div>
+          <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:4px;">बेसिक शिक्षा</div>
+          <div style="font-size:0.68rem;color:rgba(0,204,102,0.6);">📍 उत्तर प्रदेश · राज्यव्यापी</div>
+        </div>
+      </a>
+      <a href="Nyaysahayak_AI_v6.html" style="text-decoration:none;">
+        <div style="background:rgba(0,204,102,0.06);border:1px solid rgba(0,204,102,0.25);border-radius:12px;padding:18px;transition:all 0.25s;" onmouseover="this.style.background='rgba(0,204,102,0.14)';this.style.borderColor='rgba(0,204,102,0.5)'" onmouseout="this.style.background='rgba(0,204,102,0.06)';this.style.borderColor='rgba(0,204,102,0.25)'">
+          <div style="font-size:0.6rem;color:rgba(0,204,102,0.45);font-family:'JetBrains Mono',monospace;margin-bottom:8px;">06</div>
+          <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:4px;">PUVVNL</div>
+          <div style="font-size:0.68rem;color:rgba(0,204,102,0.6);">📍 पूर्वांचल · विद्युत विभाग</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- COMING SOON -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <div style="width:8px;height:8px;background:rgba(160,80,255,0.35);border-radius:50%;"></div>
+      <span style="font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;color:rgba(160,80,255,0.45);font-weight:700;">शीघ्र आ रहे हैं</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+      <span style="padding:7px 14px;background:rgba(160,80,255,0.04);border:1px solid rgba(160,80,255,0.1);border-radius:20px;font-size:0.78rem;color:rgba(240,234,248,0.25);">07 · राजस्व विभाग</span>
+      <span style="padding:7px 14px;background:rgba(160,80,255,0.04);border:1px solid rgba(160,80,255,0.1);border-radius:20px;font-size:0.78rem;color:rgba(240,234,248,0.25);">08 · लोक निर्माण विभाग</span>
+      <span style="padding:7px 14px;background:rgba(160,80,255,0.04);border:1px solid rgba(160,80,255,0.1);border-radius:20px;font-size:0.78rem;color:rgba(240,234,248,0.25);">09 · स्वास्थ्य विभाग</span>
+      <span style="padding:7px 14px;background:rgba(160,80,255,0.04);border:1px solid rgba(160,80,255,0.1);border-radius:20px;font-size:0.78rem;color:rgba(240,234,248,0.25);">10 · कृषि विभाग</span>
+      <span style="padding:7px 14px;background:rgba(160,80,255,0.04);border:1px solid rgba(160,80,255,0.1);border-radius:20px;font-size:0.78rem;color:rgba(240,234,248,0.25);">11 · नगर विकास</span>
+      <span style="padding:7px 14px;background:rgba(160,80,255,0.04);border:1px solid rgba(160,80,255,0.1);border-radius:20px;font-size:0.78rem;color:rgba(240,234,248,0.25);">12 · गृह विभाग / SNP</span>
+      <span style="padding:7px 14px;background:rgba(160,80,255,0.04);border:1px solid rgba(160,80,255,0.1);border-radius:20px;font-size:0.78rem;color:rgba(240,234,248,0.25);">13 · वन विभाग</span>
+      <span style="padding:7px 14px;background:rgba(160,80,255,0.04);border:1px solid rgba(160,80,255,0.1);border-radius:20px;font-size:0.78rem;color:rgba(240,234,248,0.25);">14 · ऊर्जा विभाग</span>
+      <span style="padding:7px 14px;background:rgba(160,80,255,0.04);border:1px solid rgba(160,80,255,0.1);border-radius:20px;font-size:0.78rem;color:rgba(240,234,248,0.25);">15 · समाज कल्याण</span>
+      <span style="padding:7px 14px;background:rgba(160,80,255,0.04);border:1px solid rgba(160,80,255,0.1);border-radius:20px;font-size:0.78rem;color:rgba(240,234,248,0.2);">+ UP के समस्त विभाग</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <div class="cta-inner">
+    <div class="section-label" style="color:rgba(200,151,58,0.6)">संपर्क</div>
+    <h2 class="cta-title">अपने विभाग के लिए Demo बुक करें</h2>
+    <p class="cta-desc">Institutional subscription, custom knowledge base और department-specific training के लिए Dhriti Business Solutions से संपर्क करें।</p>
+    <a href="https://dhritisolutions.in" target="_blank" class="btn-primary" style="margin-bottom:32px;display:inline-flex">
+      🏢 DBS से संपर्क करें →
+    </a>
+    <div class="cta-contact">
+      <div class="contact-item">📍 Lucknow, Uttar Pradesh</div>
+      <div class="contact-item">🌐 dhritisolutions.in</div>
+      <div class="contact-item">🏛️ DPIIT Recognised Startup</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<section id="support" style="
+  padding: 60px 20px;
+  background: linear-gradient(160deg, #F4EFFF 0%, #EEF2FF 100%);
+  text-align: center;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+">
+  <div style="max-width: 960px; margin: 0 auto;">
+
+    <!-- Heading -->
+    <p style="font-size:13px;font-weight:800;color:#FF9800;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">
+      योजनाएं
+    </p>
+    <h2 style="font-size:34px;font-weight:900;color:#5B2D8E;margin-bottom:12px;">
+      अपना plan चुनें
+    </h2>
+    <p style="font-size:16px;color:#8B7AAA;max-width:540px;margin:0 auto 52px;line-height:1.6;">
+      UP का पहला AI-powered legal document tool —
+      व्यक्तिगत उपयोग के लिए सदा निःशुल्क।
+    </p>
+
+    <!-- Cards -->
+    <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-bottom:48px;">
+
+      <!-- Free -->
+      <div style="
+        background:#fff;border-radius:20px;padding:36px 28px;width:270px;
+        box-shadow:0 4px 24px rgba(91,45,142,.09);border:2px solid #E8DEFF;
+        text-align:left;
+      ">
+        <p style="font-size:12px;font-weight:800;color:#8B7AAA;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;">व्यक्तिगत</p>
+        <p style="font-size:44px;font-weight:900;color:#5B2D8E;margin-bottom:4px;">₹0</p>
+        <p style="font-size:13px;color:#8B7AAA;margin-bottom:28px;">सदा के लिए निःशुल्क</p>
+        <ul style="list-style:none;padding:0;font-size:14px;color:#2D1854;line-height:2.2;">
+          <li>✅ PUVVNL DOCX Generator</li>
+          <li>✅ सभी 9 विभाग</li>
+          <li>✅ Railway AI (1,298 entries)</li>
+          <li>✅ PDF विश्लेषण</li>
+        </ul>
+        <a href="Nyaysahayak_AI_v6.html" style="
+          display:block;margin-top:28px;padding:13px;
+          background:#F4EFFF;color:#5B2D8E;border-radius:10px;
+          font-size:14px;font-weight:800;text-align:center;
+          text-decoration:none;
+        ">अभी उपयोग करें →</a>
+      </div>
+
+      <!-- Founding Member — HIGHLIGHTED -->
+      <div style="
+        background:linear-gradient(160deg,#4A2080,#6B3DA8);
+        border-radius:20px;padding:36px 28px;width:270px;
+        box-shadow:0 12px 40px rgba(91,45,142,.4);
+        text-align:left;position:relative;
+      ">
+        <div style="
+          position:absolute;top:-15px;left:50%;transform:translateX(-50%);
+          background:#FF9800;color:#fff;font-size:11px;font-weight:900;
+          padding:5px 18px;border-radius:20px;letter-spacing:1px;white-space:nowrap;
+        ">💛 स्वैच्छिक सपोर्ट — आपकी इच्छा</div>
+
+        <p style="font-size:12px;font-weight:800;color:rgba(255,255,255,.6);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;">Founding Member</p>
+        <p style="font-size:44px;font-weight:900;color:#fff;margin-bottom:4px;">₹99</p>
+        <p style="font-size:13px;color:rgba(255,255,255,.65);margin-bottom:28px;">स्वैच्छिक • देना या न देना — आपकी मर्ज़ी</p>
+        <ul style="list-style:none;padding:0;font-size:14px;color:#fff;line-height:2.2;">
+          <li>✅ सब कुछ Free जैसा</li>
+          <li>✅ नए features — सबसे पहले</li>
+          <li>✅ स्टार्टअप को आगे बढ़ाने में योगदान</li>
+          <li>✅ Priority response</li>
+          <li>✅ नए विभाग — सबसे पहले उपलब्ध</li>
+        </ul>
+        <!-- QR Code Payment -->
+        <div style="text-align:center;margin-top:24px;">
+          <img src="QrCode.jpeg" alt="UPI QR ₹99" style="width:160px;height:160px;border-radius:10px;border:2px solid rgba(255,255,255,.3);">
+          <div style="margin-top:10px;font-size:12px;color:rgba(255,255,255,.8);line-height:1.5;">
+            📱 Scan करें — GPay / PhonePe / Paytm<br>
+            <strong style="color:#FFD54F;">₹99/माह — कभी भी बंद करें</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enterprise -->
+      <div style="
+        background:#fff;border-radius:20px;padding:36px 28px;width:270px;
+        box-shadow:0 4px 24px rgba(91,45,142,.09);border:2px solid #E8DEFF;
+        text-align:left;
+      ">
+        <p style="font-size:12px;font-weight:800;color:#8B7AAA;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;">Enterprise</p>
+        <p style="font-size:30px;font-weight:900;color:#5B2D8E;margin-bottom:4px;">कस्टम</p>
+        <p style="font-size:13px;color:#8B7AAA;margin-bottom:28px;">विभाग की आवश्यकता अनुसार</p>
+        <ul style="list-style:none;padding:0;font-size:14px;color:#2D1854;line-height:2.2;">
+          <li>✅ Dedicated bot deployment</li>
+          <li>✅ Custom knowledge base</li>
+          <li>✅ Onsite training</li>
+          <li>✅ SLA + support</li>
+        </ul>
+        <!-- REPLACE XXXXXXXXXX WITH WHATSAPP NUMBER -->
+        <a href="https://wa.me/91XXXXXXXXXX?text=न्यायसहायक Enterprise deployment के बारे में जानकारी चाहिए" 
+           target="_blank" style="
+          display:block;margin-top:28px;padding:13px;
+          background:#5B2D8E;color:#fff;border-radius:10px;
+          font-size:14px;font-weight:800;text-align:center;
+          text-decoration:none;
+        ">संपर्क करें →</a>
+      </div>
+
+    </div>
+
+    <!-- Trust line -->
+    <p style="font-size:12px;color:#AAA;">
+      🔒 Razorpay secured &nbsp;·&nbsp; GST Invoice available &nbsp;·&nbsp; DPIIT recognised startup &nbsp;·&nbsp; CIN: U73100UP2025PTC227301
+    </p>
+
+  </div>
+</section>
+
+<footer>
+  <div>
+    <div class="footer-brand">⚖️ न्यायसहायक</div>
+    <div class="footer-sub">Legal AI • UP Government</div>
+  </div>
+  <div class="footer-right">
+    <div>A <a href="https://dhritisolutions.in" target="_blank">Dhriti Business Solutions</a> Initiative</div>
+    <div style="margin-top:4px;color:rgba(255,255,255,0.2)">DPIIT Recognised • Lucknow, UP</div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PUVVNL दस्तावेज़ निर्माता — न्यायसहायक</title>
+<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --primary:#5B2D8E;
+  --primary-dark:#3D1D63;
+  --primary-light:#7B4DB2;
+  --accent:#FF9800;
+  --bg:#F4EFFF;
+  --card:#FFFFFF;
+  --text:#2D1854;
+  --muted:#8B7AAA;
+  --border:#D4C5F0;
+  --success:#2E7D32;
+  --success-bg:#EDF7ED;
+  --error:#C62828;
+  --error-bg:#FFEBEE;
+}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:linear-gradient(160deg,#EDE7FF 0%,#EEF2FF 60%,#F0F4FF 100%);
+  min-height:100vh;
+  color:var(--text);
+  padding:20px 16px 40px;
+}
+.wrap{max-width:760px;margin:0 auto;}
+
+/* Header */
+.hdr{text-align:center;padding:28px 0 22px;}
+.hdr-brand{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;}
+.hdr-title{font-size:26px;font-weight:800;color:var(--primary);margin-bottom:6px;}
+.hdr-sub{font-size:14px;color:var(--muted);}
+
+/* Step bar */
+.steps{display:flex;gap:6px;margin-bottom:20px;}
+.step{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:10px 8px;border-radius:10px;font-size:12px;font-weight:700;
+  transition:all .3s;
+}
+.step .num{
+  width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;flex-shrink:0;
+}
+.step.active{background:var(--primary);color:#fff;}
+.step.active .num{background:rgba(255,255,255,.25);}
+.step.done{background:var(--success-bg);color:var(--success);}
+.step.done .num{background:rgba(46,125,50,.15);}
+.step.idle{background:rgba(91,45,142,.07);color:var(--muted);}
+.step.idle .num{background:rgba(91,45,142,.1);}
+
+/* Cards */
+.card{
+  background:var(--card);border-radius:18px;padding:26px 24px;
+  margin-bottom:18px;box-shadow:0 4px 24px rgba(91,45,142,.09);
+  border:1px solid rgba(91,45,142,.1);
+}
+.card-tag{font-size:11px;font-weight:800;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.card-title{font-size:20px;font-weight:700;color:var(--primary);margin-bottom:18px;}
+
+/* Form */
+.fg{margin-bottom:14px;}
+label{display:block;font-size:12px;font-weight:700;color:var(--primary);margin-bottom:5px;letter-spacing:.3px;}
+select,input[type=text]{
+  width:100%;padding:10px 13px;
+  border:1.5px solid var(--border);border-radius:9px;
+  font-size:14px;color:var(--text);background:#FDFAFF;
+  outline:none;transition:border-color .2s;
+  font-family:inherit;
+}
+select:focus,input[type=text]:focus{border-color:var(--primary);}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:520px){.row{grid-template-columns:1fr;}}
+
+/* Upload zone */
+.zone{
+  border:2px dashed var(--border);border-radius:12px;padding:32px 16px;
+  text-align:center;cursor:pointer;background:#FAFAFF;
+  transition:all .2s;margin-bottom:0;
+}
+.zone:hover,.zone.over{border-color:var(--primary);background:#F0E8FF;}
+.zone-ico{font-size:36px;margin-bottom:10px;}
+.zone-txt{font-size:15px;font-weight:700;color:var(--primary);margin-bottom:4px;}
+.zone-hint{font-size:12px;color:var(--muted);}
+#fileInput{display:none;}
+.file-ok{
+  margin-top:10px;padding:9px 14px;background:var(--success-bg);
+  border-radius:8px;font-size:13px;color:var(--success);display:none;
+}
+
+/* Buttons */
+.btn{
+  width:100%;padding:14px;border:none;border-radius:12px;
+  font-size:15px;font-weight:800;cursor:pointer;
+  transition:opacity .2s,transform .1s;letter-spacing:.3px;
+  font-family:inherit;
+}
+.btn:active{transform:scale(.99);}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;}
+.btn-primary:hover:not(:disabled){opacity:.9;}
+.btn-down{background:linear-gradient(135deg,#E65100,#FF9800);color:#fff;}
+.btn-down:hover:not(:disabled){opacity:.9;}
+.btn-reset{background:linear-gradient(135deg,#546E7A,#78909C);color:#fff;}
+
+/* Error */
+.err{
+  background:var(--error-bg);border:1px solid #FFCDD2;border-radius:9px;
+  padding:12px 14px;font-size:13px;color:var(--error);display:none;margin-top:12px;
+  line-height:1.5;
+}
+
+/* Progress */
+.prog-wrap{background:#F0E8FF;border-radius:10px;padding:18px;}
+.prog-track{background:var(--border);border-radius:8px;height:8px;overflow:hidden;margin:10px 0;}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:8px;transition:width .4s;}
+.prog-msg{font-size:13px;color:var(--primary);text-align:center;font-weight:600;}
+
+/* Preview */
+.prev-sec{
+  margin-bottom:18px;padding:16px;background:#FAFAFF;
+  border-radius:11px;border-left:4px solid var(--primary);
+}
+.prev-sec-ttl{font-size:12px;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.prev-content{font-size:13px;color:var(--text);line-height:1.75;white-space:pre-wrap;max-height:160px;overflow-y:auto;}
+
+/* Footer */
+.foot{text-align:center;padding:20px 0 4px;font-size:11px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- Header -->
+<div class="hdr">
+  <div class="hdr-brand">DBS · न्यायसहायक</div>
+  <div class="hdr-title">⚖️ PUVVNL Case Document Generator</div>
+  <div class="hdr-sub">PDF याचिका अपलोड करें → AI विश्लेषण → DOCX डाउनलोड करें</div>
+</div>
+
+<!-- Steps -->
+<div class="steps">
+  <div class="step active" id="s1"><span class="num">1</span><span class="lbl">अपलोड</span></div>
+  <div class="step idle"   id="s2"><span class="num">2</span><span class="lbl">विश्लेषण</span></div>
+  <div class="step idle"   id="s3"><span class="num">3</span><span class="lbl">डाउनलोड</span></div>
+</div>
+
+<!-- CARD 1: Upload -->
+<div class="card" id="cUpload">
+  <div class="card-tag">Step 1 of 3</div>
+  <div class="card-title">📋 केस विवरण एवं PDF</div>
+
+  <div class="row">
+    <div class="fg">
+      <label>वाद संख्या</label>
+      <input type="text" id="caseNo" placeholder="जैसे: WP No. 1234/2024" />
+    </div>
+    <div class="fg">
+      <label>याचिका का प्रकार</label>
+      <select id="petType">
+        <option>रिट याचिका (Writ Petition)</option>
+        <option>विशेष अपील (Special Appeal)</option>
+        <option>सिविल मिसल (Civil Misc.)</option>
+        <option>उपभोक्ता परिवाद</option>
+        <option>UPERC परिवाद</option>
+        <option>अवमानना याचिका</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="fg">
+      <label>न्यायालय</label>
+      <select id="court">
+        <option>इलाहाबाद उच्च न्यायालय</option>
+        <option>सर्वोच्च न्यायालय</option>
+        <option>राज्य उपभोक्ता फोरम, UP</option>
+        <option>जिला उपभोक्ता फोरम</option>
+        <option>UPERC, Lucknow</option>
+        <option>अन्य</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>अगली सुनवाई तिथि</label>
+      <input type="text" id="nextDate" placeholder="जैसे: 25/05/2025" />
+    </div>
+  </div>
+
+  <div class="fg">
+    <label>याचिका PDF यहाँ अपलोड करें</label>
+    <div class="zone" id="zone">
+      <div class="zone-ico">📂</div>
+      <div class="zone-txt">क्लिक करें या PDF खींचकर छोड़ें</div>
+      <div class="zone-hint">केवल .pdf फाइल • अधिकतम 15MB</div>
+    </div>
+    <div class="file-ok" id="fileOk">✅ <span id="fname"></span></div>
+    <input type="file" id="fileInput" accept=".pdf" />
+  </div>
+
+  <button class="btn btn-primary" id="genBtn" onclick="generate()" disabled>
+    🚀 &nbsp;दस्तावेज़ तैयार करें
+  </button>
+  <div class="err" id="errBox"></div>
+</div>
+
+<!-- CARD 2: Progress -->
+<div class="card" id="cProg" style="display:none">
+  <div class="card-tag">Step 2 of 3</div>
+  <div class="card-title">🤖 AI विश्लेषण जारी है…</div>
+  <div class="prog-wrap">
+    <div class="prog-track"><div class="prog-bar" id="progBar" style="width:0%"></div></div>
+    <div class="prog-msg" id="progMsg">PDF पढ़ी जा रही है…</div>
+  </div>
+</div>
+
+<!-- CARD 3: Result -->
+<div class="card" id="cResult" style="display:none">
+  <div class="card-tag">Step 3 of 3 — ✅ तैयार!</div>
+  <div class="card-title">📄 दस्तावेज़ पूर्ण</div>
+
+  <div class="prev-sec">
+    <div class="prev-sec-ttl">📋 भाग–1 : संक्षिप्त वाद इतिहास</div>
+    <div class="prev-content" id="pHist">—</div>
+  </div>
+  <div class="prev-sec">
+    <div class="prev-sec-ttl">📝 भाग–2 : परावार टिप्पणी</div>
+    <div class="prev-content" id="pPara">—</div>
+  </div>
+  <div class="prev-sec">
+    <div class="prev-sec-ttl">💪 भाग–3 : विभाग के सशक्त बिंदु</div>
+    <div class="prev-content" id="pStrong">—</div>
+  </div>
+
+  <br>
+  <button class="btn btn-down" onclick="downloadDocx()">⬇️ &nbsp;DOCX डाउनलोड करें</button>
+  <br><br>
+  <button class="btn btn-reset" onclick="reset()">🔄 &nbsp;नया केस</button>
+</div>
+
+<div class="foot">DBS · न्यायसहायक &nbsp;|&nbsp; Dhriti Business Solutions Pvt. Ltd., Lucknow</div>
+</div>
+
+<!-- ============================================================
+     CONFIG — यहाँ अपना API endpoint डालें
+     Netlify deploy के लिए: /.netlify/functions/ai (default)
+     Railway के लिए: https://YOUR-APP.up.railway.app/api/chat
+     ============================================================ -->
+<script>
+const API_URL = '/.netlify/functions/ai';
+const MODEL   = 'claude-haiku-4-5-20251001'; // Haiku = fast + cheap
+
+let pdfFile = null;
+let result  = { hist:'', para:'', strong:'' };
+
+// ── Upload zone ──────────────────────────────────────────────
+const zone = document.getElementById('zone');
+const fi   = document.getElementById('fileInput');
+
+zone.onclick = () => fi.click();
+zone.ondragover = e => { e.preventDefault(); zone.classList.add('over'); };
+zone.ondragleave = () => zone.classList.remove('over');
+zone.ondrop = e => {
+  e.preventDefault(); zone.classList.remove('over');
+  const f = e.dataTransfer.files[0];
+  if (f) setFile(f); else err('केवल PDF फाइल यहाँ छोड़ें।');
+};
+fi.onchange = e => { if (e.target.files[0]) setFile(e.target.files[0]); };
+
+function setFile(f) {
+  if (!f.name.endsWith('.pdf')) return err('केवल PDF फाइल चुनें।');
+  if (f.size > 15*1024*1024) return err('फाइल 15MB से बड़ी है।');
+  pdfFile = f;
+  document.getElementById('fname').textContent = f.name + ' (' + (f.size/1024).toFixed(0) + ' KB)';
+  document.getElementById('fileOk').style.display = 'block';
+  document.getElementById('genBtn').disabled = false;
+  clearErr();
+}
+
+// ── Main generation ──────────────────────────────────────────
+async function generate() {
+  if (!pdfFile) return err('PDF फाइल अपलोड करें।');
+
+  const caseNo  = document.getElementById('caseNo').value  || 'अज्ञात वाद';
+  const petType = document.getElementById('petType').value;
+  const court   = document.getElementById('court').value;
+  const nextDate= document.getElementById('nextDate').value || 'अज्ञात';
+
+  show('cUpload', false); show('cProg', true);
+  setStep(2);
+
+  try {
+    prog(10, 'PDF फाइल पढ़ी जा रही है…');
+    const b64 = await toBase64(pdfFile);
+
+    prog(30, 'AI को भेजा जा रहा है…');
+    const raw = await callAPI(b64, { caseNo, petType, court, nextDate });
+
+    prog(85, 'दस्तावेज़ बनाया जा रहा है…');
+    result = parse(raw);
+
+    prog(100, 'पूर्ण!');
+    await delay(400);
+
+    show('cProg', false); show('cResult', true);
+    setStep(3);
+    document.getElementById('pHist').textContent   = result.hist;
+    document.getElementById('pPara').textContent   = result.para;
+    document.getElementById('pStrong').textContent = result.strong;
+
+  } catch(e) {
+    show('cProg', false); show('cUpload', true);
+    setStep(1);
+    err('⚠️ त्रुटि: ' + e.message);
+  }
+}
+
+// ── API call ─────────────────────────────────────────────────
+async function callAPI(b64, meta) {
+  const system = `आप पूर्वांचल विद्युत वितरण निगम लिमिटेड (PUVVNL) के वरिष्ठ अधिवक्ता हैं।
+प्रदान की गई न्यायालय याचिका का विश्लेषण करके सरकारी हिंदी में तीन भाग तैयार करें।
+
+केस विवरण:
+- वाद संख्या: ${meta.caseNo}
+- याचिका प्रकार: ${meta.petType}
+- न्यायालय: ${meta.court}
+- अगली सुनवाई: ${meta.nextDate}
+
+आउटपुट बिल्कुल निम्न प्रारूप में दें (tag हटाएं नहीं):
+
+[HIST_START]
+वाद का संक्षिप्त इतिहास — पक्षकार, याचिका की तिथि, मुख्य तथ्य, महत्वपूर्ण आदेश, वर्तमान स्थिति (150-200 शब्द, शुद्ध सरकारी हिंदी)
+[HIST_END]
+
+[PARA_START]
+प्रत्येक अनुच्छेद का क्रमबद्ध उत्तर। प्रारूप: "अनुच्छेद 1 —" से शुरू करें, अनुच्छेद 2, 3... क्रमशः। कोई अनुच्छेद न छोड़ें। प्रत्येक उत्तर के बाद एक रिक्त पंक्ति।
+[PARA_END]
+
+[STRONG_START]
+विभाग के पक्ष में 6-8 सशक्त विधिक बिंदु, क्रमांकित (1. 2. 3...) — संक्षिप्त एवं स्पष्ट
+[STRONG_END]`;
+
+  const body = {
+    model: MODEL,
+    max_tokens: 3000,
+    system: system,
+    messages: [{
+      role: 'user',
+      content: [
+        { type:'document', source:{ type:'base64', media_type:'application/pdf', data:b64 } },
+        { type:'text', text:'उपर्युक्त याचिका का निर्धारित प्रारूप में विश्लेषण करें।' }
+      ]
+    }]
+  };
+
+  const resp = await fetch(API_URL, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+
+  if (!resp.ok) {
+    const t = await resp.text();
+    throw new Error(`API Error ${resp.status} — ${t.slice(0,120)}`);
+  }
+
+  const data = await resp.json();
+
+  // Handle multiple proxy response shapes
+  if (data.content && Array.isArray(data.content))
+    return data.content.filter(b=>b.type==='text').map(b=>b.text).join('\n');
+  if (data.content && typeof data.content === 'string') return data.content;
+  if (data.reply) return data.reply;
+  if (data.message) return data.message;
+  if (data.text) return data.text;
+  throw new Error('API response format पहचाना नहीं गया।');
+}
+
+// ── Parse tagged response ────────────────────────────────────
+function parse(txt) {
+  const ex = (tag, fb) => {
+    const m = txt.match(new RegExp(`\\[${tag}_START\\]([\\s\\S]*?)\\[${tag}_END\\]`));
+    return m ? m[1].trim() : (fb || txt.trim());
+  };
+  return {
+    hist:   ex('HIST',   'इतिहास उपलब्ध नहीं।'),
+    para:   ex('PARA',   'परावार टिप्पणी उपलब्ध नहीं।'),
+    strong: ex('STRONG', 'सशक्त बिंदु उपलब्ध नहीं।')
+  };
+}
+
+// ── DOCX generation (browser-based) ─────────────────────────
+async function downloadDocx() {
+  const btn = document.querySelector('.btn-down');
+  btn.textContent = '⏳ DOCX बन रही है…'; btn.disabled = true;
+
+  try {
+    const {
+      Document, Packer, Paragraph, TextRun,
+      AlignmentType, BorderStyle, LevelFormat
+    } = docx;
+
+    const caseNo = document.getElementById('caseNo').value || 'Case';
+    const court  = document.getElementById('court').value;
+    const today  = new Date().toLocaleDateString('hi-IN');
+
+    // Helper: section heading paragraph
+    const heading = txt => new Paragraph({
+      spacing:{ before:280, after:120 },
+      border:{ bottom:{ style:BorderStyle.SINGLE, size:4, color:'5B2D8E', space:4 } },
+      children:[new TextRun({ text:txt, bold:true, size:28, color:'5B2D8E', font:{ name:'Mangal', cs:'Mangal' } })]
+    });
+
+    // Helper: normal paragraph (split by newline already done outside)
+    const para = (txt, bold=false) => new Paragraph({
+      spacing:{ after:100 },
+      children:[new TextRun({ text:txt, size:22, bold,
+        font:{ name:'Mangal', cs:'Mangal' } })]
+    });
+
+    const space = () => new Paragraph({ children:[new TextRun({ text:'' })] });
+
+    // Convert content strings → paragraph arrays
+    const contentParas = str => str.split('\n').map(l => {
+      const isHead = /^अनुच्छेद\s*\d+\s*[—\-–]/.test(l);
+      return para(l.trim() || ' ', isHead);
+    });
+
+    const doc = new Document({
+      numbering:{
+        config:[{
+          reference:'nums',
+          levels:[{
+            level:0, format:LevelFormat.DECIMAL, text:'%1.',
+            alignment:AlignmentType.LEFT,
+            style:{ paragraph:{ indent:{ left:720, hanging:360 } } }
+          }]
+        }]
+      },
+      styles:{
+        default:{ document:{ run:{ font:'Mangal', size:22 } } }
+      },
+      sections:[{
+        properties:{
+          page:{
+            size:{ width:11906, height:16838 },
+            margin:{ top:1080, right:1000, bottom:1080, left:1440 }
+          }
+        },
+        children:[
+
+          // ── Title block ──────────────────────────────────
+          new Paragraph({
+            alignment:AlignmentType.CENTER, spacing:{ after:60 },
+            children:[new TextRun({ text:'DBS · न्यायसहायक', bold:true, size:18, color:'5B2D8E', font:{ name:'Mangal', cs:'Mangal' } })]
+          }),
+          new Paragraph({
+            alignment:AlignmentType.CENTER, spacing:{ after:60 },
+            border:{ bottom:{ style:BorderStyle.SINGLE, size:8, color:'5B2D8E', space:4 } },
+            children:[new TextRun({ text:'पूर्वांचल विद्युत वितरण निगम लिमिटेड (PUVVNL)', bold:true, size:30, font:{ name:'Mangal', cs:'Mangal' } })]
+          }),
+          space(),
+          new Paragraph({
+            alignment:AlignmentType.CENTER, spacing:{ after:40 },
+            children:[new TextRun({ text:`वाद संख्या: ${caseNo}  |  न्यायालय: ${court}`, size:22, font:{ name:'Mangal', cs:'Mangal' } })]
+          }),
+          new Paragraph({
+            alignment:AlignmentType.CENTER, spacing:{ after:40 },
+            children:[new TextRun({ text:`अगली सुनवाई: ${document.getElementById('nextDate').value || '—'}  |  तैयारी तिथि: ${today}`, size:20, italics:true, color:'666666', font:{ name:'Mangal', cs:'Mangal' } })]
+          }),
+          space(),
+
+          // ── भाग 1 ───────────────────────────────────────
+          heading('भाग–1 : संक्षिप्त वाद इतिहास'),
+          space(),
+          ...contentParas(result.hist),
+          space(),
+
+          // ── भाग 2 ───────────────────────────────────────
+          heading('भाग–2 : परावार टिप्पणी (Parawise Comments)'),
+          space(),
+          ...contentParas(result.para),
+          space(),
+
+          // ── भाग 3 ───────────────────────────────────────
+          heading('भाग–3 : विभाग के सशक्त विधिक बिंदु'),
+          space(),
+          ...result.strong.split('\n').filter(l=>l.trim()).map(line =>
+            new Paragraph({
+              numbering:{ reference:'nums', level:0 },
+              spacing:{ after:100 },
+              children:[new TextRun({ text:line.replace(/^\d+\.\s*/,''), size:22, font:{ name:'Mangal', cs:'Mangal' } })]
+            })
+          ),
+          space(),
+
+          // ── Footer ──────────────────────────────────────
+          new Paragraph({
+            alignment:AlignmentType.CENTER,
+            border:{ top:{ style:BorderStyle.SINGLE, size:4, color:'D4C5F0', space:4 } },
+            spacing:{ before:200 },
+            children:[new TextRun({ text:'तैयार किया: DBS · न्यायसहायक  |  Dhriti Business Solutions Pvt. Ltd., Lucknow', size:16, italics:true, color:'999999', font:{ name:'Mangal', cs:'Mangal' } })]
+          })
+
+        ]
+      }]
+    });
+
+    const blob = await Packer.toBlob(doc);
+    const url  = URL.createObjectURL(blob);
+    const a    = Object.assign(document.createElement('a'), {
+      href:url,
+      download:`PUVVNL_${caseNo.replace(/[^a-zA-Z0-9]/g,'_')}_${new Date().toISOString().slice(0,10)}.docx`
+    });
+    a.click();
+    URL.revokeObjectURL(url);
+
+    btn.textContent = '✅ डाउनलोड हो गया!'; btn.disabled = false;
+
+  } catch(e) {
+    btn.textContent = '⬇️ DOCX डाउनलोड करें'; btn.disabled = false;
+    err('DOCX बनाने में समस्या: ' + e.message);
+  }
+}
+
+// ── Utils ─────────────────────────────────────────────────────
+function toBase64(f) {
+  return new Promise((ok,no) => {
+    const r = new FileReader();
+    r.onload = () => ok(r.result.split(',')[1]);
+    r.onerror = () => no(new Error('PDF पढ़ने में समस्या'));
+    r.readAsDataURL(f);
+  });
+}
+function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+function show(id, v){ document.getElementById(id).style.display = v?'block':'none'; }
+function prog(w, msg){
+  document.getElementById('progBar').style.width = w+'%';
+  document.getElementById('progMsg').textContent = msg;
+}
+function setStep(n){
+  ['s1','s2','s3'].forEach((id,i) => {
+    const el = document.getElementById(id);
+    el.className = 'step ' + (i+1<n?'done': i+1===n?'active':'idle');
+  });
+}
+function err(msg){ const b=document.getElementById('errBox'); b.textContent=msg; b.style.display='block'; }
+function clearErr(){ document.getElementById('errBox').style.display='none'; }
+
+function reset(){
+  pdfFile=null; result={hist:'',para:'',strong:''};
+  document.getElementById('fileInput').value='';
+  document.getElementById('caseNo').value='';
+  document.getElementById('nextDate').value='';
+  document.getElementById('fileOk').style.display='none';
+  document.getElementById('genBtn').disabled=true;
+  show('cResult',false); show('cUpload',true);
+  setStep(1); clearErr();
+}
+</script>
+</body>
+</html>
