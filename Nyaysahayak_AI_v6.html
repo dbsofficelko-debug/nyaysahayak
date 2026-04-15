@@ -520,28 +520,23 @@ const CFG = {
 };
 
 const DEPTS = [
-       label:'PUVVNL',          prompt:'आप PUVVNL (पूर्वांचल विद्युत वितरण निगम लिमिटेड) के वरिष्ठ विधिक अधिकारी हैं। जब भी पैरावार टिप्पणी, Brief History, या सशक्त बिंदु माँगे जाएं — तुरंत पूर्ण प्रारूप तैयार करें, केवल निर्देश न दें। PUVVNL की ओर से विभागीय पक्ष मजबूत करें।' },
-
-  { id:'sainik_up',  label:'Sainik School UP',  prompt:'आप उत्तर प्रदेश शासन के सैनिक स्कूल विभाग के विधिक अधिकारी हैं।' },
-  { id:'sainik_mod', label:'Sainik School MoD', prompt:'आप रक्षा मंत्रालय के सैनिक स्कूल सोसाइटी के विधिक अधिकारी हैं।' },
-  { id:'madhyamik',  label:'माध्यमिक शिक्षा',  prompt:'आप उत्तर प्रदेश माध्यमिक शिक्षा विभाग के वरिष्ठ विधिक अधिकारी हैं।' },
-  { id:'iti',        label:'ITI',               prompt:'आप ITI Limited (Indian Telephone Industries) के वरिष्ठ विधिक अधिकारी हैं।' },
-        label:'UPPCL',             prompt:'आप UPPCL (उत्तर प्रदेश पावर कॉर्पोरेशन) के वरिष्ठ विधिक अधिकारी हैं।' },
-  label:'Procurement',        prompt:'आप UP Procurement Manual के विशेषज्ञ हैं।' },
-  { id:'general',    label:'UP Secretariat',           prompt:'आप उत्तर प्रदेश शासन के एक वरिष्ठ विधिक विशेषज्ञ हैं।' },
-   { id:'exgratia',   label:'ExGratia/Sevayojan', prompt:'आप उत्तर प्रदेश शासन के भूतपूर्व सैनिक/पुलिस कल्याण एवं सेवायोजन विभाग के वरिष्ठ विधिक अधिकारी हैं।' },
+  { id:'sainik_up',  label:'Sainik School UP',      prompt:'आप उत्तर प्रदेश शासन के सैनिक स्कूल विभाग (लखनऊ/गोरखपुर) के वरिष्ठ विधिक अधिकारी हैं। Boys का प्रवेश Class 6 में और Girls का प्रवेश Class 9 में होता है। UP Government के नियम primary हैं।' },
+  { id:'sainik_mod', label:'Sainik School MoD',     prompt:'आप रक्षा मंत्रालय के अधीन सैनिक स्कूल सोसाइटी (मैनपुरी/झाँसी/अमेठी) के विधिक अधिकारी हैं। Central/MoD के नियम primary हैं; UP केवल partial grant देती है।' },
+  { id:'madhyamik',  label:'माध्यमिक शिक्षा',      prompt:'आप उत्तर प्रदेश माध्यमिक शिक्षा विभाग के वरिष्ठ विधिक अधिकारी हैं। सेवा-विधि, नियुक्ति, स्थानान्तरण एवं न्यायालयीन विवादों में विभागीय पक्ष मजबूत करें।' },
+  { id:'iti',        label:'ITI',                   prompt:'आप उत्तर प्रदेश के औद्योगिक प्रशिक्षण संस्थान (ITI) विभाग के वरिष्ठ विधिक अधिकारी हैं। प्रशिक्षार्थी, प्रशिक्षक सेवा-विधि, संस्थान प्रबंधन एवं न्यायालयीन विवादों में विभागीय पक्ष सुदृढ़ करें।' },
+  { id:'secretariat',label:'UP Secretariat',        prompt:'आप उत्तर प्रदेश शासन सचिवालय के वरिष्ठ विधिक एवं प्रशासनिक अधिकारी हैं। SAD Manual, Financial Handbook एवं सचिवालय प्रक्रिया के अनुसार noting, drafting एवं न्यायालयीन उत्तर तैयार करें।' },
+  { id:'exgratia',   label:'Ex-Gratia / सेवायोजन', prompt:'आप उत्तर प्रदेश शासन के SNP/गृह विभाग में ex-gratia, अनुकम्पा नियुक्ति (CAPF/अर्धसैनिक बल के शहीद परिजन) एवं सेवायोजन मामलों के विधिक अधिकारी हैं। शासनादेश 2020 एवं संबंधित नियमों के अनुसार तत्काल प्रारूप तैयार करें।' },
 ];
 
 // ── Department → Book mapping (RAG source control) ──────────
 const DEPT_BOOKS = {
-  'puvvnl':     ['Electricity Act 2003', 'UP Electricity Supply Code 2005', 'CGRF & Ombudsman Regulations', 'UPERC SoP Regulations', 'PUVVNL Service Regulations', 'PUVVNL Legal Strategy', 'Financial Handbook Vol-2'],
-  'sainik_up':  ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi'],
-  'sainik_mod': ['Financial Handbook Vol-2', 'UP Procurement Manual'],
-  'madhyamik':  ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi'],
-  'cel':        ['Financial Handbook Vol-2', 'UP Procurement Manual'],
-  'uppcl':      ['Financial Handbook Vol-2', 'UP Procurement Manual'],
-  'procurement':['UP Procurement Manual', 'Financial Handbook Vol-2'],
-  'general':    ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi', 'UP Procurement Manual'],
+  'sainik_up':   ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi'],
+  'sainik_mod':  ['Financial Handbook Vol-2', 'UP Procurement Manual'],
+  'madhyamik':   ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi'],
+  'iti':         ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi', 'UP Procurement Manual'],
+  'secretariat': ['SAD Manual', 'Financial Handbook Vol-2', 'Seva Vidhi'],
+  'exgratia':    ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi'],
+  'general':     ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi', 'UP Procurement Manual'],
 };
 
 const QUICK = [
@@ -551,18 +546,14 @@ const QUICK = [
   'प्रति शपथ पत्र का पूर्ण प्रारूप दें',
 ];
 
-const BASE_SYSTEM = `आप DBS · न्यायसहायक हैं — DHRITI BUSINESS SOLUTIONS PVT. LTD. का AI-powered legal assistant। आप exclusively UP Government departments, PSUs, और Autonomous Bodies के लिए बने हैं।
-
+const BASE_SYSTEM = `आप DBS · न्यायसहायक हैं — उत्तर प्रदेश सरकार के न्यायिक कार्यों में सहायता करने वाला AI सिस्टम।
 नियम:
-1. सभी उत्तर शुद्ध सरकारी हिंदी में दें
-2. कभी "Claude AI" का उल्लेख न करें — आप "DBS · न्यायसहायक" हैं
-3. ज्ञान आधार से उत्तर दो और स्रोत बताओ
+1. सभी उत्तर शुद्ध सरकारी हिंदी में दें — कभी स्पष्टीकरण मत माँगो, सीधे उत्तर दो
+2. कभी भी "Claude AI" का उल्लेख न करें
+3. यदि नीचे "ज्ञान आधार" दिया हो तो उसी से उत्तर दो और स्रोत बताओ — वरना अपने ज्ञान से उत्तर दो
 4. SAD Manual Prastar 127-136 के अनुसार नोटिंग प्रारूप
-5. पैरावार टिप्पणी: Para 1, Para 2... क्रमबद्ध (अनुच्छेद नहीं, Para लिखें)
-6. जब स्रोत उपलब्ध हो तो उत्तर के अंत में: 📚 स्रोत: [पुस्तक नाम]
-7. PDF विश्लेषण में तीन भाग: भाग-1 प्रकरण इतिहास, भाग-2 पैरावार टिप्पणी, भाग-3 प्रभावी पैरवी बिंदु
-8. "पैरावार" spelling — "परावार" नहीं
-9. Noting flow: प्राप्ति → नियम → तथ्य → अस्पष्टता → पूर्वदृष्टान्त → प्रस्ताव → अनुमति`;
+5. पैरावार टिप्पणी: Para 1, Para 2... क्रमबद्ध लिखें (अनुच्छेद शब्द नहीं, Para लिखें)
+6. जब स्रोत उपलब्ध हो तो उत्तर के अंत में: 📚 स्रोत: [पुस्तक नाम]`;
 
 /* ════════════════════════════════════════════════
    STATE
@@ -575,9 +566,11 @@ let pdfMime    = 'application/pdf';
 /* ════════════════════════════════════════════════
    INIT
 ════════════════════════════════════════════════ */
-(function init() {
+function init() {
   // Build dept pills
   const bar = document.getElementById('deptBar');
+  if (!bar) { console.error('[न्यायसहायक] deptBar element not found'); return; }
+  bar.innerHTML = ''; // clear any stale content
   DEPTS.forEach(d => {
     const btn = document.createElement('button');
     btn.className = 'dept-pill' + (d.id === activeDept.id ? ' active' : '');
@@ -588,29 +581,41 @@ let pdfMime    = 'application/pdf';
 
   // Build quick buttons
   const qb = document.getElementById('quickBtns');
-  QUICK.forEach(q => {
-    const btn = document.createElement('button');
-    btn.className = 'quick-btn';
-    btn.textContent = q;
-    btn.onclick = () => { setInput(q); send(); };
-    qb.appendChild(btn);
-  });
+  if (qb) {
+    qb.innerHTML = '';
+    QUICK.forEach(q => {
+      const btn = document.createElement('button');
+      btn.className = 'quick-btn';
+      btn.textContent = q;
+      btn.onclick = () => { setInput(q); send(); };
+      qb.appendChild(btn);
+    });
+  }
 
   // Auto-resize textarea
   const ta = document.getElementById('msgInput');
-  ta.addEventListener('input', () => {
-    ta.style.height = 'auto';
-    ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
-  });
+  if (ta) {
+    ta.addEventListener('input', () => {
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+    });
 
-  // Enter = send, Shift+Enter = newline
-  ta.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      send();
-    }
-  });
-})();
+    // Enter = send, Shift+Enter = newline
+    ta.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        send();
+      }
+    });
+  }
+}
+
+// Run after DOM is fully ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 
 /* ════════════════════════════════════════════════
    DEPT SELECTION
