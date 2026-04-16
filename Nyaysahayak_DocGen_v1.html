@@ -808,7 +808,7 @@ async function generate() {
         model: CFG.MODEL,
         max_tokens: CFG.MAX_TOKENS,
         system: systemPrompt,
-        messages: [{ role: 'user', content: userContent }],
+        prompt: userContent[userContent.length-1].text,
       })
     });
 
