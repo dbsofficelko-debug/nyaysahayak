@@ -614,25 +614,21 @@ function removePdf() {
 ══════════════════════════════════════════════ */
 function buildSystemPrompt(dept, docLabel, ruleType, ragContext) {
 
-  const RULE_A = `
-## FORMAT RULE A: ALLAHABAD HIGH COURT / SUPREME COURT STANDARD
-यह दस्तावेज़ Allahabad High Court / Supreme Court के Counter Affidavit मानकों के अनुसार तैयार किया जाएगा।
+  const RULE_A = `3-COLUMN TABLE FORMAT MANDATORY.
 
-अनिवार्य संरचना:
-1. IN THE HIGH COURT OF JUDICATURE AT ALLAHABAD
-   (Writ Petition/Case number — जैसा facts में दिया हो)
-2. COUNTER AFFIDAVIT / PARAWISE COMMENTS on behalf of: ${dept}
-3. पैरावार उत्तर:
-   Para 1: [Petitioner के Para 1 का संक्षिप्त सार] → विभागीय उत्तर
-   Para 2: [इसी क्रम में आगे...]
-4. प्रत्येक Para में:
-   — पहले Petitioner का दावा एक पंक्ति में
-   — फिर: "इस संदर्भ में विभाग का कथन है कि..."
-   — सम्बंधित नियम/अधिनियम/शासनादेश का हवाला MANDATORY
-5. PRAYER: Writ dismissed करने का निवेदन
-6. भाषा: शुद्ध सरकारी हिंदी (English legal terms allowed)
-7. Tone: अव्यक्तिवाचक, संक्षिप्त, अधिकारपूर्ण`;
+Output ONLY this structure:
 
+IN THE HIGH COURT OF JUDICATURE AT ALLAHABAD
+[Case details from facts]
+PARAWISE COMMENTS on behalf of: DEPT
+
+| Para No. | वादी का कथन | विभाग का उत्तर |
+|---|---|---|
+| Para 1 | [wadi claim] | [vibhag reply + Rule citation] |
+| Para 2 | [wadi claim] | [vibhag reply + Rule citation] |
+[minimum 5 rows]
+
+PRAYER: याचिका निरस्त की जाए।`;
   const RULE_B_NOTING = `
 ## FORMAT RULE B: SAD MANUAL — नोटिंग
 SAD Manual Prastar 127-136 के अनुसार:
