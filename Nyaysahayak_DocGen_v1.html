@@ -437,7 +437,7 @@ html,body{
    CONFIG
 ══════════════════════════════════════════════ */
 const CFG = {
-  API: 'https://nyaysahayak-api-production.up.railway.app/docgen',
+  API: '/.netlify/functions/ai',
   MODEL: 'claude-sonnet-4-6',
   MAX_TOKENS: 3000,
 };
@@ -812,7 +812,7 @@ async function generate() {
         model: CFG.MODEL,
         max_tokens: CFG.MAX_TOKENS,
         system: systemPrompt,
-        prompt: userContent[userContent.length-1].text || userContent[userContent.length-1],
+        messages: [{ role: 'user', content: userContent }],
       })
     });
 
