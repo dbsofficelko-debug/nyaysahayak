@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>दस्तावेज़ निर्माता — न्यायसहायक</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:      #0D1B2A;
+  --navy-mid:  #1B2F4A;
+  --navy-soft: #2C4265;
+  --gold:      #C9981E;
+  --gold-light:#E8B84B;
+  --gold-pale: #FDF3DC;
+  --parchment: #F6F2EB;
+  --paper:     #FFFFFF;
+  --ink:       #0D1B2A;
+  --ink-soft:  #3D4F63;
+  --muted:     #7A8899;
+  --border:    #DDD8CE;
+  --success:   #1a6b3a;
+  --success-bg:#edf7f1;
+  --r: 10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{
+  min-height:100%;
+  font-family:'DM Sans','Noto Sans Devanagari',sans-serif;
+  background:var(--parchment);
+  color:var(--ink);
+}
+
+/* ── Header ── */
+.hdr{
+  background:var(--navy);
+  padding:14px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+}
+.logo-block{display:flex;align-items:center;gap:10px;}
+.logo-icon{
+  width:36px;height:36px;background:var(--gold);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.logo-name{
+  font-family:'Playfair Display',serif;font-size:18px;
+  font-weight:700;color:#fff;line-height:1;
+}
+.logo-sub{font-size:11px;color:var(--gold-light);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.badge{font-size:10px;font-weight:700;color:var(--gold);border:1px solid var(--gold);padding:3px 8px;border-radius:20px;}
+
+/* ── Main container ── */
+.container{
+  max-width:760px;margin:0 auto;
+  padding:24px 16px 60px;
+}
+
+/* ── Progress bar ── */
+.progress-bar{
+  display:flex;align-items:center;gap:0;
+  margin-bottom:28px;
+  background:var(--paper);border:1px solid var(--border);
+  border-radius:50px;padding:6px;
+}
+.prog-step{
+  flex:1;text-align:center;padding:8px 4px;border-radius:40px;
+  font-size:12px;font-weight:600;color:var(--muted);
+  transition:all .25s;cursor:default;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.prog-step.active{
+  background:var(--navy);color:#fff;
+}
+.prog-step.done{
+  background:var(--gold-pale);color:var(--gold);
+}
+.prog-num{
+  width:20px;height:20px;border-radius:50%;
+  background:rgba(0,0,0,.08);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;flex-shrink:0;
+}
+.prog-step.active .prog-num{background:rgba(255,255,255,.2);}
+.prog-step.done .prog-num{background:var(--gold);color:#fff;}
+
+/* ── Card ── */
+.card{
+  background:var(--paper);border:1px solid var(--border);
+  border-radius:var(--r);padding:24px;
+  box-shadow:0 2px 12px rgba(13,27,42,.06);
+  margin-bottom:16px;
+}
+.card-title{
+  font-family:'Playfair Display',serif;
+  font-size:17px;color:var(--navy);
+  margin-bottom:4px;
+}
+.card-sub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5;}
+
+/* ── Form elements ── */
+.field{margin-bottom:18px;}
+.field label{
+  display:block;font-size:12px;font-weight:700;
+  color:var(--ink-soft);letter-spacing:.5px;text-transform:uppercase;
+  margin-bottom:6px;
+}
+.field select, .field textarea{
+  width:100%;padding:11px 14px;
+  border:1.5px solid var(--border);border-radius:8px;
+  font-size:14px;font-family:inherit;color:var(--ink);
+  background:var(--parchment);
+  transition:border-color .15s,background .15s;
+  appearance:none;
+  outline:none;
+}
+.field select:focus,.field textarea:focus{
+  border-color:var(--gold);background:var(--paper);
+}
+.select-wrap{position:relative;}
+.select-wrap::after{
+  content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  color:var(--muted);pointer-events:none;font-size:13px;
+}
+.field textarea{
+  resize:vertical;min-height:110px;line-height:1.6;
+}
+
+/* Rule badge */
+.rule-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:700;padding:3px 10px;
+  border-radius:20px;margin-top:8px;
+  letter-spacing:.3px;
+}
+.rule-hc{background:#fef3c7;color:#92400e;}
+.rule-sad{background:#dbeafe;color:#1e40af;}
+.rule-fallback{background:#f3f4f6;color:#374151;}
+
+/* PDF upload */
+.upload-zone{
+  border:2px dashed var(--border);border-radius:8px;
+  padding:20px;text-align:center;cursor:pointer;
+  transition:border-color .15s,background .15s;
+  background:var(--parchment);
+}
+.upload-zone:hover,.upload-zone.dragover{
+  border-color:var(--gold);background:var(--gold-pale);
+}
+.upload-ico{font-size:28px;margin-bottom:6px;}
+.upload-txt{font-size:13px;color:var(--muted);}
+.upload-txt strong{color:var(--gold);cursor:pointer;}
+.pdf-chip{
+  display:none;align-items:center;gap:8px;
+  background:var(--gold-pale);border:1px solid var(--gold);
+  border-radius:6px;padding:8px 12px;
+  font-size:13px;color:var(--navy);font-weight:600;
+  margin-top:10px;
+}
+.pdf-chip.show{display:flex;}
+.chip-remove{cursor:pointer;color:#991b1b;margin-left:auto;font-size:16px;}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 24px;border-radius:8px;font-size:14px;
+  font-weight:700;font-family:inherit;cursor:pointer;
+  border:none;transition:all .15s;
+}
+.btn-primary{background:var(--navy);color:#fff;}
+.btn-primary:hover{background:var(--navy-soft);}
+.btn-primary:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;}
+.btn-gold{background:var(--gold);color:var(--navy);}
+.btn-gold:hover{background:var(--gold-light);}
+.btn-outline{background:transparent;color:var(--navy);border:1.5px solid var(--border);}
+.btn-outline:hover{border-color:var(--navy);}
+.btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:8px;}
+
+/* Output area */
+.output-card{
+  background:var(--paper);border:1.5px solid var(--gold);
+  border-radius:var(--r);padding:0;
+  box-shadow:0 4px 20px rgba(201,152,30,.12);
+  margin-bottom:20px;overflow:hidden;
+}
+.output-hdr{
+  background:var(--navy);padding:12px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.output-hdr-left{display:flex;align-items:center;gap:8px;}
+.output-hdr-title{font-size:13px;font-weight:700;color:#fff;}
+.output-hdr-badge{font-size:10px;color:var(--gold-light);background:rgba(201,152,30,.15);padding:2px 8px;border-radius:10px;}
+.output-body{padding:20px;font-size:14px;line-height:1.8;color:var(--ink);font-family:'Noto Sans Devanagari','DM Sans',sans-serif;white-space:pre-wrap;}
+.output-body.loading{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:40px;color:var(--muted);
+  font-size:13px;gap:12px;
+}
+.typing{display:flex;gap:5px;}
+.typing span{
+  width:8px;height:8px;background:var(--gold);border-radius:50%;
+  animation:bounce .9s infinite;
+}
+.typing span:nth-child(2){animation-delay:.15s;}
+.typing span:nth-child(3){animation-delay:.3s;}
+@keyframes bounce{
+  0%,60%,100%{transform:translateY(0);opacity:.4;}
+  30%{transform:translateY(-6px);opacity:1;}
+}
+
+.copy-btn{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:#fff;border-radius:6px;padding:4px 10px;
+  font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;
+  transition:background .15s;
+}
+.copy-btn:hover{background:rgba(255,255,255,.2);}
+
+.source-line{
+  font-size:11px;color:var(--muted);
+  border-top:1px solid var(--border-soft);
+  padding:10px 20px;background:var(--parchment);
+}
+
+/* Summary strip */
+.summary-strip{
+  background:var(--navy-mid);border-radius:8px;
+  padding:12px 16px;margin-bottom:20px;
+  display:flex;flex-wrap:wrap;gap:6px 16px;
+}
+.summary-item{font-size:12px;color:rgba(255,255,255,.7);}
+.summary-item strong{color:var(--gold-light);}
+
+/* Step sections */
+.step-section{display:none;}
+.step-section.active{display:block;}
+
+/* Info box */
+.info-box{
+  background:var(--gold-pale);border:1px solid var(--gold);
+  border-radius:8px;padding:12px 14px;
+  font-size:12px;color:var(--navy);line-height:1.6;
+  margin-bottom:16px;
+}
+.info-box strong{font-weight:700;}
+
+/* New generation btn */
+.new-btn{
+  text-align:center;padding:12px;
+}
+
+/* Mobile */
+@media(max-width:600px){
+  .container{padding:16px 12px 40px;}
+  .prog-step .prog-label{display:none;}
+  .btn-row{flex-direction:column;}
+  .btn{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="hdr">
+  <div class="logo-block">
+    <div class="logo-icon">⚖</div>
+    <div>
+      <div class="logo-name">न्यायसहायक</div>
+      <div class="logo-sub">दस्तावेज़ निर्माता</div>
+    </div>
+  </div>
+  <span class="badge">DBS</span>
+</div>
+
+<div class="container">
+
+  <!-- Progress -->
+  <div class="progress-bar">
+    <div class="prog-step active" id="prog1">
+      <span class="prog-num">1</span>
+      <span class="prog-label">विभाग</span>
+    </div>
+    <div class="prog-step" id="prog2">
+      <span class="prog-num">2</span>
+      <span class="prog-label">दस्तावेज़</span>
+    </div>
+    <div class="prog-step" id="prog3">
+      <span class="prog-num">3</span>
+      <span class="prog-label">तथ्य + PDF</span>
+    </div>
+  </div>
+
+  <!-- STEP 1: Department -->
+  <div class="step-section active" id="step1">
+    <div class="card">
+      <div class="card-title">विभाग चुनें</div>
+      <div class="card-sub">किस विभाग के लिए दस्तावेज़ तैयार करना है?</div>
+      <div class="field">
+        <label>विभाग / Department</label>
+        <div class="select-wrap">
+          <select id="deptSelect" onchange="onDeptChange()">
+            <option value="">— विभाग चुनें —</option>
+            <option value="secretariat">UP Secretariat (सचिवालय)</option>
+            <option value="revenue">राजस्व विभाग</option>
+            <option value="madhyamik">माध्यमिक शिक्षा</option>
+            <option value="sainik_up">Sainik School UP (लखनऊ/गोरखपुर)</option>
+            <option value="sainik_mod">Sainik School MoD (मैनपुरी/झाँसी/अमेठी)</option>
+            <option value="iti">ITI (औद्योगिक प्रशिक्षण संस्थान)</option>
+            <option value="exgratia">Ex-Gratia / सेवायोजन (SNP)</option>
+            <option value="general">सामान्य / अन्य विभाग</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="step1Next" onclick="goStep(2)" disabled>आगे बढ़ें →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Document Type -->
+  <div class="step-section" id="step2">
+    <div class="card">
+      <div class="card-title">दस्तावेज़ प्रकार चुनें</div>
+      <div class="card-sub">किस प्रकार का दस्तावेज़ तैयार करना है?</div>
+      <div class="field">
+        <label>दस्तावेज़ प्रकार</label>
+        <div class="select-wrap">
+          <select id="docSelect" onchange="onDocChange()">
+            <option value="">— दस्तावेज़ प्रकार चुनें —</option>
+            <optgroup label="⚖️ न्यायालय — Allahabad HC / Supreme Court">
+              <option value="parawise|HIGH_COURT">पैरावार टिप्पणी (Parawise Comments)</option>
+              <option value="brief_history|HIGH_COURT">संक्षिप्त इतिहास (Brief History)</option>
+            </optgroup>
+            <optgroup label="📋 सचिवालय — SAD Manual">
+              <option value="noting|SAD">नोटिंग (Noting)</option>
+              <option value="drafting|SAD">ड्राफ्टिंग (Drafting)</option>
+              <option value="go|SAD">शासनादेश (Government Order — GO)</option>
+              <option value="uo|SAD">अनौपचारिक टिप्पणी (UO — Unofficial Note)</option>
+              <option value="do_letter|SAD">अर्ध-शासकीय पत्र (DO Letter)</option>
+              <option value="karyalaya|SAD">कार्यालय ज्ञाप (Office Memo)</option>
+              <option value="speaking_order|SAD">Speaking Order</option>
+            </optgroup>
+          </select>
+        </div>
+        <div id="ruleBadge"></div>
+      </div>
+
+      <div id="ruleInfo" class="info-box" style="display:none"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="goStep(1)">← वापस</button>
+        <button class="btn btn-primary" id="step2Next" onclick="goStep(3)" disabled>आगे बढ़ें →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Facts + PDF -->
+  <div class="step-section" id="step3">
+    <div class="card">
+      <div class="card-title">तथ्य एवं PDF संलग्न करें</div>
+      <div class="card-sub">मुख्य तथ्य लिखें और सम्बंधित PDF upload करें</div>
+
+      <div class="field">
+        <label>मुख्य तथ्य / Ground Facts *</label>
+        <textarea id="factsInput" placeholder="यहाँ मुख्य तथ्य लिखें — जैसे:
+• वादी का नाम: रामेश्वर प्रसाद, पद: सहायक अध्यापक
+• याचिका संख्या: Writ-A 12345/2025
+• विवाद: 15 मार्च 2024 को सेवा समाप्ति का आदेश
+• पिछली सुनवाई: 10 अप्रैल 2025, अगली तारीख: 20 मई 2025
+• विभागीय पक्ष: नियम 7(3) के अन्तर्गत कार्यवाही सम्पन्न"></textarea>
+      </div>
+
+      <div class="field">
+        <label>PDF संलग्न करें (वैकल्पिक — अधिकतम 8MB)</label>
+        <div class="upload-zone" id="uploadZone"
+             onclick="document.getElementById('pdfInput').click()"
+             ondragover="onDragOver(event)"
+             ondrop="onDrop(event)"
+             ondragleave="onDragLeave(event)">
+          <div class="upload-ico">📎</div>
+          <div class="upload-txt">यहाँ PDF drag करें या <strong>क्लिक करें</strong></div>
+          <div class="upload-txt" style="font-size:11px;margin-top:4px;">Court notice, writ petition, order copy</div>
+        </div>
+        <div class="pdf-chip" id="pdfChip">
+          <span>📄</span>
+          <span id="pdfName">—</span>
+          <span class="chip-remove" onclick="removePdf()">✕</span>
+        </div>
+        <input type="file" id="pdfInput" accept=".pdf" style="display:none" onchange="onPdfSelect(this)">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="goStep(2)">← वापस</button>
+        <button class="btn btn-gold" id="generateBtn" onclick="generate()">⚡ दस्तावेज़ तैयार करें</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTPUT -->
+  <div id="outputSection" style="display:none">
+
+    <!-- Summary -->
+    <div class="summary-strip" id="summaryStrip"></div>
+
+    <!-- Output card -->
+    <div class="output-card">
+      <div class="output-hdr">
+        <div class="output-hdr-left">
+          <span style="font-size:16px">📄</span>
+          <div>
+            <div class="output-hdr-title" id="outputTitle">दस्तावेज़</div>
+            <div class="output-hdr-badge" id="outputBadge">तैयार हो रहा है…</div>
+          </div>
+        </div>
+        <button class="copy-btn" onclick="copyOutput()">📋 Copy</button>
+      </div>
+      <div class="output-body" id="outputBody">
+        <div class="loading">
+          <div class="typing"><span></span><span></span><span></span></div>
+          <div>दस्तावेज़ तैयार हो रहा है…</div>
+        </div>
+      </div>
+      <div class="source-line" id="sourceLine"></div>
+    </div>
+
+    <!-- New generation -->
+    <div class="new-btn">
+      <button class="btn btn-outline" onclick="resetAll()">🔄 नया दस्तावेज़ तैयार करें</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   CONFIG
+══════════════════════════════════════════════ */
+const CFG = {
+  API: '/.netlify/functions/ai',
+  MODEL: 'claude-sonnet-4-6',
+  MAX_TOKENS: 3000,
+};
+
+/* ══════════════════════════════════════════════
+   DEPT CONFIG
+══════════════════════════════════════════════ */
+const DEPT_LABELS = {
+  secretariat: 'UP Secretariat (सचिवालय)',
+  revenue:     'राजस्व विभाग',
+  madhyamik:   'माध्यमिक शिक्षा विभाग',
+  sainik_up:   'सैनिक स्कूल UP (लखनऊ/गोरखपुर)',
+  sainik_mod:  'सैनिक स्कूल MoD (मैनपुरी/झाँसी/अमेठी)',
+  iti:         'ITI (औद्योगिक प्रशिक्षण संस्थान)',
+  exgratia:    'Ex-Gratia / सेवायोजन (SNP)',
+  general:     'सामान्य विभाग',
+};
+
+const DEPT_BOOKS = {
+  secretariat: ['SAD Manual', 'Financial Handbook Vol-2', 'Seva Vidhi'],
+  revenue:     ['Financial Handbook Vol-2', 'SAD Manual', 'UP Procurement Manual'],
+  madhyamik:   ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi'],
+  sainik_up:   ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi'],
+  sainik_mod:  ['Financial Handbook Vol-2', 'UP Procurement Manual'],
+  iti:         ['Financial Handbook Vol-2', 'SAD Manual', 'UP Procurement Manual'],
+  exgratia:    ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi'],
+  general:     ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi'],
+};
+
+const DOC_LABELS = {
+  parawise:      'पैरावार टिप्पणी',
+  brief_history: 'संक्षिप्त इतिहास',
+  noting:        'नोटिंग',
+  drafting:      'ड्राफ्टिंग',
+  go:            'शासनादेश (GO)',
+  uo:            'अनौपचारिक टिप्पणी (UO)',
+  do_letter:     'अर्ध-शासकीय पत्र (DO)',
+  karyalaya:     'कार्यालय ज्ञाप',
+  speaking_order:'Speaking Order',
+};
+
+const RULE_INFO = {
+  HIGH_COURT: {
+    label: '⚖️ High Court / SC Standard',
+    cls: 'rule-hc',
+    info: '<strong>Rule A लागू:</strong> Allahabad High Court / Supreme Court के Counter Affidavit मानकों के अनुसार प्रारूप तैयार होगा। प्रत्येक Para में पहले Petitioner का दावा, फिर विभागीय उत्तर।',
+  },
+  SAD: {
+    label: '📋 SAD Manual Standard',
+    cls: 'rule-sad',
+    info: '<strong>Rule B लागू:</strong> UP Secretariat Administration Department (SAD) Manual Prastar 127-136 के अनुसार प्रारूप। अव्यक्तिवाचक भाषा, निर्धारित flow।',
+  },
+};
+
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+let state = {
+  dept: '', deptLabel: '',
+  docType: '', docRule: '', docLabel: '',
+  facts: '',
+  pdfBase64: null, pdfName: '',
+  currentStep: 1,
+};
+
+/* ══════════════════════════════════════════════
+   STEP NAVIGATION
+══════════════════════════════════════════════ */
+function goStep(n) {
+  // Validate before moving forward
+  if (n === 2 && !state.dept) return;
+  if (n === 3 && !state.docType) return;
+
+  state.currentStep = n;
+
+  // Hide all steps
+  document.querySelectorAll('.step-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('outputSection').style.display = 'none';
+
+  // Show current step
+  document.getElementById('step' + n).classList.add('active');
+
+  // Update progress
+  for (let i = 1; i <= 3; i++) {
+    const el = document.getElementById('prog' + i);
+    el.className = 'prog-step' + (i === n ? ' active' : i < n ? ' done' : '');
+  }
+
+  window.scrollTo(0, 0);
+}
+
+/* ══════════════════════════════════════════════
+   STEP 1 HANDLER
+══════════════════════════════════════════════ */
+function onDeptChange() {
+  const val = document.getElementById('deptSelect').value;
+  state.dept = val;
+  state.deptLabel = DEPT_LABELS[val] || val;
+  document.getElementById('step1Next').disabled = !val;
+}
+
+/* ══════════════════════════════════════════════
+   STEP 2 HANDLER
+══════════════════════════════════════════════ */
+function onDocChange() {
+  const raw = document.getElementById('docSelect').value;
+  if (!raw) {
+    document.getElementById('ruleBadge').innerHTML = '';
+    document.getElementById('ruleInfo').style.display = 'none';
+    document.getElementById('step2Next').disabled = true;
+    return;
+  }
+
+  const [docType, docRule] = raw.split('|');
+  state.docType = docType;
+  state.docRule = docRule || 'FALLBACK';
+  state.docLabel = DOC_LABELS[docType] || docType;
+
+  // Show rule badge
+  const ri = RULE_INFO[state.docRule];
+  if (ri) {
+    document.getElementById('ruleBadge').innerHTML =
+      `<span class="rule-badge ${ri.cls}">${ri.label}</span>`;
+    document.getElementById('ruleInfo').innerHTML = ri.info;
+    document.getElementById('ruleInfo').style.display = 'block';
+  }
+
+  document.getElementById('step2Next').disabled = false;
+}
+
+/* ══════════════════════════════════════════════
+   PDF HANDLING
+══════════════════════════════════════════════ */
+function onDragOver(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.add('dragover');
+}
+function onDragLeave(e) {
+  document.getElementById('uploadZone').classList.remove('dragover');
+}
+function onDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('dragover');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type === 'application/pdf') loadPdf(f);
+}
+function onPdfSelect(input) {
+  const f = input.files[0];
+  if (f) loadPdf(f);
+  input.value = '';
+}
+function loadPdf(f) {
+  if (f.size > 8 * 1024 * 1024) {
+    alert('PDF 8MB से बड़ी है। पहले compress करें।');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    state.pdfBase64 = reader.result.split(',')[1];
+    state.pdfName = f.name;
+    document.getElementById('pdfName').textContent = f.name;
+    document.getElementById('pdfChip').classList.add('show');
+  };
+  reader.readAsDataURL(f);
+}
+function removePdf() {
+  state.pdfBase64 = null;
+  state.pdfName = '';
+  document.getElementById('pdfChip').classList.remove('show');
+}
+
+/* ══════════════════════════════════════════════
+   DYNAMIC MASTER PROMPT BUILDER
+══════════════════════════════════════════════ */
+function buildSystemPrompt(dept, docLabel, ruleType, ragContext) {
+
+  const RULE_A = `
+## FORMAT RULE A: ALLAHABAD HIGH COURT / SUPREME COURT STANDARD
+यह दस्तावेज़ Allahabad High Court / Supreme Court के Counter Affidavit मानकों के अनुसार तैयार किया जाएगा।
+
+अनिवार्य संरचना:
+1. IN THE HIGH COURT OF JUDICATURE AT ALLAHABAD
+   (Writ Petition/Case number — जैसा facts में दिया हो)
+2. COUNTER AFFIDAVIT / PARAWISE COMMENTS on behalf of: ${dept}
+3. पैरावार उत्तर:
+   Para 1: [Petitioner के Para 1 का संक्षिप्त सार] → विभागीय उत्तर
+   Para 2: [इसी क्रम में आगे...]
+4. प्रत्येक Para में:
+   — पहले Petitioner का दावा एक पंक्ति में
+   — फिर: "इस संदर्भ में विभाग का कथन है कि..."
+   — सम्बंधित नियम/अधिनियम/शासनादेश का हवाला MANDATORY
+5. PRAYER: Writ dismissed करने का निवेदन
+6. भाषा: शुद्ध सरकारी हिंदी (English legal terms allowed)
+7. Tone: अव्यक्तिवाचक, संक्षिप्त, अधिकारपूर्ण`;
+
+  const RULE_B_NOTING = `
+## FORMAT RULE B: SAD MANUAL — नोटिंग
+SAD Manual Prastar 127-136 के अनुसार:
+Flow: प्राप्ति → नियम स्थिति → तथ्य → अस्पष्टता → पूर्वदृष्टान्त → प्रस्ताव → अनुमति
+• नोटिंग में Subject/Upasheershak नहीं लिखा जाएगा
+• भाषा: अव्यक्तिवाचक ("प्रस्तुत है कि..." — "मैं प्रस्तुत करता हूँ..." नहीं)
+• Undersecretary स्तर से ऊपर के अधिकारी ही पत्र जारी करेंगे`;
+
+  const RULE_B_GO = `
+## FORMAT RULE B: SAD MANUAL — शासनादेश (GO)
+• शीर्ष: उत्तर प्रदेश शासन / [विभाग का नाम]
+• File No. एवं दिनांक अनिवार्य
+• मुख्य भाग: "राज्यपाल महोदय को यह अवगत कराते हुए प्रसन्नता है कि..."
+• अन्त में: "राज्यपाल के आदेश से, [पद]"`;
+
+  const RULE_B_DO = `
+## FORMAT RULE B: SAD MANUAL — अर्ध-शासकीय पत्र (DO)
+• Personal tone allowed, किन्तु सरकारी भाषा
+• प्रिय [नाम], से प्रारम्भ
+• अनौपचारिक किन्तु गरिमापूर्ण tone
+• अन्त में: भवदीय`;
+
+  const RULE_B_SPEAKING = `
+## FORMAT RULE B: SAD MANUAL — Speaking Order
+• Quasi-judicial tone
+• Facts → Findings → Reasons → Order — यह क्रम अनिवार्य
+• निर्णय से पहले कारण (Reasons) MANDATORY
+• प्राकृतिक न्याय के सिद्धान्तों का पालन`;
+
+  const RULE_B_DEFAULT = `
+## FORMAT RULE B: SAD MANUAL — सामान्य प्रारूप
+SAD Manual के सामान्य सिद्धान्तों के अनुसार।
+भाषा: अव्यक्तिवाचक, संक्षिप्त, स्पष्ट।`;
+
+  const RULE_C = `
+## FORMAT RULE C: FALLBACK — SAD Manual + Seva Vidhi
+विशिष्ट template उपलब्ध नहीं — SAD Manual एवं Seva Vidhi के सामान्य सिद्धान्त लागू।`;
+
+  // Select rule block
+  let ruleBlock;
+  if (ruleType === 'HIGH_COURT') {
+    ruleBlock = RULE_A;
+  } else if (ruleType === 'SAD') {
+    const dt = state.docType;
+    ruleBlock = dt === 'noting' || dt === 'drafting' ? RULE_B_NOTING
+              : dt === 'go' || dt === 'uo' || dt === 'karyalaya' ? RULE_B_GO
+              : dt === 'do_letter' ? RULE_B_DO
+              : dt === 'speaking_order' ? RULE_B_SPEAKING
+              : RULE_B_DEFAULT;
+  } else {
+    ruleBlock = RULE_C;
+  }
+
+  return `आप DBS · न्यायसहायक हैं — UP Government के वरिष्ठ अधिकारियों के लिए विशेष AI Legal Drafting System।
+
+विभाग: ${dept}
+दस्तावेज़ प्रकार: ${docLabel}
+
+${ruleBlock}
+
+${ragContext ? `ज्ञान आधार से प्रासंगिक प्रावधान:\n${ragContext}` : ''}
+
+निर्देश:
+— सीधे पूर्ण दस्तावेज़ तैयार करें — केवल निर्देश न दें
+— सभी blanks [____] स्पष्ट रूप से mark करें
+— जो fact missing हो: [REQUIRED: ___] लिखें
+— दस्तावेज़ के अन्त में: 📚 आधार: [नियम/Manual का नाम]
+— भाषा: शुद्ध सरकारी हिंदी`;
+}
+
+/* ══════════════════════════════════════════════
+   RAG SEARCH
+══════════════════════════════════════════════ */
+async function searchRAG(facts) {
+  const books = DEPT_BOOKS[state.dept] || ['SAD Manual', 'Financial Handbook Vol-2'];
+  const forcedQueries = {
+    'parawise':      'parawise comments counter affidavit format writ petition',
+    'brief_history': 'brief history writ petition case chronological',
+    'noting':        'noting prastar SAD manual flow praapti prastav',
+    'go':            'government order shasan ki aur GO format',
+    'speaking_order':'speaking order quasi judicial reasons findings',
+    'karyalaya':     'karyalaya gyap office memo format',
+  };
+  const q = forcedQueries[state.docType] || facts.slice(0, 100);
+
+  try {
+    const searches = books.slice(0, 2).map(book =>
+      fetch(`/.netlify/functions/railway/search?q=${encodeURIComponent(q)}&book=${encodeURIComponent(book)}&limit=3`)
+        .then(r => r.ok ? r.json() : { results: [] })
+        .catch(() => ({ results: [] }))
+    );
+    const results = await Promise.all(searches);
+    const all = results.flatMap(r => r.results || r.entries || []).slice(0, 4);
+    if (!all.length) return '';
+    return all.map((c, i) => {
+      const src = c._book || c.book || c.source || '';
+      const txt = (c.content || c.text || '').slice(0, 500);
+      return `[स्रोत ${i+1}: ${src}]\n${txt}`;
+    }).join('\n\n');
+  } catch { return ''; }
+}
+
+/* ══════════════════════════════════════════════
+   GENERATE
+══════════════════════════════════════════════ */
+async function generate() {
+  const facts = document.getElementById('factsInput').value.trim();
+  if (!facts && !state.pdfBase64) {
+    alert('कृपया कम से कम मुख्य तथ्य लिखें।');
+    return;
+  }
+
+  state.facts = facts;
+
+  // Show output section
+  document.querySelectorAll('.step-section').forEach(s => s.classList.remove('active'));
+  const outSec = document.getElementById('outputSection');
+  outSec.style.display = 'block';
+
+  // Update progress - all done
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById('prog' + i).className = 'prog-step done';
+  }
+
+  // Summary strip
+  document.getElementById('summaryStrip').innerHTML = `
+    <div class="summary-item">📂 <strong>विभाग:</strong> ${state.deptLabel}</div>
+    <div class="summary-item">📄 <strong>दस्तावेज़:</strong> ${state.docLabel}</div>
+    <div class="summary-item">⚖️ <strong>मानक:</strong> ${state.docRule === 'HIGH_COURT' ? 'Allahabad HC' : 'SAD Manual'}</div>
+    ${state.pdfName ? `<div class="summary-item">📎 <strong>PDF:</strong> ${state.pdfName}</div>` : ''}
+  `;
+
+  document.getElementById('outputTitle').textContent = state.docLabel;
+  document.getElementById('outputBadge').textContent = 'तैयार हो रहा है…';
+  document.getElementById('outputBody').innerHTML = `
+    <div class="loading">
+      <div class="typing"><span></span><span></span><span></span></div>
+      <div>दस्तावेज़ तैयार हो रहा है…</div>
+    </div>`;
+  document.getElementById('sourceLine').textContent = '';
+
+  document.getElementById('generateBtn').disabled = true;
+  window.scrollTo(0, 0);
+
+  try {
+    // RAG search (with timeout)
+    let ragContext = '';
+    try {
+      ragContext = await Promise.race([
+        searchRAG(facts),
+        new Promise((_, rej) => setTimeout(() => rej(), 3000))
+      ]);
+    } catch {}
+
+    const systemPrompt = buildSystemPrompt(
+      state.deptLabel, state.docLabel, state.docRule, ragContext
+    );
+
+    // Build user message
+    const userContent = [];
+    if (state.pdfBase64) {
+      userContent.push({
+        type: 'document',
+        source: { type: 'base64', media_type: 'application/pdf', data: state.pdfBase64 }
+      });
+    }
+    userContent.push({
+      type: 'text',
+      text: `विभाग: ${state.deptLabel}\nदस्तावेज़ प्रकार: ${state.docLabel}\n\nमुख्य तथ्य:\n${facts}\n\nकृपया उपरोक्त के अनुसार पूर्ण दस्तावेज़ तैयार करें।`
+    });
+
+    const resp = await fetch(CFG.API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(60000),
+      body: JSON.stringify({
+        model: CFG.MODEL,
+        max_tokens: CFG.MAX_TOKENS,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userContent }],
+      })
+    });
+
+    if (!resp.ok) throw new Error(`API ${resp.status}`);
+    const data = await resp.json();
+
+    let reply = '';
+    if (data.content && Array.isArray(data.content))
+      reply = data.content.filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
+    else if (data.reply) reply = data.reply;
+    else if (data.text)  reply = data.text;
+
+    // Render output
+    document.getElementById('outputBody').style.cssText = '';
+    document.getElementById('outputBody').textContent = reply;
+    document.getElementById('outputBadge').textContent = '✅ तैयार';
+    document.getElementById('sourceLine').textContent =
+      `📚 मानक: ${state.docRule === 'HIGH_COURT' ? 'Allahabad HC / Counter Affidavit Format' : 'SAD Manual Prastar 127-136'}`;
+
+  } catch (e) {
+    document.getElementById('outputBody').textContent = `⚠️ त्रुटि: ${e.message}\n\nकृपया पुनः प्रयास करें।`;
+    document.getElementById('outputBadge').textContent = '❌ त्रुटि';
+  }
+
+  document.getElementById('generateBtn').disabled = false;
+}
+
+/* ══════════════════════════════════════════════
+   COPY + RESET
+══════════════════════════════════════════════ */
+function copyOutput() {
+  const text = document.getElementById('outputBody').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy', 2000);
+  });
+}
+
+function resetAll() {
+  // Reset state
+  state = { dept:'', deptLabel:'', docType:'', docRule:'', docLabel:'',
+            facts:'', pdfBase64:null, pdfName:'', currentStep:1 };
+
+  // Reset form
+  document.getElementById('deptSelect').value = '';
+  document.getElementById('docSelect').value = '';
+  document.getElementById('factsInput').value = '';
+  document.getElementById('ruleBadge').innerHTML = '';
+  document.getElementById('ruleInfo').style.display = 'none';
+  document.getElementById('step1Next').disabled = true;
+  document.getElementById('step2Next').disabled = true;
+  document.getElementById('pdfChip').classList.remove('show');
+
+  goStep(1);
+}
+</script>
+</body>
+</html>
