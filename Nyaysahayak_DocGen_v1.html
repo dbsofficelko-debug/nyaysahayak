@@ -439,7 +439,7 @@ html,body{
 const CFG = {
   API: '/.netlify/functions/ai',
   MODEL: 'claude-sonnet-4-6',
-  MAX_TOKENS: 3000,
+  MAX_TOKENS: 2000,
 };
 
 /* ══════════════════════════════════════════════
@@ -778,7 +778,7 @@ async function generate() {
   window.scrollTo(0, 0);
 
   try {
-    // RAG search (with timeout)
+    // RAG disabled
     let ragContext = '';
     try {
       ragContext = await Promise.race([
