@@ -2,6 +2,7 @@
   node_bundler = "esbuild"
 
 [functions."ai"]
+  timeout = 26
   node_bundler = "esbuild"
 
 [[headers]]
