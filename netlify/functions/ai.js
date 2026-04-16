@@ -27,7 +27,7 @@ exports.handler = async (event) => {
     const anthropicBody = {
       model: body.model || 'claude-haiku-4-5-20251001',
       max_tokens: body.max_tokens || 1000,
-      messages: body.messages || []
+      messages: body.messages || [], system: body.system || undefined
     };
     if (body.system) anthropicBody.system = body.system;
     if (body.temperature) anthropicBody.temperature = body.temperature;
