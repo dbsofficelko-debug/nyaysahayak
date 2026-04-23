@@ -1077,7 +1077,7 @@ function openDrawer(item, type) {
   if (type === 'go') tags.innerHTML += `<span class="drawer-tag">शासनादेश</span>`;
 
   // Preview
-  document.getElementById('drawerPreview').textContent = item.preview;
+  document.getElementById('drawerPreview').textContent = item.preview || item.content || '';
 
   // Actions
   const actions = document.getElementById('drawerActions');
