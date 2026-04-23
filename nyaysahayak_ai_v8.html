@@ -646,7 +646,7 @@ html, body {
           <button class="case-filter-btn" onclick="filterCases('upcoming', this)">🟡 आगामी</button>
           <button class="case-filter-btn" onclick="filterCases('normal', this)">🟢 सामान्य</button>
         </div>
-        <div class="cases-list" id="caseList"></div>
+        <div class="cnr-search-box" style="margin-bottom:12px"><div style="display:flex;gap:8px;margin-bottom:8px"><input id="cnrInput" type="text" placeholder="CNR नंबर दर्ज करें — जैसे UPHC020093032026" style="flex:1;padding:10px;border:2px solid var(--gold);border-radius:8px;background:var(--parchment);font-size:13px;color:var(--ink)"><button onclick="searchByCNR()" style="padding:10px 16px;background:var(--ink);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px">🔍 CNR</button></div><p style="font-size:11px;color:var(--ink-soft);margin:0">CNR = eCourts पर मिलने वाला 16 अंकीय केस नंबर</p></div><div class="cases-list" id="caseList"></div>
       </div>
     </div>
 
@@ -1235,6 +1235,32 @@ function populateYears(selectId, items) {
 /* ════════════════════════════════════════
    TAB 4: CASE PULSE
 ════════════════════════════════════════ */
+function searchByCNR() {
+  const cnr = document.getElementById('cnrInput').value.trim();
+  if (!cnr) { alert('CNR नंबर दर्ज करें'); return; }
+  const list = document.getElementById('caseList');
+  const bench = activeDept ? (activeDept.id === 'home' ? 'lucknow' : 'allahabad') : 'allahabad';
+  list.innerHTML = '<div style="text-align:center;padding:20px">⏳ खोज रहे हैं...</div>';
+  fetch(API + '/api/v1/cases/search', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({cnr, reference_id: bench === 'lucknow' ? 'allahabad-hc-lucknow' : 'allahabad-hc'})
+  }).then(r => r.json()).then(data => {
+    if (data.detail && data.detail.error) {
+      list.innerHTML = '<div class="empty-state">❌ केस नहीं मिला — CNR जांचें</div>';
+      return;
+    }
+    const cases = data.cases || (data.detail ? [data.detail] : []);
+    if (!cases.length) {
+      list.innerHTML = '<div class="empty-state">केस नहीं मिला</div>';
+      return;
+    }
+    renderCases(list, cases, 'all');
+  }).catch(() => {
+    list.innerHTML = '<div class="empty-state">⚠️ लोड नहीं हो सका</div>';
+  });
+}
+
 function loadCases() {
   const list = document.getElementById('caseList');
   const deptId = activeDept ? activeDept.id : null;
