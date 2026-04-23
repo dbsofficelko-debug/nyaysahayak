@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>न्यायसहायक — DBS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:       #0D1B2A;
+  --navy-mid:   #1B2F4A;
+  --navy-soft:  #2C4265;
+  --gold:       #C9981E;
+  --gold-light: #E8B84B;
+  --gold-pale:  #FDF3DC;
+  --parchment:  #F6F2EB;
+  --paper:      #FFFFFF;
+  --ink:        #0D1B2A;
+  --ink-soft:   #3D4F63;
+  --muted:      #7A8899;
+  --border:     #DDD8CE;
+  --border-soft:#EDE9E1;
+  --user-bg:    #0D1B2A;
+  --danger:     #991B1B;
+  --success:    #166534;
+  --r: 8px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  font-family: 'DM Sans', 'Noto Sans Devanagari', sans-serif;
+  background: var(--parchment);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+/* ── SHELL ── */
+.shell {
+  display: flex; flex-direction: column;
+  height: 100dvh; max-width: 860px;
+  margin: 0 auto; background: var(--paper);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+/* ── HEADER ── */
+.hdr {
+  background: var(--navy);
+  padding: 12px 18px 0;
+  flex-shrink: 0;
+}
+.hdr-top {
+  display: flex; align-items: center;
+  justify-content: space-between; margin-bottom: 10px;
+}
+.logo-block { display: flex; align-items: center; gap: 10px; }
+.logo-icon {
+  width: 36px; height: 36px; background: var(--gold);
+  border-radius: 10px; display: flex; align-items: center;
+  justify-content: center; font-size: 18px; flex-shrink: 0;
+}
+.logo-text { display: flex; flex-direction: column; }
+.logo-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px; font-weight: 700; color: #fff; line-height: 1;
+}
+.logo-tagline {
+  font-size: 10px; font-weight: 700; color: var(--gold-light);
+  letter-spacing: 1.2px; text-transform: uppercase; margin-top: 3px;
+}
+.hdr-right { display: flex; align-items: center; gap: 8px; }
+.doc-gen-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #C9981E, #E8B84B);
+  color: #0D1B2A; border-radius: 8px; text-decoration: none;
+  font-size: 12px; font-weight: 800; white-space: nowrap;
+}
+.badge-dbs {
+  font-size: 10px; font-weight: 700; color: var(--gold);
+  border: 1px solid var(--gold); padding: 3px 8px;
+  border-radius: 20px; letter-spacing: .5px;
+}
+
+/* ── DEPT SELECTOR BAR ── */
+.dept-selector-bar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0 12px; flex-shrink: 0;
+}
+.dept-selector-label {
+  font-size: 11px; font-weight: 700; color: var(--gold-light);
+  letter-spacing: .8px; text-transform: uppercase; white-space: nowrap;
+}
+.dept-select {
+  flex: 1; padding: 7px 12px;
+  background: rgba(255,255,255,.08);
+  border: 1.5px solid rgba(201,152,30,.5);
+  border-radius: 8px; color: #fff;
+  font-size: 13px; font-weight: 600;
+  font-family: inherit; cursor: pointer; outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23E8B84B' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+.dept-select option { background: var(--navy); color: #fff; }
+.dept-select:focus { border-color: var(--gold); }
+
+/* ── 4 MAIN TABS ── */
+.main-tabs {
+  display: flex; background: var(--navy-mid);
+  border-top: 1px solid rgba(255,255,255,.06);
+  flex-shrink: 0;
+}
+.main-tab {
+  flex: 1; padding: 9px 4px;
+  background: transparent; border: none;
+  color: rgba(255,255,255,.5);
+  font-size: 11px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+  border-bottom: 2px solid transparent;
+  transition: all .15s; text-align: center;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 2px;
+}
+.main-tab .tab-ico { font-size: 16px; }
+.main-tab:hover { color: rgba(255,255,255,.8); }
+.main-tab.active {
+  color: var(--gold-light);
+  border-bottom-color: var(--gold);
+  background: rgba(201,152,30,.08);
+}
+
+/* ── TAB PANELS ── */
+.tab-panels { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.tab-panel { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+.tab-panel.active { display: flex; }
+
+/* ── TAB 1: BOT ── */
+.msgs {
+  flex: 1; overflow-y: auto;
+  padding: 18px; background: var(--parchment);
+  scroll-behavior: smooth;
+}
+.welcome { text-align: center; padding: 30px 20px 16px; }
+.welcome-ico { font-size: 40px; margin-bottom: 12px; display: block; }
+.welcome-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; color: var(--navy); margin-bottom: 6px;
+}
+.welcome-sub { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 18px; }
+.chip-label {
+  font-size: 10px; font-weight: 700; color: var(--gold);
+  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;
+}
+.carousel-track { display: flex; flex-direction: column; gap: 7px; max-width: 340px; margin: 0 auto; }
+.carousel-chip {
+  padding: 10px 14px; background: var(--paper);
+  border: 1.5px solid var(--border); border-radius: var(--r);
+  font-size: 13px; color: var(--ink-soft); cursor: pointer;
+  text-align: left; font-family: inherit;
+  transition: border-color .2s, color .2s;
+  animation: fadeUp .35s ease;
+}
+.carousel-chip:hover { border-color: var(--gold); color: var(--navy); }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.suggestion-row {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 9px; animation: fadeUp .3s ease;
+}
+.sugg-chip {
+  padding: 5px 12px;
+  background: var(--gold-pale);
+  border: 1px solid rgba(201,152,30,.4);
+  border-radius: 20px; font-size: 12px; color: var(--navy);
+  cursor: pointer; font-family: inherit; font-weight: 500;
+  transition: background .15s;
+}
+.sugg-chip:hover { background: var(--gold-light); border-color: var(--gold); }
+.msg-row { display: flex; margin-bottom: 12px; }
+.msg-row.user { justify-content: flex-end; }
+.msg-row.bot  { justify-content: flex-start; }
+.bubble {
+  max-width: 82%; padding: 10px 14px; border-radius: 14px;
+  font-size: 14px; line-height: 1.65;
+  font-family: 'Noto Sans Devanagari', 'DM Sans', sans-serif;
+}
+.msg-row.user .bubble { background: var(--user-bg); color: #fff; border-bottom-right-radius: 4px; }
+.msg-row.bot  .bubble {
+  background: var(--paper); color: var(--ink);
+  border: 1px solid var(--border); border-bottom-left-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.typing { display: flex; gap: 5px; align-items: center; padding: 10px 14px; }
+.typing span {
+  width: 7px; height: 7px; background: var(--muted);
+  border-radius: 50%; animation: bounce .9s infinite;
+}
+.typing span:nth-child(2) { animation-delay: .15s; }
+.typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes bounce {
+  0%,60%,100% { transform: translateY(0); opacity:.4; }
+  30% { transform: translateY(-6px); opacity:1; }
+}
+.input-area {
+  flex-shrink: 0; background: var(--paper);
+  border-top: 1px solid var(--border);
+  padding: 10px 14px 14px;
+}
+.pdf-chip {
+  display: none; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--gold);
+  background: var(--gold-pale); border: 1px solid var(--gold);
+  padding: 4px 10px 4px 8px; border-radius: 6px;
+  margin-bottom: 8px; width: fit-content;
+}
+.chip-remove { cursor: pointer; color: var(--danger); font-size: 14px; margin-left: 2px; }
+.input-row {
+  display: flex; align-items: flex-end; gap: 8px;
+  background: var(--parchment); border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 8px 8px 8px 12px;
+  transition: border-color .15s;
+}
+.input-row:focus-within { border-color: var(--gold); }
+.attach-btn {
+  background: none; border: none; cursor: pointer;
+  padding: 4px; color: var(--muted); font-size: 18px;
+  flex-shrink: 0; display: flex; align-items: center;
+  transition: color .15s;
+}
+.attach-btn:hover { color: var(--gold); }
+#msgInput {
+  flex: 1; border: none; background: transparent;
+  font-size: 16px;
+  font-family: 'Noto Sans Devanagari', 'DM Sans', sans-serif;
+  color: var(--ink); resize: none; outline: none;
+  max-height: 120px; line-height: 1.5; padding: 2px 0;
+}
+#msgInput::placeholder { color: var(--muted); }
+.send-btn {
+  width: 36px; height: 36px; background: var(--navy);
+  border: none; border-radius: 10px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; color: #fff; font-size: 17px;
+  transition: background .15s, transform .1s;
+}
+.send-btn:hover { background: var(--navy-soft); }
+.send-btn:active { transform: scale(.95); }
+.send-btn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+.input-hint { font-size: 11px; color: var(--muted); text-align: center; margin-top: 5px; }
+#fileInput { display: none; }
+
+/* ── TAB 2 & 3: GOs / JUDGMENTS ── */
+.content-panel {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+}
+.panel-toolbar {
+  padding: 12px 16px; background: var(--paper);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+}
+.panel-search {
+  flex: 1; padding: 8px 14px;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  font-size: 13px; font-family: inherit; outline: none;
+  background: var(--parchment); color: var(--ink);
+}
+.panel-search:focus { border-color: var(--gold); }
+.year-filter {
+  padding: 8px 10px; border: 1.5px solid var(--border);
+  border-radius: 8px; font-size: 12px; font-family: inherit;
+  background: var(--parchment); color: var(--ink); outline: none; cursor: pointer;
+}
+.year-filter:focus { border-color: var(--gold); }
+.items-list {
+  flex: 1; overflow-y: auto; padding: 12px 16px;
+  background: var(--parchment);
+}
+.free-badge {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  background: #dcfce7; color: var(--success);
+  border: 1px solid #bbf7d0; padding: 2px 8px;
+  border-radius: 20px; margin-left: 6px; vertical-align: middle;
+}
+.lock-badge {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  background: #fef3c7; color: #92400e;
+  border: 1px solid #fde68a; padding: 2px 8px;
+  border-radius: 20px; margin-left: 6px; vertical-align: middle;
+}
+.item-card {
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 12px 14px; margin-bottom: 10px;
+  cursor: pointer; transition: border-color .15s, box-shadow .15s;
+}
+.item-card:hover { border-color: var(--gold); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.item-card.locked { opacity: .75; cursor: default; }
+.item-card.locked:hover { border-color: var(--border); box-shadow: none; }
+.item-title { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.5; margin-bottom: 4px; }
+.item-meta { font-size: 11px; color: var(--muted); }
+.item-preview { font-size: 12px; color: var(--ink-soft); margin-top: 6px; line-height: 1.5; }
+.lock-overlay {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 8px; padding: 8px 10px;
+  background: var(--gold-pale); border-radius: 6px;
+  font-size: 12px; color: #92400e;
+}
+.subscribe-wall {
+  margin: 16px; padding: 20px;
+  background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+  border-radius: 12px; text-align: center; color: #fff;
+}
+.subscribe-wall h3 { font-size: 16px; margin-bottom: 8px; }
+.subscribe-wall p { font-size: 12px; color: rgba(255,255,255,.7); margin-bottom: 14px; line-height: 1.6; }
+.subscribe-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #C9981E, #E8B84B);
+  color: var(--navy); border-radius: 8px; border: none;
+  font-size: 13px; font-weight: 800; cursor: pointer;
+  font-family: inherit; text-decoration: none;
+}
+.empty-state {
+  text-align: center; padding: 40px 20px; color: var(--muted);
+}
+.empty-state .empty-ico { font-size: 36px; margin-bottom: 10px; display: block; }
+
+/* ── GO PREVIEW DRAWER ── */
+.drawer-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(13,27,42,.55);
+  backdrop-filter: blur(2px);
+}
+.drawer-overlay.open { display: block; }
+.drawer {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 860px;
+  background: var(--paper);
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -4px 32px rgba(0,0,0,.18);
+  z-index: 101;
+  max-height: 80dvh;
+  display: flex; flex-direction: column;
+  transform: translateX(-50%) translateY(100%);
+  transition: transform .3s cubic-bezier(.4,0,.2,1);
+}
+.drawer.open { transform: translateX(-50%) translateY(0); }
+.drawer-handle {
+  width: 40px; height: 4px; background: var(--border);
+  border-radius: 2px; margin: 12px auto 0;
+  flex-shrink: 0;
+}
+.drawer-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 14px 18px 10px; flex-shrink: 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+.drawer-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px; font-weight: 700; color: var(--navy);
+  line-height: 1.4; flex: 1; padding-right: 12px;
+}
+.drawer-close {
+  background: var(--parchment); border: none; cursor: pointer;
+  width: 30px; height: 30px; border-radius: 50%;
+  font-size: 16px; color: var(--muted); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+.drawer-close:hover { background: var(--border); }
+.drawer-meta {
+  padding: 8px 18px;
+  font-size: 12px; color: var(--muted);
+  display: flex; gap: 12px; flex-wrap: wrap;
+  flex-shrink: 0;
+}
+.drawer-meta span { display: flex; align-items: center; gap: 4px; }
+.drawer-body {
+  flex: 1; overflow-y: auto;
+  padding: 14px 18px 24px;
+}
+.drawer-preview-text {
+  font-size: 14px; line-height: 1.8; color: var(--ink-soft);
+  background: var(--parchment); border-radius: 8px;
+  padding: 14px 16px; margin-bottom: 16px;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+}
+.drawer-actions {
+  display: flex; gap: 10px; flex-wrap: wrap;
+}
+.drawer-btn-primary {
+  flex: 1; padding: 10px 16px;
+  background: var(--navy); color: #fff;
+  border: none; border-radius: 8px;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  text-decoration: none; transition: background .15s;
+}
+.drawer-btn-primary:hover { background: var(--navy-soft); }
+.drawer-btn-secondary {
+  padding: 10px 16px;
+  background: var(--gold-pale);
+  border: 1.5px solid var(--gold);
+  border-radius: 8px; color: var(--navy);
+  font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+  display: flex; align-items: center; gap: 6px;
+  text-decoration: none; transition: background .15s;
+}
+.drawer-btn-secondary:hover { background: var(--gold-light); }
+.drawer-tag-row {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;
+}
+.drawer-tag {
+  font-size: 11px; font-weight: 700;
+  padding: 3px 10px; border-radius: 20px;
+  background: var(--navy); color: var(--gold-light);
+}
+
+/* ── TAB 4: CASE PULSE ── */
+.case-panel {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+}
+.case-toolbar {
+  padding: 10px 16px; background: var(--paper);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.case-filter-btn {
+  padding: 5px 12px; border-radius: 20px;
+  border: 1.5px solid var(--border); background: transparent;
+  font-size: 12px; font-weight: 600; color: var(--ink-soft);
+  cursor: pointer; font-family: inherit; transition: all .15s;
+}
+.case-filter-btn.active {
+  background: var(--navy); border-color: var(--navy); color: #fff;
+}
+.case-filter-btn:hover:not(.active) { border-color: var(--gold); color: var(--navy); }
+.cases-list {
+  flex: 1; overflow-y: auto; padding: 12px 16px;
+  background: var(--parchment);
+}
+.case-card {
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 12px 14px; margin-bottom: 10px;
+  transition: border-color .15s; position: relative;
+}
+.case-card:hover { border-color: var(--gold); }
+.case-card.urgent { border-left: 3px solid #dc2626; }
+.case-card.upcoming { border-left: 3px solid #d97706; }
+.case-card.normal { border-left: 3px solid #16a34a; }
+.case-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+.case-number { font-size: 13px; font-weight: 700; color: var(--navy); }
+.case-date-badge {
+  font-size: 11px; font-weight: 700; padding: 3px 9px;
+  border-radius: 20px; white-space: nowrap; flex-shrink: 0;
+}
+.urgent .case-date-badge { background: #fee2e2; color: #dc2626; }
+.upcoming .case-date-badge { background: #fef3c7; color: #d97706; }
+.normal .case-date-badge { background: #dcfce7; color: #16a34a; }
+.case-title { font-size: 12px; color: var(--ink-soft); margin-bottom: 5px; line-height: 1.5; }
+.case-meta { display: flex; gap: 10px; flex-wrap: wrap; }
+.case-tag {
+  font-size: 11px; color: var(--muted);
+  background: var(--parchment); padding: 2px 8px;
+  border-radius: 4px;
+}
+.pulse-header {
+  padding: 10px 16px; background: var(--paper);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.pulse-title { font-size: 13px; font-weight: 700; color: var(--navy); }
+.pulse-live {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; color: #16a34a; font-weight: 700;
+}
+.pulse-dot {
+  width: 7px; height: 7px; background: #16a34a;
+  border-radius: 50%; animation: pulseDot 1.5s infinite;
+}
+@keyframes pulseDot {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .5; transform: scale(1.3); }
+}
+.coming-soon-case {
+  margin: 16px; padding: 24px;
+  background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+  border-radius: 12px; text-align: center; color: #fff;
+}
+.coming-soon-case h3 { font-size: 16px; margin-bottom: 8px; }
+.coming-soon-case p { font-size: 12px; color: rgba(255,255,255,.7); line-height: 1.6; margin-bottom: 14px; }
+.notify-btn {
+  padding: 9px 18px;
+  background: linear-gradient(135deg, #C9981E, #E8B84B);
+  color: var(--navy); border-radius: 8px; border: none;
+  font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit;
+}
+
+/* ── SCROLLBARS ── */
+.msgs::-webkit-scrollbar,
+.items-list::-webkit-scrollbar,
+.cases-list::-webkit-scrollbar,
+.drawer-body::-webkit-scrollbar { width: 4px; }
+.msgs::-webkit-scrollbar-track,
+.items-list::-webkit-scrollbar-track,
+.cases-list::-webkit-scrollbar-track,
+.drawer-body::-webkit-scrollbar-track { background: transparent; }
+.msgs::-webkit-scrollbar-thumb,
+.items-list::-webkit-scrollbar-thumb,
+.cases-list::-webkit-scrollbar-thumb,
+.drawer-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── MOBILE ── */
+@media (max-width: 600px) {
+  .logo-name { font-size: 17px; }
+  .bubble { max-width: 90%; font-size: 13px; }
+  .shell { border: none; }
+  .doc-gen-btn { font-size: 11px; padding: 5px 9px; }
+  .main-tab { font-size: 10px; padding: 8px 2px; }
+  .main-tab .tab-ico { font-size: 14px; }
+  .drawer { max-height: 88dvh; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── HEADER ── -->
+  <div class="hdr">
+    <div class="hdr-top">
+      <div class="logo-block">
+        <div class="logo-icon">⚖</div>
+        <div class="logo-text">
+          <span class="logo-name">न्यायसहायक</span>
+          <span class="logo-tagline">सतर्क सेवा &nbsp;·&nbsp; सक्षम सेवा</span>
+        </div>
+      </div>
+      <div class="hdr-right">
+        <a href="Nyaysahayak_DocGen_v1.html" class="doc-gen-btn">📄 दस्तावेज़ निर्माता</a>
+        <span class="badge-dbs">DBS</span>
+      </div>
+    </div>
+
+    <!-- DEPT DROPDOWN -->
+    <div class="dept-selector-bar">
+      <span class="dept-selector-label">विभाग</span>
+      <select class="dept-select" id="deptSelect" onchange="onDeptChange()">
+        <option value="">— विभाग चुनें —</option>
+      </select>
+    </div>
+
+    <!-- 4 MAIN TABS -->
+    <div class="main-tabs">
+      <button class="main-tab active" onclick="switchTab('bot')" id="tab-btn-bot">
+        <span class="tab-ico">💬</span>विभाग बॉट
+      </button>
+      <button class="main-tab" onclick="switchTab('gos')" id="tab-btn-gos">
+        <span class="tab-ico">📜</span>शासनादेश
+      </button>
+      <button class="main-tab" onclick="switchTab('judgments')" id="tab-btn-judgments">
+        <span class="tab-ico">⚖️</span>न्यायालय निर्णय
+      </button>
+      <button class="main-tab" onclick="switchTab('pulse')" id="tab-btn-pulse">
+        <span class="tab-ico">📊</span>केस पल्स
+      </button>
+    </div>
+  </div>
+
+  <!-- ── TAB PANELS ── -->
+  <div class="tab-panels">
+
+    <!-- TAB 1: BOT -->
+    <div class="tab-panel active" id="panel-bot">
+      <div class="msgs" id="msgs">
+        <div class="welcome" id="welcome">
+          <span class="welcome-ico">⚖️</span>
+          <div class="welcome-title" id="welcomeTitle">न्यायसहायक में स्वागत है</div>
+          <p class="welcome-sub" id="welcomeSub">ऊपर विभाग चुनें — फिर प्रश्न पूछें या नीचे से चुनें</p>
+          <div style="max-width:340px;margin:0 auto;">
+            <div class="chip-label">⚡ त्वरित प्रश्न</div>
+            <div class="carousel-track" id="carouselTrack"></div>
+          </div>
+        </div>
+      </div>
+      <div class="input-area">
+        <div class="pdf-chip" id="pdfChip">
+          <span>📎</span><span id="pdfName">—</span>
+          <span class="chip-remove" onclick="removePdf()">✕</span>
+        </div>
+        <div class="input-row">
+          <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="PDF संलग्न करें">📎</button>
+          <textarea id="msgInput" rows="1" placeholder="यहाँ प्रश्न लिखें…" maxlength="2000"></textarea>
+          <button class="send-btn" id="sendBtn" onclick="send()" title="भेजें">➤</button>
+        </div>
+        <div class="input-hint">Enter = भेजें &nbsp;·&nbsp; Shift+Enter = नई पंक्ति</div>
+        <input type="file" id="fileInput" accept=".pdf" onchange="onPdfSelect(this)">
+      </div>
+    </div>
+
+    <!-- TAB 2: GOs -->
+    <div class="tab-panel" id="panel-gos">
+      <div class="content-panel">
+        <div class="panel-toolbar">
+          <input class="panel-search" type="text" id="goSearch" placeholder="शासनादेश खोजें…" oninput="filterItems('go')">
+          <select class="year-filter" id="goYear" onchange="filterItems('go')">
+            <option value="">सभी वर्ष</option>
+          </select>
+        </div>
+        <div class="items-list" id="goList"></div>
+      </div>
+    </div>
+
+    <!-- TAB 3: JUDGMENTS -->
+    <div class="tab-panel" id="panel-judgments">
+      <div class="content-panel">
+        <div class="panel-toolbar">
+          <input class="panel-search" type="text" id="jSearch" placeholder="निर्णय खोजें…" oninput="filterItems('j')">
+          <select class="year-filter" id="jYear" onchange="filterItems('j')">
+            <option value="">सभी वर्ष</option>
+          </select>
+        </div>
+        <div class="items-list" id="jList"></div>
+      </div>
+    </div>
+
+    <!-- TAB 4: CASE PULSE -->
+    <div class="tab-panel" id="panel-pulse">
+      <div class="case-panel">
+        <div class="pulse-header">
+          <span class="pulse-title" id="pulseTitle">केस पल्स</span>
+          <div class="pulse-live"><div class="pulse-dot"></div>लाइव ट्रैकिंग</div>
+        </div>
+        <div class="case-toolbar">
+          <button class="case-filter-btn active" onclick="filterCases('all', this)">सभी</button>
+          <button class="case-filter-btn" onclick="filterCases('urgent', this)">🔴 अत्यावश्यक</button>
+          <button class="case-filter-btn" onclick="filterCases('upcoming', this)">🟡 आगामी</button>
+          <button class="case-filter-btn" onclick="filterCases('normal', this)">🟢 सामान्य</button>
+        </div>
+        <div class="cases-list" id="caseList"></div>
+      </div>
+    </div>
+
+  </div><!-- /tab-panels -->
+</div><!-- /shell -->
+
+<!-- ── GO / JUDGMENT PREVIEW DRAWER ── -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="previewDrawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-header">
+    <div class="drawer-title" id="drawerTitle">—</div>
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-meta" id="drawerMeta"></div>
+  <div class="drawer-body">
+    <div class="drawer-tag-row" id="drawerTags"></div>
+    <div class="drawer-preview-text" id="drawerPreview">—</div>
+    <div class="drawer-actions" id="drawerActions"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════
+   CONFIG
+════════════════════════════════════════ */
+const CFG = {
+  API: '/.netlify/functions/ai',
+  MODEL_HAIKU: 'claude-haiku-4-5-20251001',
+  MODEL_SONNET: 'claude-sonnet-4-20250514',
+  MAX_TOKENS: 2000,
+  PDF_MAX_MB: 4,
+  FREE_ITEMS: 5,
+};
+
+/* ════════════════════════════════════════
+   DEPARTMENTS
+════════════════════════════════════════ */
+const DEPTS = [
+  {
+    id: 'madhyamik',
+    label: 'माध्यमिक शिक्षा',
+    icon: '🎓',
+    prompt: 'आप उत्तर प्रदेश माध्यमिक शिक्षा विभाग के वरिष्ठ विधिक अधिकारी हैं। UP Intermediate Education Act 1921, Seva Vidhi, SAD Manual के आधार पर उत्तर दें।',
+    books: ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi', 'UP Procurement Manual'],
+    chips: [
+      'सहायता प्राप्त विद्यालय में नियुक्ति नियम',
+      'शिक्षक स्थानांतरण की प्रक्रिया',
+      'प्रधानाचार्य की शक्तियाँ क्या हैं?',
+      'फर्जी नियुक्ति — विभागीय कार्रवाई',
+      'UP Intermediate Education Act की मुख्य धाराएँ',
+      'मान्यता रद्द करने की प्रक्रिया',
+    ]
+  },
+  {
+    id: 'basic',
+    label: 'बेसिक शिक्षा',
+    icon: '📚',
+    prompt: 'आप उत्तर प्रदेश बेसिक शिक्षा विभाग के वरिष्ठ विधिक अधिकारी हैं। UP Basic Education Act, BTC/D.El.Ed नियम, Seva Vidhi के आधार पर उत्तर दें।',
+    books: ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi'],
+    chips: [
+      'प्राथमिक शिक्षक नियुक्ति की शर्तें',
+      'BRC/NPRC के कार्य एवं अधिकार',
+      'शिक्षक अनुपस्थिति पर क्या कार्रवाई?',
+      'मिड-डे मील योजना के नियम',
+      'विद्यालय प्रबंध समिति का गठन',
+      'BSA की शक्तियाँ और दायित्व',
+    ]
+  },
+  {
+    id: 'grih',
+    label: 'गृह विभाग',
+    icon: '🏛️',
+    prompt: 'आप उत्तर प्रदेश गृह विभाग / SNP में ex-gratia, अनुकम्पा नियुक्ति (CAPF/अर्धसैनिक बल) एवं सेवायोजन मामलों के विधिक अधिकारी हैं। शासनादेश 2020 के अनुसार उत्तर दें।',
+    books: ['Financial Handbook Vol-2', 'SAD Manual', 'Seva Vidhi', 'Ex-Gratia Sevayojan (SNP)'],
+    chips: [
+      'अनुकम्पा नियुक्ति की पात्रता क्या है?',
+      'अनुग्रह राशि की गणना कैसे होती है?',
+      'CAPF शहीद परिजन को क्या मिलता है?',
+      'Ex-gratia आवेदन का प्रारूप',
+      'सिख दंगा पीड़ित मामलों की स्थिति',
+      'अर्धसैनिक बल — सेवायोजन नियम 2020',
+    ]
+  },
+  {
+    id: 'sainik_up',
+    label: 'सैनिक स्कूल UP',
+    icon: '🪖',
+    prompt: 'आप UP Government के सैनिक स्कूल (लखनऊ/गोरखपुर) के विधिक अधिकारी हैं। Boys Class 6, Girls Class 9 प्रवेश। केवल UP Government नियम लागू — MoD नहीं।',
+    books: ['Financial Handbook Vol-2', 'Seva Vidhi', 'Sainik School UP (Lucknow)'],
+    chips: [
+      'Board of Governors की शक्तियाँ',
+      'Teaching Staff सेवा नियम 1978',
+      'Class 6 प्रवेश की पात्रता क्या है?',
+      'Principal की नियुक्ति प्रक्रिया',
+      'अनुशासनिक कार्यवाही के नियम',
+      'वार्षिक बजट अनुमोदन प्रक्रिया',
+    ]
+  },
+  {
+    id: 'sainik_mod',
+    label: 'सैनिक स्कूल MoD',
+    icon: '🎖️',
+    prompt: 'आप रक्षा मंत्रालय (MoD) के सैनिक स्कूल (मैनपुरी/झाँसी/अमेठी) के विधिक अधिकारी हैं। Central Government/MoD के नियम primary हैं।',
+    books: ['Financial Handbook Vol-2', 'Sainik School Society Rules (MoD)'],
+    chips: [
+      'Sainik School Society के नियम',
+      'MoD सेवा शर्तें — शिक्षक वर्ग',
+      'प्रवेश परीक्षा — AISSEE नियम',
+      'Principal की नियुक्ति — MoD प्रक्रिया',
+      'वार्षिक लेखा परीक्षा के नियम',
+      'अनुशासनिक समिति का गठन',
+    ]
+  },
+  {
+    id: 'puvvnl',
+    label: 'PUVVNL',
+    icon: '⚡',
+    prompt: 'आप PUVVNL (पूर्वांचल विद्युत वितरण निगम) के वरिष्ठ विधिक अधिकारी हैं। Electricity Act 2003, UP Supply Code 2005, UPERC नियम के आधार पर उत्तर दें।',
+    books: ['Financial Handbook Vol-2', 'Electricity Act 2003', 'UP Supply Code 2005'],
+    chips: [
+      'बिजली चोरी पर क्या कार्रवाई?',
+      'उपभोक्ता शिकायत निवारण प्रक्रिया',
+      'CGRF में अपील कैसे करें?',
+      'Electricity Act 2003 की मुख्य धाराएँ',
+      'विद्युत दर निर्धारण के नियम',
+      'Ombudsman के समक्ष अपील',
+    ]
+  },
+  {
+    id: 'iti',
+    label: 'ITI',
+    icon: '🏭',
+    prompt: 'आप UP के ITI विभाग के विधिक अधिकारी हैं। ITI नियम, Financial Handbook, SAD Manual, Seva Vidhi और Procurement Manual के आधार पर उत्तर दें।',
+    books: ['Financial Handbook Vol-2', 'Seva Vidhi', 'UP Procurement Manual'],
+    chips: [
+      'ITI प्रशिक्षक नियुक्ति के नियम',
+      'क्रय प्रक्रिया — उपकरण खरीद',
+      'प्रशिक्षार्थी प्रवेश की पात्रता',
+      'विभागीय जाँच की प्रक्रिया',
+      'GeM पोर्टल से खरीद नियम',
+      'संस्था का वित्तीय ऑडिट',
+    ]
+  },
+  {
+    id: 'secretariat',
+    label: 'UP Secretariat',
+    icon: '🏢',
+    prompt: 'आप UP Secretariat (सामान्य प्रशासन) के वरिष्ठ अधिकारी हैं। SAD Manual, Financial Handbook Vol-2, Seva Vidhi के अनुसार noting, drafting करें।',
+    books: ['SAD Manual', 'Financial Handbook Vol-2', 'Seva Vidhi'],
+    chips: [
+      'सचिवालय में टिप्पण कैसे लिखें?',
+      'न्यायालयीन प्रकरण में उत्तर प्रारूप',
+      'पत्र किस स्तर से जारी होता है?',
+      'SAD Manual Prastar 127-136 का सार',
+      'अनुभाग अधिकारी की शक्तियाँ',
+      'शासनादेश और परिपत्र में अंतर',
+    ]
+  },
+  {
+    id: 'rajasva',
+    label: 'राजस्व विभाग',
+    icon: '📋',
+    prompt: 'आप UP राजस्व विभाग के वरिष्ठ विधिक अधिकारी हैं। UP Revenue Code 2006, Land Acquisition Act, Financial Handbook के आधार पर उत्तर दें।',
+    books: ['Financial Handbook Vol-2', 'SAD Manual', 'UP Revenue Code'],
+    chips: [
+      'भूमि अधिग्रहण की प्रक्रिया',
+      'राजस्व अभिलेख दुरुस्ती के नियम',
+      'तहसीलदार की शक्तियाँ क्या हैं?',
+      'UP Revenue Code 2006 की मुख्य धाराएँ',
+      'नामांतरण — म्यूटेशन प्रक्रिया',
+      'भू-माफिया के विरुद्ध कार्रवाई',
+    ]
+  },
+    {
+      id: "nyay",
+      label: "न्याय विभाग",
+      icon: "⚖️",
+      prompt: "आप UP न्याय विभाग के शासनादेशों के विशेषज्ञ हैं। GO खोजें, वैधता जांचें और विभागीय आदेशों में सहायता करें।",
+      books: ["Financial Handbook Vol-2", "SAD Manual"],
+      chips: ["शासनादेश खोजें", "GO की वैधता", "अनुकम्पा नियम", "विभागीय आदेश"]
+    },
+];
+
+/* ════════════════════════════════════════
+   DEMO DATA — GOs
+════════════════════════════════════════ */
+const DEMO_GOS = {
+  madhyamik: [
+    { id:1, title:'माध्यमिक शिक्षा — शिक्षक स्थानांतरण नियमावली 2024', date:'15 मार्च 2024', ref:'GO/MAD/2024/312', preview:'शिक्षकों के अंतर-जनपदीय स्थानांतरण की प्रक्रिया एवं पात्रता निर्धारित की गई है। स्थानांतरण हेतु न्यूनतम तीन वर्ष की सेवा अनिवार्य है। आवेदन ऑनलाइन पोर्टल पर किया जाएगा। जनपद बदलने पर विद्यालय प्रकार समान रहेगा।', category:'स्थानांतरण', shasanadeshUrl:'https://shasanadesh.up.gov.in/' },
+    { id:2, title:'सहायता प्राप्त विद्यालय — वेतन भुगतान शासनादेश', date:'02 जनवरी 2024', ref:'GO/MAD/2024/018', preview:'सहायता प्राप्त माध्यमिक विद्यालयों के शिक्षकों के वेतन भुगतान की संशोधित प्रक्रिया निर्धारित की गई। PFMS के माध्यम से सीधे खाते में भुगतान होगा। विलम्ब पर विद्यालय प्रबंधक उत्तरदायी होंगे।', category:'वेतन', shasanadeshUrl:'https://shasanadesh.up.gov.in/' },
+    { id:3, title:'प्रधानाचार्य नियुक्ति — संशोधित नियमावली 2023', date:'10 नवम्बर 2023', ref:'GO/MAD/2023/891', preview:'प्रधानाचार्य पद पर नियुक्ति हेतु न्यूनतम 10 वर्ष अध्यापन अनुभव अनिवार्य। पदोन्नति वरिष्ठता एवं DPC की अनुशंसा पर होगी। चयन समिति में DIOS एवं विभागीय प्रतिनिधि होंगे।', category:'नियुक्ति', shasanadeshUrl:'https://shasanadesh.up.gov.in/' },
+    { id:4, title:'UP Board परीक्षा — केन्द्र निर्धारण नीति 2024', date:'05 दिसम्बर 2023', ref:'GO/MAD/2023/967', preview:'हाईस्कूल एवं इण्टर परीक्षा केन्द्रों के निर्धारण में पारदर्शिता हेतु ऑनलाइन प्रणाली लागू। विद्यालय से 5 किमी के भीतर केन्द्र नहीं होगा। CCTV अनिवार्य।', category:'परीक्षा', shasanadeshUrl:'https://shasanadesh.up.gov.in/' },
+    { id:5, title:'विद्यालय मान्यता — नवीनीकरण प्रक्रिया 2023', date:'22 अगस्त 2023', ref:'GO/MAD/2023/654', preview:'माध्यमिक विद्यालयों की मान्यता नवीनीकरण हेतु ऑनलाइन पोर्टल पर आवेदन अनिवार्य। भवन निरीक्षण, शिक्षक योग्यता एवं छात्र संख्या की जाँच होगी। अपात्र विद्यालयों की मान्यता तत्काल समाप्त।', category:'मान्यता', shasanadeshUrl:'https://shasanadesh.up.gov.in/' },
+    { id:6, title:'शिक्षक सेवा नियमावली — संशोधन 2022', date:'14 जून 2022', ref:'GO/MAD/2022/445', preview:'[सदस्यता आवश्यक]', locked:true },
+    { id:7, title:'विशेष शिक्षा — समावेशी शिक्षा दिशानिर्देश', date:'03 मार्च 2022', ref:'GO/MAD/2022/201', preview:'[सदस्यता आवश्यक]', locked:true },
+  ],
+  grih: [
+    { id:1, title:'अनुकम्पा नियुक्ति — CAPF शहीद परिजन शासनादेश 2020', date:'12 अप्रैल 2020', ref:'GO/SNP/2020/156', preview:'केन्द्रीय अर्धसैनिक बल में शहीद कार्मिकों के आश्रितों की अनुकम्पा नियुक्ति हेतु UP सरकार में विशेष प्रावधान। आश्रित पत्नी/पुत्र/पुत्री ग्रुप-C/D पद हेतु पात्र। आवेदन DIG/IG कार्यालय के माध्यम से।', category:'अनुकम्पा', shasanadeshUrl:'https://shasanadesh.up.gov.in/' },
+    { id:2, title:'अनुग्रह राशि — संशोधित दरें 2024', date:'21 नवम्बर 2024', ref:'GO/SNP/2024/4260P', preview:'सामान्य कर्तव्य पालन में मृत्यु: ₹20 लाख (पत्नी) + ₹5 लाख (माता-पिता)। विशेष जोखिम कार्य में मृत्यु: ₹40 लाख (पत्नी) + ₹10 लाख (माता-पिता)। दिव्यांगता पर अलग स्लैब।', category:'अनुग्रह राशि', shasanadeshUrl:'https://shasanadesh.up.gov.in/' },
+    { id:3, title:'Ex-Gratia — ऑनलाइन आवेदन प्रक्रिया 2024', date:'08 फरवरी 2024', ref:'GO/SNP/2024/089', preview:'Ex-gratia एवं अनुकम्पा आवेदन हेतु सिंगल विंडो ऑनलाइन पोर्टल पर आवेदन। दस्तावेज़: मृत्यु प्रमाणपत्र, सेवा रिकॉर्ड, FIR (यदि लागू), आश्रित प्रमाणपत्र। 30 दिन में निस्तारण अनिवार्य।', category:'प्रक्रिया', shasanadeshUrl:'https://shasanadesh.up.gov.in/' },
+    { id:4, title:'सिख दंगा पीड़ित — मुआवजा पुनरीक्षण 2022', date:'22 नवम्बर 2022', ref:'GO/SNP/2022/734', preview:'1984 सिख दंगा पीड़ितों के मुआवजे की पुनरीक्षित दरें। मृत्यु: ₹5 लाख। संपत्ति नुकसान: निर्धारित दर। आवेदन जिलाधिकारी कार्यालय को। SIT जाँच के बाद भुगतान।', category:'मुआवजा', shasanadeshUrl:'https://shasanadesh.up.gov.in/' },
+    { id:5, title:'अर्धसैनिक बल सेवायोजन — नियमावली 2020', date:'15 सितम्बर 2020', ref:'GO/SNP/2020/567', preview:'अर्धसैनिक बल के आश्रितों को UP सरकारी सेवा में प्राथमिकता। CRPF/BSF/CISF/SSB/ITBP सभी बलों के आश्रित पात्र। रोजगार कार्यालय में पंजीकरण आवश्यक। ग्रुप-C के 5% पद आरक्षित।', category:'सेवायोजन', shasanadeshUrl:'https://shasanadesh.up.gov.in/' },
+    { id:6, title:'पुलिस कार्मिक — मृत्यु उपरांत देय लाभ', date:'10 जनवरी 2022', ref:'GO/SNP/2022/034', preview:'[सदस्यता आवश्यक]', locked:true },
+  ],
+};
+
+/* Demo Judgments */
+const DEMO_JUDGMENTS = {
+  madhyamik: [
+    { id:1, title:'राज्य बनाम रमेश कुमार — शिक्षक नियुक्ति विवाद', court:'HC Allahabad', date:'18 मार्च 2024', caseNo:'Writ-A 12453/2023', preview:'सहायता प्राप्त विद्यालय में नियुक्ति हेतु B.Ed. अनिवार्यता पर निर्णय। HC ने माना कि TET उत्तीर्ण के साथ B.Ed. दोनों अनिवार्य। विद्यालय प्रबंधन को 4 सप्ताह में अनुपालन का आदेश।' },
+    { id:2, title:'सुमन देवी बनाम प्रधानाचार्य — स्थानांतरण आदेश', court:'HC Allahabad', date:'05 जनवरी 2024', caseNo:'Writ-A 9821/2023', preview:'स्थानांतरण में विचाराधीन प्रकरण की स्थिति का संज्ञान। HC ने कहा — pending inquiry के दौरान स्थानांतरण किया जा सकता है, लेकिन कारण अभिलेख में हों।' },
+    { id:3, title:'UP शिक्षक संघ बनाम राज्य — वेतनमान विवाद', court:'SC India', date:'12 दिसम्बर 2023', caseNo:'SLP 45612/2023', preview:'7वें वेतनमान की विसंगति — माध्यमिक शिक्षक वर्ग। SC ने UP सरकार को नोटिस। 6 सप्ताह में जवाब माँगा। ₹18,000 न्यूनतम मूल वेतन पर विवाद।' },
+    { id:4, title:'अनिल सिंह बनाम माध्यमिक शिक्षा परिषद', court:'HC Allahabad', date:'09 अक्टूबर 2023', caseNo:'Writ-B 6734/2022', preview:'परीक्षा परिणाम में संशोधन हेतु याचिका। HC ने कहा — Board का परिणाम अंतिम है जब तक fraud साबित न हो। OMR sheet पुनः जाँच का आदेश।' },
+    { id:5, title:'विद्यालय प्रबंध समिति बनाम BSA — मान्यता विवाद', court:'HC Allahabad', date:'14 अगस्त 2023', caseNo:'Writ-A 4521/2023', preview:'मान्यता रद्द आदेश को चुनौती। HC ने interim stay दिया। BSA को 3 सप्ताह में counter affidavit देने का निर्देश। सुनवाई जारी।' },
+    { id:6, title:'प्रमोद तिवारी बनाम DIOS — सेवा समाप्ति', court:'HC Allahabad', date:'22 मई 2023', caseNo:'Writ-A 3102/2023', preview:'[सदस्यता आवश्यक]', locked:true },
+  ],
+  grih: [
+    { id:1, title:'अनुकम्पा नियुक्ति — समयसीमा पर HC निर्णय', court:'HC Allahabad', date:'20 मार्च 2024', caseNo:'Writ-A 14231/2023', preview:'एक वर्ष की समयसीमा — अनुकम्पा आवेदन में विलम्ब का कारण। HC ने कहा — आर्थिक कठिनाई प्रमाणित होने पर समयसीमा में छूट दी जा सकती है। विभाग को 8 सप्ताह में निर्णय का आदेश।' },
+    { id:2, title:'CRPF शहीद परिजन बनाम UP सरकार', court:'SC India', date:'08 फरवरी 2024', caseNo:'CA 1234/2024', preview:'Ex-gratia राशि में केन्द्र/राज्य के दायित्व का निर्धारण। SC ने कहा — केन्द्रीय ex-gratia और राज्य अनुग्रह राशि दोनों स्वतंत्र हैं। दोनों का भुगतान होगा।' },
+    { id:3, title:'1984 दंगा पीड़ित बनाम UP शासन — मुआवजा', court:'HC Allahabad', date:'15 नवम्बर 2023', caseNo:'Writ-C 8901/2022', preview:'सिख दंगा मुआवजे की देरी पर HC का कड़ा रुख। राज्य सरकार को 60 दिन में सभी pending cases निपटाने का आदेश। SIT report पर्याप्त माना।' },
+    { id:4, title:'रामकली देवी बनाम DGP — पेंशन विवाद', court:'HC Allahabad', date:'03 सितम्बर 2023', caseNo:'Writ-A 7234/2023', preview:'पुलिस शहीद की पत्नी को पारिवारिक पेंशन — गणना विवाद। HC ने अंतिम वेतन के 50% की गणना सही मानी। Arrears 3 माह में देने का आदेश।' },
+    { id:5, title:'BSF जवान परिजन — नियुक्ति याचिका', court:'HC Allahabad', date:'22 जुलाई 2023', caseNo:'Writ-A 5678/2023', preview:'अर्धसैनिक बल में शहीद के पुत्र की अनुकम्पा नियुक्ति। HC ने UP शासन को 12 सप्ताह में पात्रता जाँच कर नियुक्ति देने का आदेश।' },
+  ],
+};
+
+/* Demo Cases */
+const DEMO_CASES = {
+  madhyamik: [
+    { id:1, caseNo:'Writ-A 12453/2023', title:'रमेश कुमार — शिक्षक नियुक्ति विवाद', court:'HC Allahabad', nextDate:'25 अप्रैल 2026', status:'urgent', lastOrder:'Counter affidavit filed. Rejoinder pending.' },
+    { id:2, caseNo:'SLP 45612/2023', title:'UP शिक्षक संघ — वेतनमान विवाद', court:'SC India', nextDate:'02 मई 2026', status:'upcoming', lastOrder:'Notice issued to State. Reply within 4 weeks.' },
+    { id:3, caseNo:'Writ-A 9821/2023', title:'सुमन देवी — स्थानांतरण आदेश', court:'HC Allahabad', nextDate:'15 मई 2026', status:'upcoming', lastOrder:'Stay granted. Case listed for hearing.' },
+    { id:4, caseNo:'Writ-B 6734/2022', title:'अनिल सिंह — परीक्षा परिणाम', court:'HC Allahabad', nextDate:'10 जून 2026', status:'normal', lastOrder:'Affidavit filed. Next date for arguments.' },
+    { id:5, caseNo:'Writ-A 4521/2023', title:'विद्यालय प्रबंध समिति — मान्यता', court:'HC Allahabad', nextDate:'18 जून 2026', status:'normal', lastOrder:'Counter affidavit pending from Department.' },
+  ],
+  grih: [
+    { id:1, caseNo:'Writ-A 14231/2023', title:'अनुकम्पा — समयसीमा याचिका', court:'HC Allahabad', nextDate:'24 अप्रैल 2026', status:'urgent', lastOrder:'Court asked for personal appearance of SSP.' },
+    { id:2, caseNo:'CA 1234/2024', title:'CRPF शहीद परिजन — Ex-gratia', court:'SC India', nextDate:'30 अप्रैल 2026', status:'urgent', lastOrder:'Affidavit due. Non-compliance may lead to contempt.' },
+    { id:3, caseNo:'Writ-C 8901/2022', title:'1984 दंगा — मुआवजा याचिका', court:'HC Allahabad', nextDate:'12 मई 2026', status:'upcoming', lastOrder:'Committee report submitted. Arguments pending.' },
+    { id:4, caseNo:'Writ-A 7234/2023', title:'रामकली देवी — पारिवारिक पेंशन', court:'HC Allahabad', nextDate:'20 मई 2026', status:'normal', lastOrder:'Matter disposed. Compliance report required.' },
+  ],
+};
+
+/* ════════════════════════════════════════
+   SYSTEM PROMPT
+════════════════════════════════════════ */
+const BASE_SYSTEM = `आप DBS · न्यायसहायक हैं — UP सरकार के न्यायिक कार्यों में सहायता।
+
+कठोर नियम — कभी तोड़े नहीं:
+
+नियम 1 — NEVER ASK CLARIFICATION:
+कभी भी "आप कौन हैं", "संदर्भ स्पष्ट करें", "विद्यालय का प्रकार?" जैसे प्रश्न मत पूछो।
+सीधे उत्तर दो — जो पूछा है उसका exact verbatim नियम बताओ।
+
+नियम 2 — VERBATIM CITATION अनिवार्य:
+नियम की exact भाषा लिखो जैसे पुस्तक में लिखी है।
+Format: [पुस्तक, अध्याय/धारा/प्रस्तर — exact number] — "Part-IV" जैसा vague नहीं।
+उदाहरण: [Seva Vidhi, Adhyay 6, Niyam 43(2)] या [SAD Manual, Prastar 131]
+ज्ञान आधार न हो तो लिखो: "इस विषय पर सीधा प्रावधान ज्ञान आधार में उपलब्ध नहीं है।"
+कभी अनुमान से नियम मत बताओ।
+
+नियम 3 — PRECISE उत्तर — गणित की तरह:
+पहले नियम verbatim, फिर एक पंक्ति स्पष्टीकरण। 120 शब्द से अधिक नहीं।
+
+नियम 4 — SUGGESTIONS — 3 HIGH-VALUE KEYWORDS:
+हर उत्तर के बाद उस विभाग के सबसे अधिक खोजे जाने वाले 3 officer-relevant प्रश्न।
+SUGGESTIONS:
+1. [specific actionable question]
+2. [specific actionable question]
+3. [specific actionable question]
+
+नियम 5 — भाषा: शुद्ध सरकारी हिंदी। "Claude" का उल्लेख नहीं।
+
+📚 स्रोत: [exact book, exact section number] — उत्तर के अंत में अनिवार्य।`;
+
+/* ════════════════════════════════════════
+   STATE
+════════════════════════════════════════ */
+let activeDept   = null;
+let activeTab    = 'bot';
+let history      = [];
+let pdfBase64    = null;
+let carouselTimer = null;
+
+/* ════════════════════════════════════════
+   INIT
+════════════════════════════════════════ */
+function init() {
+  const sel = document.getElementById('deptSelect');
+  DEPTS.forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d.id;
+    opt.textContent = d.icon + ' ' + d.label;
+    sel.appendChild(opt);
+  });
+
+  const ta = document.getElementById('msgInput');
+  if (ta) {
+    ta.addEventListener('input', () => {
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+    });
+    ta.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+    });
+  }
+
+  startCarousel(null);
+}
+document.readyState === 'loading'
+  ? document.addEventListener('DOMContentLoaded', init)
+  : init();
+
+/* ════════════════════════════════════════
+   DEPT CHANGE
+════════════════════════════════════════ */
+function onDeptChange() {
+  const sel = document.getElementById('deptSelect');
+  const id  = sel.value;
+  activeDept = id ? DEPTS.find(d => d.id === id) : null;
+
+  history = [];
+  const msgs = document.getElementById('msgs');
+  msgs.innerHTML = '';
+  const w = document.createElement('div');
+  w.className = 'welcome'; w.id = 'welcome';
+  if (activeDept) {
+    w.innerHTML = `
+      <span class="welcome-ico">${activeDept.icon}</span>
+      <div class="welcome-title">${activeDept.label}</div>
+      <p class="welcome-sub">विभाग चुना गया — नीचे से प्रश्न चुनें या स्वयं पूछें</p>
+      <div style="max-width:340px;margin:0 auto;">
+        <div class="chip-label">⚡ त्वरित प्रश्न</div>
+        <div class="carousel-track" id="carouselTrack"></div>
+      </div>`;
+  } else {
+    w.innerHTML = `
+      <span class="welcome-ico">⚖️</span>
+      <div class="welcome-title">न्यायसहायक में स्वागत है</div>
+      <p class="welcome-sub">ऊपर विभाग चुनें — सभी tabs उसी के अनुसार खुलेंगे</p>
+      <div style="max-width:340px;margin:0 auto;">
+        <div class="chip-label">⚡ त्वरित प्रश्न</div>
+        <div class="carousel-track" id="carouselTrack"></div>
+      </div>`;
+  }
+  msgs.appendChild(w);
+  startCarousel(activeDept);
+
+  loadGOs();
+  loadJudgments();
+  loadCases();
+
+  const dLabel = activeDept ? activeDept.label : 'विभाग';
+  document.getElementById('pulseTitle').textContent = `केस पल्स — ${dLabel}`;
+}
+
+/* ════════════════════════════════════════
+   CAROUSEL
+════════════════════════════════════════ */
+const GENERIC_CHIPS = [
+  'सचिवालय में टिप्पण कैसे लिखें?',
+  'विभागीय जाँच की प्रक्रिया',
+  'Financial Handbook के मुख्य नियम',
+  'SAD Manual Prastar 134 क्या है?',
+  'अनुकम्पा नियुक्ति की पात्रता',
+  'GeM पोर्टल से खरीद नियम',
+];
+
+function startCarousel(dept) {
+  if (carouselTimer) clearInterval(carouselTimer);
+  const pool = dept ? [...dept.chips] : [...GENERIC_CHIPS];
+  shuffleArr(pool);
+  renderChips(pool.slice(0, 3));
+  let idx = 0;
+  carouselTimer = setInterval(() => {
+    idx = (idx + 3) % pool.length;
+    if (idx + 3 > pool.length) shuffleArr(pool);
+    renderChips(pool.slice(idx, idx + 3));
+  }, 5000);
+}
+
+function renderChips(list) {
+  const track = document.getElementById('carouselTrack');
+  if (!track) return;
+  track.innerHTML = '';
+  list.forEach(text => {
+    const btn = document.createElement('button');
+    btn.className = 'carousel-chip';
+    btn.textContent = text;
+    btn.onclick = () => sendChip(text);
+    track.appendChild(btn);
+  });
+}
+
+function shuffleArr(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+}
+
+function sendChip(text) {
+  document.getElementById('msgInput').value = text;
+  send();
+}
+
+/* ════════════════════════════════════════
+   TAB SWITCHING
+════════════════════════════════════════ */
+function switchTab(tabId) {
+  activeTab = tabId;
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.main-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + tabId).classList.add('active');
+  document.getElementById('tab-btn-' + tabId).classList.add('active');
+}
+
+/* ════════════════════════════════════════
+   DRAWER — GO / JUDGMENT PREVIEW
+════════════════════════════════════════ */
+function openDrawer(item, type) {
+  document.getElementById('drawerTitle').textContent = item.title;
+
+  // Meta row
+  const meta = document.getElementById('drawerMeta');
+  meta.innerHTML = '';
+  if (item.date) meta.innerHTML += `<span>📅 ${item.date}</span>`;
+  if (item.ref)  meta.innerHTML += `<span>📋 ${item.ref}</span>`;
+  if (item.caseNo) meta.innerHTML += `<span>📋 ${item.caseNo}</span>`;
+  if (item.court) meta.innerHTML += `<span>🏛️ ${item.court}</span>`;
+
+  // Tags
+  const tags = document.getElementById('drawerTags');
+  tags.innerHTML = '';
+  if (item.category) tags.innerHTML = `<span class="drawer-tag">${item.category}</span>`;
+  if (type === 'j') tags.innerHTML += `<span class="drawer-tag">निर्णय</span>`;
+  if (type === 'go') tags.innerHTML += `<span class="drawer-tag">शासनादेश</span>`;
+
+  // Preview
+  document.getElementById('drawerPreview').textContent = item.preview;
+
+  // Actions
+  const actions = document.getElementById('drawerActions');
+  actions.innerHTML = '';
+
+  // Ask bot button
+  const botBtn = document.createElement('button');
+  botBtn.className = 'drawer-btn-primary';
+  botBtn.innerHTML = '💬 बॉट से पूछें';
+  botBtn.onclick = () => {
+    closeDrawer();
+    switchTab('bot');
+    document.getElementById('msgInput').value = item.title + ' के बारे में बताएं';
+    send();
+  };
+  actions.appendChild(botBtn);
+
+  // shasanadesh.up.gov.in link
+  if (item.shasanadeshUrl || type === 'go') {
+    const extBtn = document.createElement('a');
+    extBtn.className = 'drawer-btn-secondary';
+    extBtn.innerHTML = '🔗 सरकारी पोर्टल';
+    extBtn.href = item.shasanadeshUrl || 'https://shasanadesh.up.gov.in/';
+    extBtn.target = '_blank';
+    extBtn.rel = 'noopener';
+    actions.appendChild(extBtn);
+  }
+
+  // Show drawer
+  document.getElementById('drawerOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('previewDrawer').classList.add('open'), 10);
+}
+
+function closeDrawer() {
+  document.getElementById('previewDrawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+}
+
+// Close on ESC
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+/* ════════════════════════════════════════
+   TAB 2: GOs
+════════════════════════════════════════ */
+function loadGOs() {
+    const list = document.getElementById('goList');
+    const deptId = activeDept ? activeDept.id : null;
+    if (!deptId) {
+      list.innerHTML = '<div class="empty-state"><span class="empty-ico">📋</span>विभाग चुनें — शासनादेश यहाँ दिखेंगे</div>';
+      return;
+    }
+    list.innerHTML = '<div class="empty-state">⏳ लोड हो रहे हैं...</div>';
+    const API = 'https://nyaysahayak-api-production.up.railway.app';
+    fetch(API + '/gos?dept=' + encodeURIComponent(deptId) + '&limit=50')
+      .then(r => r.json())
+      .then(data => {
+        const items = data.entries || [];
+        if (items.length === 0) {
+          list.innerHTML = '<div class="empty-state"><span class="empty-ico">📋</span>शासनादेश शीघ्र उपलब्ध होंगे</div>';
+          return;
+        }
+        renderItems(list, items, 'go');
+        populateYears('goYear', items);
+      })
+      .catch(() => {
+        list.innerHTML = '<div class="empty-state">लोड नहीं हो सका</div>';
+      });
+}
+function loadJudgments() {
+  const list = document.getElementById('jList');
+  const deptId = activeDept ? activeDept.id : null;
+  const items = deptId && DEMO_JUDGMENTS[deptId] ? DEMO_JUDGMENTS[deptId] : [];
+
+  if (!deptId) {
+    list.innerHTML = `<div class="empty-state"><span class="empty-ico">⚖️</span>विभाग चुनें — उससे सम्बन्धित निर्णय यहाँ दिखेंगे</div>`;
+    return;
+  }
+  if (items.length === 0) {
+    list.innerHTML = `<div class="empty-state"><span class="empty-ico">⚖️</span>${activeDept.label} के निर्णय शीघ्र उपलब्ध होंगे</div>`;
+    return;
+  }
+
+  renderItems(list, items, 'j');
+  populateYears('jYear', items);
+}
+
+function renderItems(container, items, type) {
+  container.innerHTML = '';
+  items.forEach((item, idx) => {
+    const isFree = !item.locked && idx < CFG.FREE_ITEMS;
+    const card = document.createElement('div');
+    card.className = 'item-card' + (isFree ? '' : ' locked');
+    card.dataset.text = (item.title + ' ' + (item.ref || item.caseNo || '') + ' ' + item.preview).toLowerCase();
+    card.dataset.year = item.date ? item.date.match(/\d{4}/)?.[0] || '' : '';
+
+    const badgeHtml = isFree
+      ? `<span class="free-badge">✓ निःशुल्क</span>`
+      : `<span class="lock-badge">🔒 सदस्यता</span>`;
+
+    if (isFree) {
+      card.innerHTML = `
+        <div class="item-title">${item.title} ${badgeHtml}</div>
+        <div class="item-meta">${item.date || ''} &nbsp;·&nbsp; ${item.ref || item.caseNo || ''} ${item.court ? '· ' + item.court : ''}</div>
+        <div class="item-preview">${item.preview.slice(0,120)}${item.preview.length>120?'…':''}</div>
+        <div style="margin-top:8px;font-size:12px;color:var(--gold);font-weight:600;">👆 विवरण देखें →</div>`;
+      card.onclick = () => openDrawer(item, type);
+    } else {
+      card.innerHTML = `
+        <div class="item-title">${item.title} ${badgeHtml}</div>
+        <div class="item-meta">${item.date || ''} &nbsp;·&nbsp; ${item.ref || item.caseNo || ''} ${item.court ? '· ' + item.court : ''}</div>
+        <div class="lock-overlay">🔒 पूर्ण पहुँच के लिए सदस्यता लें — ₹499/माह</div>`;
+    }
+    container.appendChild(card);
+  });
+
+  if (items.filter(i => i.locked).length > 0 || items.length > CFG.FREE_ITEMS) {
+    const lockedCount = items.filter((item, idx) => item.locked || idx >= CFG.FREE_ITEMS).length;
+    if (lockedCount > 0) {
+      const wall = document.createElement('div');
+      wall.className = 'subscribe-wall';
+      wall.innerHTML = `
+        <h3>📚 ${lockedCount} और ${type === 'go' ? 'शासनादेश' : 'निर्णय'} उपलब्ध हैं</h3>
+        <p>सदस्यता लेकर सम्पूर्ण ज्ञान आधार — नवीनतम GOs, SC/HC निर्णय — तक पहुँचें।<br>मात्र ₹499/माह · कभी भी रद्द करें</p>
+        <a class="subscribe-btn" href="https://wa.me/919559050241?text=Nyaysahayak subscription chahiye" target="_blank">🔓 अभी सदस्यता लें</a>`;
+      container.appendChild(wall);
+    }
+  }
+}
+
+function filterItems(type) {
+  const searchEl = document.getElementById(type === 'go' ? 'goSearch' : 'jSearch');
+  const yearEl   = document.getElementById(type === 'go' ? 'goYear' : 'jYear');
+  const listEl   = document.getElementById(type === 'go' ? 'goList' : 'jList');
+  const q        = searchEl.value.toLowerCase();
+  const yr       = yearEl.value;
+
+  listEl.querySelectorAll('.item-card').forEach(card => {
+    const matchText = !q || card.dataset.text.includes(q);
+    const matchYear = !yr || card.dataset.year === yr;
+    card.style.display = (matchText && matchYear) ? '' : 'none';
+  });
+}
+
+function populateYears(selectId, items) {
+  const sel = document.getElementById(selectId);
+  const years = [...new Set(items.map(i => i.date?.match(/\d{4}/)?.[0]).filter(Boolean))].sort((a,b) => b-a);
+  sel.innerHTML = '<option value="">सभी वर्ष</option>';
+  years.forEach(y => {
+    const opt = document.createElement('option');
+    opt.value = y; opt.textContent = y;
+    sel.appendChild(opt);
+  });
+}
+
+/* ════════════════════════════════════════
+   TAB 4: CASE PULSE
+════════════════════════════════════════ */
+function loadCases() {
+  const list = document.getElementById('caseList');
+  const deptId = activeDept ? activeDept.id : null;
+  const cases = deptId && DEMO_CASES[deptId] ? DEMO_CASES[deptId] : [];
+
+  if (!deptId) {
+    list.innerHTML = `<div class="empty-state"><span class="empty-ico">📊</span>विभाग चुनें — उसके सभी लम्बित प्रकरण यहाँ दिखेंगे</div>`;
+    return;
+  }
+
+  if (cases.length === 0) {
+    list.innerHTML = `
+      <div class="coming-soon-case">
+        <h3>📊 ${activeDept.label} — केस पल्स</h3>
+        <p>इस विभाग के लम्बित न्यायालयीन प्रकरण शीघ्र यहाँ दिखेंगे।<br>eCourts API के माध्यम से real-time tracking — अगली hearing date, last order सब एक जगह।</p>
+        <button class="notify-btn" onclick="notifyMe()">🔔 सूचित करें जब उपलब्ध हो</button>
+      </div>`;
+    return;
+  }
+
+  renderCases(list, cases, 'all');
+}
+
+function renderCases(container, cases, filter) {
+  container.innerHTML = '';
+  const filtered = filter === 'all' ? cases : cases.filter(c => c.status === filter);
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state"><span class="empty-ico">✅</span>इस श्रेणी में कोई प्रकरण नहीं</div>`;
+    return;
+  }
+
+  filtered.forEach(c => {
+    const card = document.createElement('div');
+    card.className = `case-card ${c.status}`;
+    const urgencyLabel = c.status === 'urgent' ? '🔴 अत्यावश्यक' : c.status === 'upcoming' ? '🟡 आगामी' : '🟢 सामान्य';
+    card.innerHTML = `
+      <div class="case-header">
+        <div class="case-number">${c.caseNo}</div>
+        <div class="case-date-badge">${c.nextDate}</div>
+      </div>
+      <div class="case-title">${c.title}</div>
+      <div class="case-meta">
+        <span class="case-tag">🏛️ ${c.court}</span>
+        <span class="case-tag">${urgencyLabel}</span>
+      </div>
+      <div style="margin-top:7px;font-size:12px;color:var(--ink-soft);background:var(--parchment);padding:7px 10px;border-radius:6px;">
+        📋 <strong>अंतिम आदेश:</strong> ${c.lastOrder}
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+function filterCases(filter, btn) {
+  document.querySelectorAll('.case-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const deptId = activeDept ? activeDept.id : null;
+  const cases = deptId && DEMO_CASES[deptId] ? DEMO_CASES[deptId] : [];
+  renderCases(document.getElementById('caseList'), cases, filter);
+}
+
+function notifyMe() {
+  window.open('https://wa.me/919559050241?text=Case Pulse notification chahiye - ' + (activeDept?.label || ''), '_blank');
+}
+
+/* ════════════════════════════════════════
+   BOT — PDF
+════════════════════════════════════════ */
+function onPdfSelect(input) {
+  const f = input.files[0];
+  if (!f) return;
+  if (f.size > CFG.PDF_MAX_MB * 1024 * 1024) { alert(`PDF ${CFG.PDF_MAX_MB}MB से बड़ी है।`); input.value=''; return; }
+  const reader = new FileReader();
+  reader.onload = () => {
+    pdfBase64 = reader.result.split(',')[1];
+    document.getElementById('pdfName').textContent = f.name;
+    document.getElementById('pdfChip').style.display = 'flex';
+  };
+  reader.readAsDataURL(f);
+  input.value = '';
+}
+
+function removePdf() {
+  pdfBase64 = null;
+  document.getElementById('pdfChip').style.display = 'none';
+}
+
+/* ════════════════════════════════════════
+   BOT — SEND
+════════════════════════════════════════ */
+async function send() {
+  const ta   = document.getElementById('msgInput');
+  const text = ta.value.trim();
+  const pdf  = pdfBase64;
+  if (!text && !pdf) return;
+
+  const w = document.getElementById('welcome');
+  if (w) { if (carouselTimer) clearInterval(carouselTimer); w.remove(); }
+
+  addBubble('user', text || '📎 PDF भेजी');
+  ta.value = ''; ta.style.height = 'auto';
+  if (pdf) removePdf();
+
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  const typingEl = addTyping();
+
+  const userContent = [];
+  if (pdf) userContent.push({ type:'document', source:{ type:'base64', media_type:'application/pdf', data:pdf } });
+  if (text) userContent.push({ type:'text', text });
+  history.push({ role:'user', content: pdf ? userContent : text });
+
+  try {
+    let kCtx = '';
+    if (text) {
+      try {
+        const dept = activeDept;
+        const books = dept ? dept.books : ['Financial Handbook Vol-2','SAD Manual','Seva Vidhi'];
+        const chunks = await Promise.race([
+          searchKB(text, books),
+          new Promise((_,r) => setTimeout(() => r(new Error('timeout')), 8000))
+        ]);
+        kCtx = buildCtx(chunks);
+      } catch {}
+    }
+    if (history.length > 8) history = history.slice(-8);
+
+    const reply = await callAPI(kCtx, !!pdf);
+    typingEl.remove();
+    const { cleanReply, suggestions } = parseSugg(reply);
+    addBubble('bot', cleanReply, suggestions);
+    history.push({ role:'assistant', content: reply });
+  } catch(e) {
+    typingEl.remove();
+    addBubble('bot', `⚠️ त्रुटि: ${e.message}`);
+  }
+  btn.disabled = false;
+  ta.focus();
+}
+
+/* ════════════════════════════════════════
+   RAG
+════════════════════════════════════════ */
+async function searchKB(query, books) {
+  const all = [];
+  const deptId = activeDept ? activeDept.id : '';
+
+  try {
+    const deptUrl = `https://nyaysahayak-api-production.up.railway.app/search?q=${encodeURIComponent(query)}&dept=${encodeURIComponent(deptId)}&limit=6`;
+    const r = await fetch(deptUrl, { signal: AbortSignal.timeout(4000) });
+    if (r.ok) {
+      const d = await r.json();
+      (d.results || d.entries || []).forEach(e => all.push({ ...e, _book: e.book || e.dept || 'ज्ञान आधार' }));
+    }
+  } catch {}
+
+  if (all.length < 4) {
+    try {
+      const uniUrl = `https://nyaysahayak-api-production.up.railway.app/search?q=${encodeURIComponent(query)}&dept=universal&limit=4`;
+      const r = await fetch(uniUrl, { signal: AbortSignal.timeout(3000) });
+      if (r.ok) {
+        const d = await r.json();
+        (d.results || d.entries || []).forEach(e => all.push({ ...e, _book: e.book || 'सार्वभौमिक' }));
+      }
+    } catch {}
+  }
+
+  if (!all.length) {
+    try {
+      const r = await fetch(`https://nyaysahayak-api-production.up.railway.app/search?q=${encodeURIComponent(query)}&limit=5`);
+      if (r.ok) { const d = await r.json(); (d.results||d.entries||[]).forEach(e => all.push({...e,_book:e.book||'ज्ञान आधार'})); }
+    } catch {}
+  }
+
+  return all.slice(0, 8);
+}
+
+function buildCtx(chunks) {
+  if (!chunks?.length) return '';
+  return '\n\n---\nज्ञान आधार:\n' + chunks.map((c,i) => {
+    const title = c.section||c.title||c.filename||'';
+    const text  = (c.content||c.text||'').slice(0,2000);
+    const book  = c._book||c.book||'';
+    return `[स्रोत ${i+1}: ${book}${title?' — '+title:''}]\n${text}`;
+  }).join('\n\n');
+}
+
+/* ════════════════════════════════════════
+   API
+════════════════════════════════════════ */
+async function callAPI(kCtx='', isPdf=false) {
+  const model = isPdf ? CFG.MODEL_SONNET : CFG.MODEL_HAIKU;
+  const dept  = activeDept;
+  const system = BASE_SYSTEM
+    + (dept ? `\n\nसक्रिय विभाग: ${dept.label}\nनिर्देश: ${dept.prompt}\n⚠️ केवल ${dept.label} के नियमों से उत्तर दें।` : '\n\nकोई विभाग चयनित नहीं — सामान्य UP सरकार नियम लागू।')
+    + kCtx;
+
+  const resp = await fetch(CFG.API, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    signal: AbortSignal.timeout(55000),
+    body: JSON.stringify({ model, max_tokens: CFG.MAX_TOKENS, system, messages: history })
+  });
+  if (!resp.ok) { const t = await resp.text().catch(()=>''); throw new Error(`API ${resp.status}${t?' — '+t.slice(0,80):''}`); }
+  const d = await resp.json();
+  if (d.content && Array.isArray(d.content)) return d.content.filter(b=>b.type==='text').map(b=>b.text).join('\n').trim();
+  return d.reply || d.message || d.text || (() => { throw new Error('Unknown response'); })();
+}
+
+/* ════════════════════════════════════════
+   PARSE SUGGESTIONS
+════════════════════════════════════════ */
+function parseSugg(text) {
+  const m = text.match(/SUGGESTIONS:\s*\n([\s\S]*?)(?:\n\n|$)/);
+  let suggestions = [], cleanReply = text;
+  if (m) {
+    cleanReply = text.replace(m[0], '').trim();
+    suggestions = m[1].split('\n').map(l => l.replace(/^\d+\.\s*/,'').trim()).filter(l=>l).slice(0,3);
+  }
+  return { cleanReply, suggestions };
+}
+
+/* ════════════════════════════════════════
+   DOM HELPERS
+════════════════════════════════════════ */
+function mdToHtml(text) {
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^#{1,3}\s+(.+)$/gm,'<strong>$1</strong>')
+    .replace(/^---+$/gm,'<hr style="border:none;border-top:1px solid #ddd;margin:8px 0">')
+    .replace(/^- (.+)$/gm,'&nbsp;&bull; $1')
+    .replace(/\n/g,'<br>');
+}
+
+function addBubble(role, text, suggestions=[]) {
+  const msgs = document.getElementById('msgs');
+  const row  = document.createElement('div');
+  row.className = `msg-row ${role}`;
+  const bub = document.createElement('div');
+  bub.className = 'bubble';
+  if (role === 'bot') {
+    bub.innerHTML = mdToHtml(text);
+    if (suggestions.length) {
+      const sr = document.createElement('div');
+      sr.className = 'suggestion-row';
+      suggestions.forEach(s => {
+        const c = document.createElement('button');
+        c.className = 'sugg-chip'; c.textContent = s;
+        c.onclick = () => sendChip(s);
+        sr.appendChild(c);
+      });
+      bub.appendChild(sr);
+    }
+  } else {
+    bub.style.whiteSpace = 'pre-wrap';
+    bub.textContent = text;
+  }
+  row.appendChild(bub); msgs.appendChild(row);
+  msgs.scrollTop = msgs.scrollHeight;
+  return row;
+}
+
+function addTyping() {
+  const msgs = document.getElementById('msgs');
+  const row  = document.createElement('div');
+  row.className = 'msg-row bot';
+  row.innerHTML = `<div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(row);
+  msgs.scrollTop = msgs.scrollHeight;
+  return row;
+}
+</script>
+</body>
+</html>
