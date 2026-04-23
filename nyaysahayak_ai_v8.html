@@ -646,7 +646,21 @@ html, body {
           <button class="case-filter-btn" onclick="filterCases('upcoming', this)">🟡 आगामी</button>
           <button class="case-filter-btn" onclick="filterCases('normal', this)">🟢 सामान्य</button>
         </div>
-        <div class="cnr-search-box" style="margin-bottom:12px"><div style="display:flex;gap:8px;margin-bottom:8px"><input id="cnrInput" type="text" placeholder="CNR नंबर दर्ज करें — जैसे UPHC020093032026" style="flex:1;padding:10px;border:2px solid var(--gold);border-radius:8px;background:var(--parchment);font-size:13px;color:var(--ink)"><button onclick="searchByCNR()" style="padding:10px 16px;background:var(--ink);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px">🔍 CNR</button></div><p style="font-size:11px;color:var(--ink-soft);margin:0">CNR = eCourts पर मिलने वाला 16 अंकीय केस नंबर</p></div><div class="cases-list" id="caseList"></div>
+        <div class="cnr-search-box" style="margin-bottom:12px"><div style="display:flex;gap:8px;margin-bottom:8px"><input id="cnrInput" type="text" placeholder="CNR नंबर दर्ज करें — जैसे UPHC020093032026" style="flex:1;padding:10px;border:2px solid var(--gold);border-radius:8px;background:var(--parchment);font-size:13px;color:var(--ink)"><button onclick="searchByCNR()" style="padding:10px 16px;background:var(--ink);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px">🔍 CNR</button></div><p style="font-size:11px;color:var(--ink-soft);margin:0">CNR = eCourts पर मिलने वाला 16 अंकीय केस नंबर</p></div>
+<details style="margin-top:8px">
+<summary style="cursor:pointer;font-size:13px;color:var(--ink);padding:8px 0;font-weight:600">⚖️ केस नंबर से खोजें ▼</summary>
+<div style="padding:10px 0;display:flex;flex-direction:column;gap:8px">
+  <div style="display:flex;gap:8px">
+    <input id="caseTypeInput" type="text" placeholder="Case Type (CAPL, WP, SLP...)" style="flex:1;padding:8px;border:1px solid var(--gold);border-radius:6px;background:var(--parchment);font-size:12px">
+    <input id="caseNumberInput" type="text" placeholder="Number (520)" style="width:100px;padding:8px;border:1px solid var(--gold);border-radius:6px;background:var(--parchment);font-size:12px">
+    <input id="caseYearInput" type="text" placeholder="Year" style="width:80px;padding:8px;border:1px solid var(--gold);border-radius:6px;background:var(--parchment);font-size:12px" value="2026">
+  </div>
+  <div style="display:flex;gap:8px">
+    <button onclick="searchByCase('lucknow')" style="flex:1;padding:8px;background:var(--ink);color:white;border:none;border-radius:6px;cursor:pointer;font-size:12px">🏛️ Lucknow</button>
+    <button onclick="searchByCase('allahabad')" style="flex:1;padding:8px;background:var(--parchment);color:var(--ink);border:1px solid var(--gold);border-radius:6px;cursor:pointer;font-size:12px">🏛️ Allahabad</button>
+  </div>
+</div>
+</details><div class="cases-list" id="caseList"></div>
       </div>
     </div>
 
@@ -1235,6 +1249,29 @@ function populateYears(selectId, items) {
 /* ════════════════════════════════════════
    TAB 4: CASE PULSE
 ════════════════════════════════════════ */
+function searchByCase(bench) {
+  const caseType = document.getElementById('caseTypeInput').value.trim();
+  const caseNumber = document.getElementById('caseNumberInput').value.trim();
+  const caseYear = document.getElementById('caseYearInput').value.trim() || '2026';
+  if (!caseType || !caseNumber) { alert('Case Type और Number दर्ज करें'); return; }
+  const list = document.getElementById('caseList');
+  list.innerHTML = '<div style="text-align:center;padding:20px">⏳ खोज रहे हैं...</div>';
+  const reference_id = bench === 'lucknow' ? 'allahabad-hc-lucknow' : 'allahabad-hc';
+  fetch(API + '/api/v1/cases/search', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({court_type:'hc', reference_id, case_type: caseType, case_number: caseNumber, case_year: caseYear, bench})
+  }).then(r => r.json()).then(data => {
+    if (data.detail && data.detail.error) {
+      list.innerHTML = '<div class="empty-state">❌ केस नहीं मिला</div>';
+      return;
+    }
+    const cases = data.cases || (data.detail ? [data.detail] : []);
+    if (!cases.length) { list.innerHTML = '<div class="empty-state">केस नहीं मिला</div>'; return; }
+    renderCases(list, cases, 'all');
+  }).catch(() => { list.innerHTML = '<div class="empty-state">⚠️ लोड नहीं हो सका</div>'; });
+}
+
 function searchByCNR() {
   const cnr = document.getElementById('cnrInput').value.trim();
   if (!cnr) { alert('CNR नंबर दर्ज करें'); return; }
