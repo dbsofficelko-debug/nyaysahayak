@@ -1181,7 +1181,7 @@ function renderItems(container, items, type) {
       card.innerHTML = `
         <div class="item-title">${item.title} ${badgeHtml}</div>
         <div class="item-meta">${item.date || ''} &nbsp;·&nbsp; ${item.ref || item.caseNo || ''} ${item.court ? '· ' + item.court : ''}</div>
-        <div class="item-preview">${item.preview ? item.preview.slice(0,120) : (item.content || "").slice(0,120)}${item.preview.length>120?'…':''}</div>
+        <div class="item-preview">${item.preview ? item.preview.slice(0,120) : (item.content || "").slice(0,120)}${(item.preview||item.content||"").length>120?'…':''}</div>
         <div style="margin-top:8px;font-size:12px;color:var(--gold);font-weight:600;">👆 विवरण देखें →</div>`;
       card.onclick = () => openDrawer(item, type);
     } else {
