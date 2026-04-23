@@ -1167,7 +1167,7 @@ function loadJudgments() {
 function renderItems(container, items, type) {
   container.innerHTML = '';
   items.forEach((item, idx) => {
-    const isFree = !item.locked && idx < CFG.FREE_ITEMS;
+    const isFree = type === 'go' ? true : (!item.locked && idx < CFG.FREE_ITEMS);
     const card = document.createElement('div');
     card.className = 'item-card' + (isFree ? '' : ' locked');
     card.dataset.text = (item.title + ' ' + (item.ref || item.caseNo || '') + ' ' + item.preview).toLowerCase();
