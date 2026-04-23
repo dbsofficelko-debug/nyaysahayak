@@ -1257,7 +1257,7 @@ function searchByCase(bench) {
   const list = document.getElementById('caseList');
   list.innerHTML = '<div style="text-align:center;padding:20px">⏳ खोज रहे हैं...</div>';
   const reference_id = bench === 'lucknow' ? 'allahabad-hc-lucknow' : 'allahabad-hc';
-  fetch("https://nyaysahayak-api-production.up.railway.app/api/v1/cases/search"', {
+  fetch("https://nyaysahayak-api-production.up.railway.app/api/v1/cases/search", {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({court_type:'hc', reference_id, case_type: caseType, case_number: caseNumber, case_year: caseYear, bench})
@@ -1278,7 +1278,7 @@ function searchByCNR() {
   const list = document.getElementById('caseList');
   const bench = activeDept ? (activeDept.id === 'home' ? 'lucknow' : 'allahabad') : 'allahabad';
   list.innerHTML = '<div style="text-align:center;padding:20px">⏳ खोज रहे हैं...</div>';
-  fetch("https://nyaysahayak-api-production.up.railway.app/api/v1/cases/search"', {
+  fetch("https://nyaysahayak-api-production.up.railway.app/api/v1/cases/search", {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({cnr, reference_id: bench === 'lucknow' ? 'allahabad-hc-lucknow' : 'allahabad-hc'})
