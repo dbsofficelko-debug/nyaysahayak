@@ -590,7 +590,11 @@ html, body {
           <div class="welcome-title" id="welcomeTitle">न्यायसहायक में स्वागत है</div>
           <p class="welcome-sub" id="welcomeSub">ऊपर विभाग चुनें — फिर प्रश्न पूछें या नीचे से चुनें</p>
           <div style="max-width:340px;margin:0 auto;">
-            <div class="chip-label">⚡ त्वरित प्रश्न</div>
+            <div id="recentSection" style="display:none;margin-bottom:16px;">
+            <div class="chip-label">🕐 हाल के प्रश्न</div>
+            <div id="recentList" style="display:flex;flex-direction:column;gap:6px;margin-top:6px;"></div>
+          </div>
+          <div class="chip-label">⚡ त्वरित प्रश्न</div>
             <div class="carousel-track" id="carouselTrack"></div>
           </div>
         </div>
@@ -970,6 +974,27 @@ function init() {
   }
 
   startCarousel(null);
+  loadRecentQueries();
+}
+
+function loadRecentQueries() {
+  try {
+    const hist = JSON.parse(localStorage.getItem('nyay_history') || '[]');
+    const sec = document.getElementById('recentSection');
+    const list = document.getElementById('recentList');
+    if (!sec || !list || hist.length === 0) return;
+    sec.style.display = 'block';
+    list.innerHTML = '';
+    hist.slice(0, 5).forEach(h => {
+      const btn = document.createElement('button');
+      btn.className = 'carousel-chip';
+      btn.style.cssText = 'font-size:12px;text-align:left;';
+      btn.textContent = h.q.slice(0, 60) + (h.q.length > 60 ? '…' : '');
+      btn.title = h.dept + ' · ' + h.time;
+      btn.onclick = () => { document.getElementById('msgInput').value = h.q; send(); };
+      list.appendChild(btn);
+    });
+  } catch(e) {}
 }
 document.readyState === 'loading'
   ? document.addEventListener('DOMContentLoaded', init)
@@ -1456,6 +1481,16 @@ async function send() {
   if (w) { if (carouselTimer) clearInterval(carouselTimer); w.remove(); }
 
   addBubble('user', text || '📎 PDF भेजी');
+  // Save to localStorage history
+  if (text) {
+    try {
+      const dept = activeDept ? activeDept.label : 'सामान्य';
+      const hist = JSON.parse(localStorage.getItem('nyay_history') || '[]');
+      hist.unshift({ q: text, dept, time: new Date().toLocaleTimeString('hi-IN') });
+      if (hist.length > 10) hist.pop();
+      localStorage.setItem('nyay_history', JSON.stringify(hist));
+    } catch(e) {}
+  }
   ta.value = ''; ta.style.height = 'auto';
   if (pdf) removePdf();
 
