@@ -567,7 +567,7 @@ html, body {
       <button class="main-tab" onclick="showShasanadeshBeta()" id="tab-btn-gos">
         <span class="tab-ico">📜</span>शासनादेश
       </button>
-      <button class="main-tab" onclick="switchTab('judgments')" id="tab-btn-judgments">
+      <button class="main-tab" onclick="showJudgmentsBeta()" id="tab-btn-judgments">
         <span class="tab-ico">⚖️</span>न्यायालय निर्णय
       </button>
       <button class="main-tab" onclick="switchTab('pulse')" id="tab-btn-pulse">
@@ -1050,7 +1050,7 @@ function startCarousel(dept) {
     idx = (idx + 3) % pool.length;
     if (idx + 3 > pool.length) shuffleArr(pool);
     renderChips(pool.slice(idx, idx + 3));
-  }, 5000);
+  }, 10000);
 }
 
 function renderChips(list) {
@@ -1081,6 +1081,10 @@ function sendChip(text) {
 /* ════════════════════════════════════════
    TAB SWITCHING
 ════════════════════════════════════════ */
+function showJudgmentsBeta() {
+  alert('⚖️ न्यायालय निर्णय\n\nHC/SC निर्णयों का डेटाबेस तैयार हो रहा है।\nशीघ्र उपलब्ध होगा।\n\nअभी विभाग बॉट से निर्णय संबंधी प्रश्न पूछें।');
+}
+
 function showShasanadeshBeta() {
   alert('📜 शासनादेश\n\nडेटा सत्यापन प्रक्रिया में है — शीघ्र उपलब्ध।\n\nवर्तमान में विभाग बॉट से शासनादेश संबंधी प्रश्न पूछें।');
 }
@@ -1610,6 +1614,13 @@ function addBubble(role, text, suggestions=[]) {
     bub.style.whiteSpace = 'pre-wrap';
     bub.textContent = text;
   }
+  if (role === 'bot') {
+    const copyBtn = document.createElement('button');
+    copyBtn.style.cssText = 'background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);padding:4px 8px;margin-top:4px;display:block;';
+    copyBtn.textContent = '📋 Copy';
+    copyBtn.onclick = () => { navigator.clipboard.writeText(text); copyBtn.textContent = '✓ Copied!'; setTimeout(() => copyBtn.textContent = '📋 Copy', 2000); };
+    bub.appendChild(copyBtn);
+  }
   row.appendChild(bub); msgs.appendChild(row);
   msgs.scrollTop = msgs.scrollHeight;
   return row;
@@ -1619,7 +1630,7 @@ function addTyping() {
   const msgs = document.getElementById('msgs');
   const row  = document.createElement('div');
   row.className = 'msg-row bot';
-  row.innerHTML = `<div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  row.innerHTML = `<div class="bubble"><div class="typing"><span></span><span></span><span></span></div><div style="font-size:11px;color:var(--muted);margin-top:4px;">📚 नियम खोज रहे हैं...</div></div>`;
   msgs.appendChild(row);
   msgs.scrollTop = msgs.scrollHeight;
   return row;
