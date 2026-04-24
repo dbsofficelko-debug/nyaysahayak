@@ -1333,7 +1333,8 @@ function renderCases(container, cases, filter) {
     if (c.case_record_number || c.unique_id) {
       // Vakeel360 API format
       const cd = c.case_details || {};
-      const nextDate = c.next_date || cd['Next Hearing Date'] || cd['First Hearing Date'] || '—';
+      const rawDate = c.next_date || cd['Next Hearing Date'] || '';
+      const nextDate = (!rawDate || rawDate === '---' || rawDate === '----') ? 'अभी निर्धारित नहीं' : rawDate;
       const stage = cd['Stage of Case'] || c.status || '';
       const petitioners = (c.petitioner_advocates || []).join(', ') || '—';
       const respondents = (c.respondent_advocates || []).join(', ') || '—';
