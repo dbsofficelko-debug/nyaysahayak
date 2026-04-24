@@ -576,6 +576,9 @@ html, body {
     </div>
   </div>
 
+  <!-- ── KB STATUS BADGE ── -->
+  <div id="kbBadgeBar" style="display:none;padding:4px 12px;background:var(--surface);border-bottom:1px solid var(--border);font-size:11px;color:var(--muted);"></div>
+
   <!-- ── TAB PANELS ── -->
   <div class="tab-panels">
 
@@ -1003,6 +1006,15 @@ function onDeptChange() {
   loadGOs();
   loadJudgments();
   loadCases();
+
+  // KB Badge
+  const bar = document.getElementById('kbBadgeBar');
+  if (activeDept) {
+    bar.style.display = 'block';
+    bar.innerHTML = `🏛️ विभाग: <strong>${activeDept.label}</strong> &nbsp;·&nbsp; KB Active ✓`;
+  } else {
+    bar.style.display = 'none';
+  }
 
   const dLabel = activeDept ? activeDept.label : 'विभाग';
   document.getElementById('pulseTitle').textContent = `केस पल्स — ${dLabel}`;
@@ -1555,6 +1567,55 @@ function addBubble(role, text, suggestions=[]) {
   } else {
     bub.style.whiteSpace = 'pre-wrap';
     bub.textContent = text;
+  }
+  if (role === 'bot') {
+    const actRow = document.createElement('div');
+    actRow.style.cssText = 'display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;align-items:center;';
+
+    const copyBtn = document.createElement('button');
+    copyBtn.style.cssText = 'background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);padding:3px 7px;border-radius:4px;';
+    copyBtn.textContent = '📋 Copy';
+    copyBtn.onclick = () => { navigator.clipboard.writeText(text); copyBtn.textContent = '✓ Copied!'; setTimeout(() => copyBtn.textContent = '📋 Copy', 2000); };
+
+    const waBtn = document.createElement('button');
+    waBtn.style.cssText = 'background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);padding:3px 7px;border-radius:4px;';
+    waBtn.textContent = '📤 Share';
+    waBtn.onclick = () => {
+      const short = text.length > 300 ? text.slice(0, 297) + '…' : text;
+      window.open('https://wa.me/?text=' + encodeURIComponent('न्यायसहायक से उत्तर:\n\n' + short + '\n\n— nyaysahayak.co.in'), '_blank');
+    };
+
+    const thumbUp = document.createElement('button');
+    thumbUp.style.cssText = 'background:none;border:none;cursor:pointer;font-size:13px;padding:3px 6px;';
+    thumbUp.textContent = '👍';
+    thumbUp.title = 'उत्तर सही है';
+    thumbUp.onclick = () => {
+      thumbUp.textContent = '✅'; thumbUp.disabled = true; thumbDown.disabled = true;
+      const fb = JSON.parse(localStorage.getItem('ny_feedback') || '[]');
+      fb.push({ type: 'up', q: text.slice(0,100), ts: Date.now() });
+      localStorage.setItem('ny_feedback', JSON.stringify(fb.slice(-50)));
+    };
+
+    const thumbDown = document.createElement('button');
+    thumbDown.style.cssText = 'background:none;border:none;cursor:pointer;font-size:13px;padding:3px 6px;';
+    thumbDown.textContent = '👎';
+    thumbDown.title = 'उत्तर गलत/अधूरा है';
+    thumbDown.onclick = () => {
+      thumbDown.textContent = '❌'; thumbUp.disabled = true; thumbDown.disabled = true;
+      const fb = JSON.parse(localStorage.getItem('ny_feedback') || '[]');
+      fb.push({ type: 'down', q: text.slice(0,100), ts: Date.now() });
+      localStorage.setItem('ny_feedback', JSON.stringify(fb.slice(-50)));
+      const note = document.createElement('span');
+      note.style.cssText = 'font-size:11px;color:var(--muted);margin-left:4px;';
+      note.textContent = '🙏 धन्यवाद — हम सुधार करेंगे';
+      actRow.appendChild(note);
+    };
+
+    actRow.appendChild(copyBtn);
+    actRow.appendChild(waBtn);
+    actRow.appendChild(thumbUp);
+    actRow.appendChild(thumbDown);
+    bub.appendChild(actRow);
   }
   row.appendChild(bub); msgs.appendChild(row);
   msgs.scrollTop = msgs.scrollHeight;
