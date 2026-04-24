@@ -1426,7 +1426,8 @@ function onPdfSelect(input) {
   const reader = new FileReader();
   reader.onload = () => {
     pdfBase64 = reader.result.split(',')[1];
-    document.getElementById('pdfName').textContent = f.name;
+    const sizeKB = Math.round(f.size / 1024);
+    document.getElementById('pdfName').textContent = f.name + ' (' + sizeKB + ' KB) — विश्लेषण के लिए तैयार ✓';
     document.getElementById('pdfChip').style.display = 'flex';
   };
   reader.readAsDataURL(f);
