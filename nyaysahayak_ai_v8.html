@@ -564,10 +564,10 @@ html, body {
       <button class="main-tab active" onclick="switchTab('bot')" id="tab-btn-bot">
         <span class="tab-ico">💬</span>विभाग बॉट
       </button>
-      <button class="main-tab" onclick="showShasanadeshBeta()" id="tab-btn-gos">
+      <button class="main-tab" onclick="switchTab('gos')" id="tab-btn-gos">
         <span class="tab-ico">📜</span>शासनादेश
       </button>
-      <button class="main-tab" onclick="showJudgmentsBeta()" id="tab-btn-judgments">
+      <button class="main-tab" onclick="switchTab('judgments')" id="tab-btn-judgments">
         <span class="tab-ico">⚖️</span>न्यायालय निर्णय
       </button>
       <button class="main-tab" onclick="switchTab('pulse')" id="tab-btn-pulse">
@@ -578,9 +578,6 @@ html, body {
 
   <!-- ── TAB PANELS ── -->
   <div class="tab-panels">
-  <div id="deptBadge" style="display:none;background:#1B2F4A;padding:6px 16px;font-size:12px;font-weight:700;color:#E8B84B;border-bottom:1px solid rgba(201,152,30,.3);">
-    <span id="deptBadgeText"></span> &nbsp;·&nbsp; <span style="color:rgba(255,255,255,.5);font-weight:400;">KB Active ✓</span>
-  </div>
 
     <!-- TAB 1: BOT -->
     <div class="tab-panel active" id="panel-bot">
@@ -590,11 +587,7 @@ html, body {
           <div class="welcome-title" id="welcomeTitle">न्यायसहायक में स्वागत है</div>
           <p class="welcome-sub" id="welcomeSub">ऊपर विभाग चुनें — फिर प्रश्न पूछें या नीचे से चुनें</p>
           <div style="max-width:340px;margin:0 auto;">
-            <div id="recentSection" style="display:none;margin-bottom:16px;">
-            <div class="chip-label">🕐 हाल के प्रश्न</div>
-            <div id="recentList" style="display:flex;flex-direction:column;gap:6px;margin-top:6px;"></div>
-          </div>
-          <div class="chip-label">⚡ त्वरित प्रश्न</div>
+            <div class="chip-label">⚡ त्वरित प्रश्न</div>
             <div class="carousel-track" id="carouselTrack"></div>
           </div>
         </div>
@@ -930,13 +923,6 @@ SUGGESTIONS:
 2. [specific actionable question]
 3. [specific actionable question]
 
-
-नियम 6 — विस्तृत उत्तर सीमा: किसी भी elaboration में अधिकतम 600 शब्द।
-
-नियम 7 — निषिद्ध शब्द (कदापि नहीं): basically, देखिए, मतलब यह है कि, अच्छा सवाल, ज़रूर, बिल्कुल, दरअसल। UP Secretariat की avyaktivachak bhasha अनिवार्य।
-
-नियम 8 — KB सीमा: यदि ज्ञान आधार में content नहीं है तो लिखें: "इस विषय पर [पुस्तक/अध्याय] का अवलोकन करें।" अनुमान से उत्तर कदापि नहीं।
-
 नियम 5 — भाषा: शुद्ध सरकारी हिंदी। "Claude" का उल्लेख नहीं।
 
 📚 स्रोत: [exact book, exact section number] — उत्तर के अंत में अनिवार्य।`;
@@ -974,27 +960,6 @@ function init() {
   }
 
   startCarousel(null);
-  loadRecentQueries();
-}
-
-function loadRecentQueries() {
-  try {
-    const hist = JSON.parse(localStorage.getItem('nyay_history') || '[]');
-    const sec = document.getElementById('recentSection');
-    const list = document.getElementById('recentList');
-    if (!sec || !list || hist.length === 0) return;
-    sec.style.display = 'block';
-    list.innerHTML = '';
-    hist.slice(0, 5).forEach(h => {
-      const btn = document.createElement('button');
-      btn.className = 'carousel-chip';
-      btn.style.cssText = 'font-size:12px;text-align:left;';
-      btn.textContent = h.q.slice(0, 60) + (h.q.length > 60 ? '…' : '');
-      btn.title = h.dept + ' · ' + h.time;
-      btn.onclick = () => { document.getElementById('msgInput').value = h.q; send(); };
-      list.appendChild(btn);
-    });
-  } catch(e) {}
 }
 document.readyState === 'loading'
   ? document.addEventListener('DOMContentLoaded', init)
@@ -1039,16 +1004,6 @@ function onDeptChange() {
   loadJudgments();
   loadCases();
 
-  // Dept badge update
-  const badge = document.getElementById('deptBadge');
-  const badgeText = document.getElementById('deptBadgeText');
-  if (activeDept) {
-    badgeText.textContent = activeDept.icon + ' विभाग: ' + activeDept.label;
-    badge.style.display = 'block';
-  } else {
-    badge.style.display = 'none';
-  }
-
   const dLabel = activeDept ? activeDept.label : 'विभाग';
   document.getElementById('pulseTitle').textContent = `केस पल्स — ${dLabel}`;
 }
@@ -1075,7 +1030,7 @@ function startCarousel(dept) {
     idx = (idx + 3) % pool.length;
     if (idx + 3 > pool.length) shuffleArr(pool);
     renderChips(pool.slice(idx, idx + 3));
-  }, 10000);
+  }, 5000);
 }
 
 function renderChips(list) {
@@ -1106,14 +1061,6 @@ function sendChip(text) {
 /* ════════════════════════════════════════
    TAB SWITCHING
 ════════════════════════════════════════ */
-function showJudgmentsBeta() {
-  alert('⚖️ न्यायालय निर्णय\n\nHC/SC निर्णयों का डेटाबेस तैयार हो रहा है।\nशीघ्र उपलब्ध होगा।\n\nअभी विभाग बॉट से निर्णय संबंधी प्रश्न पूछें।');
-}
-
-function showShasanadeshBeta() {
-  alert('📜 शासनादेश\n\nडेटा सत्यापन प्रक्रिया में है — शीघ्र उपलब्ध।\n\nवर्तमान में विभाग बॉट से शासनादेश संबंधी प्रश्न पूछें।');
-}
-
 function switchTab(tabId) {
   activeTab = tabId;
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -1329,7 +1276,7 @@ function searchByCNR() {
   const cnr = document.getElementById('cnrInput').value.trim();
   if (!cnr) { alert('CNR नंबर दर्ज करें'); return; }
   const list = document.getElementById('caseList');
-  const bench = cnr.toUpperCase().startsWith('UPHC02') ? 'lucknow' : 'allahabad';
+  const bench = activeDept ? (activeDept.id === 'home' ? 'lucknow' : 'allahabad') : 'allahabad';
   list.innerHTML = '<div style="text-align:center;padding:20px">⏳ खोज रहे हैं...</div>';
   fetch("https://nyaysahayak-api-production.up.railway.app/api/v1/cases/search", {
     method: 'POST',
@@ -1340,14 +1287,14 @@ function searchByCNR() {
       list.innerHTML = '<div class="empty-state">❌ केस नहीं मिला — CNR जांचें</div>';
       return;
     }
-    const cases = data.cases || data.results || (data.data ? [data.data] : (data.detail && typeof data.detail === 'object' ? [data.detail] : []));
+    const cases = data.cases || (data.detail ? [data.detail] : []);
     if (!cases.length) {
-      list.innerHTML = '<div class="empty-state">❌ केस नहीं मिला — CNR जांचें</div>';
+      list.innerHTML = '<div class="empty-state">केस नहीं मिला</div>';
       return;
     }
     renderCases(list, cases, 'all');
-  }).catch((err) => {
-    list.innerHTML = '<div class="empty-state">⚠️ ' + err.message + '</div>';
+  }).catch(() => {
+    list.innerHTML = '<div class="empty-state">⚠️ लोड नहीं हो सका</div>';
   });
 }
 
@@ -1376,36 +1323,7 @@ function loadCases() {
 
 function renderCases(container, cases, filter) {
   container.innerHTML = '';
-  if (!cases || cases.length === 0) {
-    container.innerHTML = `<div class="empty-state"><span class="empty-ico">✅</span>इस श्रेणी में कोई प्रकरण नहीं</div>`;
-    return;
-  }
-
-  // Normalize: support both demo format and Vakeel360 API format
-  const normalized = cases.map(c => {
-    if (c.case_record_number || c.unique_id) {
-      // Vakeel360 API format
-      const cd = c.case_details || {};
-      const rawDate = c.next_date || cd['Next Hearing Date'] || '';
-      const nextDate = (!rawDate || rawDate === '---' || rawDate === '----') ? 'अभी निर्धारित नहीं' : rawDate;
-      const stage = cd['Stage of Case'] || c.status || '';
-      const petitioners = (c.petitioner_advocates || []).join(', ') || '—';
-      const respondents = (c.respondent_advocates || []).join(', ') || '—';
-      const district = cd['District'] || cd['State'] || '';
-      const urgency = nextDate && nextDate !== '—' && nextDate !== '---' ? 'upcoming' : 'normal';
-      return {
-        caseNo: c.case_record_number || c.unique_id || '—',
-        title: petitioners + ' बनाम ' + respondents,
-        court: 'HC Allahabad' + (district ? ' — ' + district : ''),
-        nextDate: nextDate,
-        status: urgency,
-        lastOrder: stage || 'विवरण उपलब्ध नहीं'
-      };
-    }
-    return c; // demo format as-is
-  });
-
-  const filtered = filter === 'all' ? normalized : normalized.filter(c => c.status === filter);
+  const filtered = filter === 'all' ? cases : cases.filter(c => c.status === filter);
 
   if (filtered.length === 0) {
     container.innerHTML = `<div class="empty-state"><span class="empty-ico">✅</span>इस श्रेणी में कोई प्रकरण नहीं</div>`;
@@ -1414,12 +1332,12 @@ function renderCases(container, cases, filter) {
 
   filtered.forEach(c => {
     const card = document.createElement('div');
-    card.className = `case-card ${c.status || 'normal'}`;
+    card.className = `case-card ${c.status}`;
     const urgencyLabel = c.status === 'urgent' ? '🔴 अत्यावश्यक' : c.status === 'upcoming' ? '🟡 आगामी' : '🟢 सामान्य';
     card.innerHTML = `
       <div class="case-header">
         <div class="case-number">${c.caseNo}</div>
-        <div class="case-date-badge">${c.nextDate || '—'}</div>
+        <div class="case-date-badge">${c.nextDate}</div>
       </div>
       <div class="case-title">${c.title}</div>
       <div class="case-meta">
@@ -1427,7 +1345,7 @@ function renderCases(container, cases, filter) {
         <span class="case-tag">${urgencyLabel}</span>
       </div>
       <div style="margin-top:7px;font-size:12px;color:var(--ink-soft);background:var(--parchment);padding:7px 10px;border-radius:6px;">
-        📋 <strong>स्थिति:</strong> ${c.lastOrder}
+        📋 <strong>अंतिम आदेश:</strong> ${c.lastOrder}
       </div>`;
     container.appendChild(card);
   });
@@ -1455,8 +1373,7 @@ function onPdfSelect(input) {
   const reader = new FileReader();
   reader.onload = () => {
     pdfBase64 = reader.result.split(',')[1];
-    const sizeKB = Math.round(f.size / 1024);
-    document.getElementById('pdfName').textContent = f.name + ' (' + sizeKB + ' KB) — विश्लेषण के लिए तैयार ✓';
+    document.getElementById('pdfName').textContent = f.name;
     document.getElementById('pdfChip').style.display = 'flex';
   };
   reader.readAsDataURL(f);
@@ -1481,16 +1398,6 @@ async function send() {
   if (w) { if (carouselTimer) clearInterval(carouselTimer); w.remove(); }
 
   addBubble('user', text || '📎 PDF भेजी');
-  // Save to localStorage history
-  if (text) {
-    try {
-      const dept = activeDept ? activeDept.label : 'सामान्य';
-      const hist = JSON.parse(localStorage.getItem('nyay_history') || '[]');
-      hist.unshift({ q: text, dept, time: new Date().toLocaleTimeString('hi-IN') });
-      if (hist.length > 10) hist.pop();
-      localStorage.setItem('nyay_history', JSON.stringify(hist));
-    } catch(e) {}
-  }
   ta.value = ''; ta.style.height = 'auto';
   if (pdf) removePdf();
 
@@ -1649,13 +1556,6 @@ function addBubble(role, text, suggestions=[]) {
     bub.style.whiteSpace = 'pre-wrap';
     bub.textContent = text;
   }
-  if (role === 'bot') {
-    const copyBtn = document.createElement('button');
-    copyBtn.style.cssText = 'background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);padding:4px 8px;margin-top:4px;display:block;';
-    copyBtn.textContent = '📋 Copy';
-    copyBtn.onclick = () => { navigator.clipboard.writeText(text); copyBtn.textContent = '✓ Copied!'; setTimeout(() => copyBtn.textContent = '📋 Copy', 2000); };
-    bub.appendChild(copyBtn);
-  }
   row.appendChild(bub); msgs.appendChild(row);
   msgs.scrollTop = msgs.scrollHeight;
   return row;
@@ -1665,7 +1565,7 @@ function addTyping() {
   const msgs = document.getElementById('msgs');
   const row  = document.createElement('div');
   row.className = 'msg-row bot';
-  row.innerHTML = `<div class="bubble"><div class="typing"><span></span><span></span><span></span></div><div style="font-size:11px;color:var(--muted);margin-top:4px;">📚 नियम खोज रहे हैं...</div></div>`;
+  row.innerHTML = `<div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
   msgs.appendChild(row);
   msgs.scrollTop = msgs.scrollHeight;
   return row;
