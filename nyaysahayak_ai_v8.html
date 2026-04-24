@@ -564,7 +564,7 @@ html, body {
       <button class="main-tab active" onclick="switchTab('bot')" id="tab-btn-bot">
         <span class="tab-ico">💬</span>विभाग बॉट
       </button>
-      <button class="main-tab" onclick="switchTab('gos')" id="tab-btn-gos">
+      <button class="main-tab" onclick="showShasanadeshBeta()" id="tab-btn-gos">
         <span class="tab-ico">📜</span>शासनादेश
       </button>
       <button class="main-tab" onclick="switchTab('judgments')" id="tab-btn-judgments">
@@ -1061,6 +1061,10 @@ function sendChip(text) {
 /* ════════════════════════════════════════
    TAB SWITCHING
 ════════════════════════════════════════ */
+function showShasanadeshBeta() {
+  alert('📜 शासनादेश\n\nडेटा सत्यापन प्रक्रिया में है — शीघ्र उपलब्ध।\n\nवर्तमान में विभाग बॉट से शासनादेश संबंधी प्रश्न पूछें।');
+}
+
 function switchTab(tabId) {
   activeTab = tabId;
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
