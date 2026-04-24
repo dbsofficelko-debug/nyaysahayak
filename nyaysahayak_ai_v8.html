@@ -1287,7 +1287,7 @@ function searchByCNR() {
       list.innerHTML = '<div class="empty-state">❌ केस नहीं मिला — CNR जांचें</div>';
       return;
     }
-    const cases = data.cases || (data.results ? data.results : (data.detail && typeof data.detail === 'object' ? [data.detail] : []));
+    const cases = data.cases || data.results || (data.data ? [data.data] : (data.detail && typeof data.detail === 'object' ? [data.detail] : []));
     if (!cases.length) {
       list.innerHTML = '<div class="empty-state">❌ केस नहीं मिला — CNR जांचें</div>';
       return;
