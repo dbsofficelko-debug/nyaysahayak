@@ -578,6 +578,9 @@ html, body {
 
   <!-- ── TAB PANELS ── -->
   <div class="tab-panels">
+  <div id="deptBadge" style="display:none;background:#1B2F4A;padding:6px 16px;font-size:12px;font-weight:700;color:#E8B84B;border-bottom:1px solid rgba(201,152,30,.3);">
+    <span id="deptBadgeText"></span> &nbsp;·&nbsp; <span style="color:rgba(255,255,255,.5);font-weight:400;">KB Active ✓</span>
+  </div>
 
     <!-- TAB 1: BOT -->
     <div class="tab-panel active" id="panel-bot">
@@ -1010,6 +1013,16 @@ function onDeptChange() {
   loadGOs();
   loadJudgments();
   loadCases();
+
+  // Dept badge update
+  const badge = document.getElementById('deptBadge');
+  const badgeText = document.getElementById('deptBadgeText');
+  if (activeDept) {
+    badgeText.textContent = activeDept.icon + ' विभाग: ' + activeDept.label;
+    badge.style.display = 'block';
+  } else {
+    badge.style.display = 'none';
+  }
 
   const dLabel = activeDept ? activeDept.label : 'विभाग';
   document.getElementById('pulseTitle').textContent = `केस पल्स — ${dLabel}`;
