@@ -1276,7 +1276,7 @@ function searchByCNR() {
   const cnr = document.getElementById('cnrInput').value.trim();
   if (!cnr) { alert('CNR नंबर दर्ज करें'); return; }
   const list = document.getElementById('caseList');
-  const bench = activeDept ? (activeDept.id === 'home' ? 'lucknow' : 'allahabad') : 'allahabad';
+  const bench = cnr.toUpperCase().startsWith('UPHC02') ? 'lucknow' : 'allahabad';
   list.innerHTML = '<div style="text-align:center;padding:20px">⏳ खोज रहे हैं...</div>';
   fetch("https://nyaysahayak-api-production.up.railway.app/api/v1/cases/search", {
     method: 'POST',
