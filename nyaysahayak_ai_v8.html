@@ -1323,7 +1323,35 @@ function loadCases() {
 
 function renderCases(container, cases, filter) {
   container.innerHTML = '';
-  const filtered = filter === 'all' ? cases : cases.filter(c => c.status === filter);
+  if (!cases || cases.length === 0) {
+    container.innerHTML = `<div class="empty-state"><span class="empty-ico">✅</span>इस श्रेणी में कोई प्रकरण नहीं</div>`;
+    return;
+  }
+
+  // Normalize: support both demo format and Vakeel360 API format
+  const normalized = cases.map(c => {
+    if (c.case_record_number || c.unique_id) {
+      // Vakeel360 API format
+      const cd = c.case_details || {};
+      const nextDate = c.next_date || cd['Next Hearing Date'] || cd['First Hearing Date'] || '—';
+      const stage = cd['Stage of Case'] || c.status || '';
+      const petitioners = (c.petitioner_advocates || []).join(', ') || '—';
+      const respondents = (c.respondent_advocates || []).join(', ') || '—';
+      const district = cd['District'] || cd['State'] || '';
+      const urgency = nextDate && nextDate !== '—' && nextDate !== '---' ? 'upcoming' : 'normal';
+      return {
+        caseNo: c.case_record_number || c.unique_id || '—',
+        title: petitioners + ' बनाम ' + respondents,
+        court: 'HC Allahabad' + (district ? ' — ' + district : ''),
+        nextDate: nextDate,
+        status: urgency,
+        lastOrder: stage || 'विवरण उपलब्ध नहीं'
+      };
+    }
+    return c; // demo format as-is
+  });
+
+  const filtered = filter === 'all' ? normalized : normalized.filter(c => c.status === filter);
 
   if (filtered.length === 0) {
     container.innerHTML = `<div class="empty-state"><span class="empty-ico">✅</span>इस श्रेणी में कोई प्रकरण नहीं</div>`;
@@ -1332,12 +1360,12 @@ function renderCases(container, cases, filter) {
 
   filtered.forEach(c => {
     const card = document.createElement('div');
-    card.className = `case-card ${c.status}`;
+    card.className = `case-card ${c.status || 'normal'}`;
     const urgencyLabel = c.status === 'urgent' ? '🔴 अत्यावश्यक' : c.status === 'upcoming' ? '🟡 आगामी' : '🟢 सामान्य';
     card.innerHTML = `
       <div class="case-header">
         <div class="case-number">${c.caseNo}</div>
-        <div class="case-date-badge">${c.nextDate}</div>
+        <div class="case-date-badge">${c.nextDate || '—'}</div>
       </div>
       <div class="case-title">${c.title}</div>
       <div class="case-meta">
@@ -1345,7 +1373,7 @@ function renderCases(container, cases, filter) {
         <span class="case-tag">${urgencyLabel}</span>
       </div>
       <div style="margin-top:7px;font-size:12px;color:var(--ink-soft);background:var(--parchment);padding:7px 10px;border-radius:6px;">
-        📋 <strong>अंतिम आदेश:</strong> ${c.lastOrder}
+        📋 <strong>स्थिति:</strong> ${c.lastOrder}
       </div>`;
     container.appendChild(card);
   });
