@@ -772,6 +772,12 @@ async function generate() {
 
   document.getElementById('generateBtn').disabled = true;
   window.scrollTo(0, 0);
+  // Step-by-step progress messages
+  const _pMsgs = ['📚 ज्ञान आधार में खोज रहे हैं...','⚖️ नियम एवं प्रावधान मिलाए जा रहे हैं...','✍️ दस्तावेज़ तैयार किया जा रहा है...','📄 अंतिम प्रारूप बन रहा है...'];
+  let _pIdx = 0;
+  const _pEl = document.querySelector('.output-body.loading div') || document.querySelector('.loading div');
+  const _pInt = setInterval(() => { if(_pEl && _pIdx < _pMsgs.length) _pEl.textContent = _pMsgs[_pIdx++]; }, 7000);
+  window._pInt = _pInt;
 
   try {
     // RAG search (with timeout)
