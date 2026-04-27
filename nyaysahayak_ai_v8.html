@@ -1590,6 +1590,10 @@ function addBubble(role, text, suggestions=[]) {
   bub.className = 'bubble';
   if (role === 'bot') {
     bub.innerHTML = mdToHtml(text);
+    const fb = document.createElement('div');
+    fb.style.cssText = 'display:flex;gap:6px;align-items:center;margin-top:8px;';
+    fb.innerHTML = '<span style="font-size:11px;color:#999;">उपयोगी था?</span><button onclick="this.parentElement.innerHTML=String.fromCharCode(10003)+\' धन्यवाद!\';" style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:20px;padding:2px 8px;cursor:pointer;">👍</button><button onclick="this.parentElement.innerHTML=\'📝 नोट किया।\';" style="background:#fce4ec;border:1px solid #f48fb1;border-radius:20px;padding:2px 8px;cursor:pointer;">👎</button>';
+    bub.appendChild(fb);
     if (suggestions.length) {
       const sr = document.createElement('div');
       sr.className = 'suggestion-row';
