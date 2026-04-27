@@ -298,25 +298,20 @@ let currentBook = '';
 let totalPages = 1;
 const PAGE_SIZE = 30;
 
-// ── LOAD BOOKS — hardcoded (no API needed) ──
+// ── LOAD BOOKS ──
 async function loadBooks() {
-  const data = {
-    total_books: 10,
-    books: [
-      { name: 'Financial Handbook Vol-2', count: 412 },
-      { name: 'SAD Manual (Sachivalaya)', count: 389 },
-      { name: 'Seva Vidhi', count: 351 },
-      { name: 'UP Procurement Manual', count: 146 },
-      { name: 'Electricity Act 2003', count: 8 },
-      { name: 'UP Electricity Supply Code 2005', count: 5 },
-      { name: 'CGRF & Ombudsman Regulations', count: 3 },
-      { name: 'UPERC SoP Regulations', count: 1 },
-      { name: 'PUVVNL Service Regulations', count: 2 },
-      { name: 'PUVVNL Legal Strategy', count: 6 },
-    ]
-  };
-  renderStats(data);
-  renderBooks(data.books);
+  try {
+    const res = await fetch(`${API}/browse`);
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    renderStats(data);
+    renderBooks(data.books);
+  } catch(e) {
+    document.getElementById('booksGrid').innerHTML =
+      `<div class="error-msg">❌ API से कनेक्ट नहीं हो पाया।<br><small>${e.message}</small></div>`;
+    document.getElementById('statsBar').innerHTML =
+      `<div class="error-msg" style="padding:8px">API unavailable</div>`;
+  }
 }
 
 function renderStats(data) {
@@ -345,22 +340,15 @@ function renderBooks(books) {
   `).join('');
 }
 
-// ── OPEN BOOK — redirect to proper reader ──
-function openBook(bookName) {
-  const n = bookName.toLowerCase();
-  if (n.includes('financial') || n.includes('fhb')) { window.location.href = '/fhb-reader.html'; return; }
-  if (n.includes('sad') || n.includes('sachivalaya') || n.includes('secretariat')) { window.location.href = '/sad-reader.html'; return; }
-  if (n.includes('seva') || n.includes('service law')) { window.location.href = '/sv-reader.html'; return; }
-  if (n.includes('procurement') || n.includes('kray')) { window.location.href = '/pm-reader.html'; return; }
-  if (n.includes('electricity') || n.includes('supply code') || n.includes('cgrf') || n.includes('uperc') || n.includes('puvvnl')) { window.location.href = '/puvvnl-reader.html'; return; }
-  // fallback for unknown books
+// ── OPEN BOOK ──
+async function openBook(bookName) {
   currentBook = bookName;
   currentPage = 1;
   document.getElementById('searchInput').value = '';
   document.getElementById('booksSection').classList.add('hidden');
   document.getElementById('readerSection').classList.add('active');
   document.getElementById('readerBookName').textContent = bookName;
-  loadEntries();
+  await loadEntries();
 }
 
 async function loadEntries(searchQuery = '') {
