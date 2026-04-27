@@ -1648,12 +1648,10 @@ function addTyping() {
 
 function showCS(type) {
   const data = {
-    nagrik: {cs:true, ico:'🙏', name:'लाभार्थी सेतु', color:'#128C7E', desc:'नागरिकों के लिए सरकारी योजना सहायक\nपेंशन · Scholarship · राशन · आयुष्मान'},
-    yuva:   {cs:true, ico:'🚀', name:'उड़ान', color:'#1A5CB8', desc:'युवाओं के लिए Career & रोज़गार मार्गदर्शक\nUPSSC · Sewayojan · Mudra Loan · ITI'}
+    nagrik: {ico:'🙏', name:'लाभार्थी सेतु', color:'#128C7E', desc:'नागरिकों के लिए सरकारी योजना सहायक\nपेंशन · Scholarship · राशन · आयुष्मान'},
+    yuva:   {ico:'🚀', name:'उड़ान', color:'#1A5CB8', desc:'युवाओं के लिए Career & रोज़गार मार्गदर्शक\nUPSSC · Sewayojan · Mudra Loan · ITI'}
   };
   const d = data[type];
-  if (d && d.cs) { document.getElementById('notify-modal').style.display='flex'; return; }
-  const _unused = null;
   document.getElementById('csIco').textContent = d.ico;
   document.getElementById('csName').textContent = d.name;
   document.getElementById('csName').style.color = d.color;
