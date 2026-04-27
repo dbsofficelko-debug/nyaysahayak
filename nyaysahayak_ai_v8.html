@@ -1647,10 +1647,6 @@ function addTyping() {
 }
 
 function showCS(type) {
-  if (type === 'nagrik' || type === 'yuva') {
-    document.getElementById('notify-modal').style.display = 'flex';
-    return;
-  }
   const data = {
     nagrik: {ico:'🙏', name:'लाभार्थी सेतु', color:'#128C7E', desc:'नागरिकों के लिए सरकारी योजना सहायक\nपेंशन · Scholarship · राशन · आयुष्मान'},
     yuva:   {ico:'🚀', name:'उड़ान', color:'#1A5CB8', desc:'युवाओं के लिए Career & रोज़गार मार्गदर्शक\nUPSSC · Sewayojan · Mudra Loan · ITI'}
