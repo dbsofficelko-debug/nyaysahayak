@@ -1470,7 +1470,7 @@ async function send() {
       } catch {}
     }
     if (history.length > 8) history = history.slice(-8);
-if (!kCtx.trim() && !pdf) { addBubble('bot', '⚠️ इस विषय पर हमारे ज्ञान आधार में प्रावधान उपलब्ध नहीं है। कृपया संबंधित विभाग से सीधे संपर्क करें।', []); typingEl.remove(); btn.disabled = false; ta.focus(); return; }
+if (!kCtx.trim() && !pdf && dept && (dept.id === 'sainik_up' || dept.id === 'sainik_mod')) { addBubble('bot', '⚠️ सैनिक स्कूल के लिए विशिष्ट नियम ज्ञान आधार में सीमित हैं।', []); typingEl.remove(); btn.disabled = false; ta.focus(); return; }
     const reply = await callAPI(kCtx, !!pdf);
     typingEl.remove();
     const { cleanReply, suggestions } = parseSugg(reply);
