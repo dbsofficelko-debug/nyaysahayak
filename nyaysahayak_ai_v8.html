@@ -1585,7 +1585,7 @@ async function callAPI(kCtx='', isPdf=false) {
   const resp = await fetch(CFG.API, {
     method:'POST', headers:{'Content-Type':'application/json'},
     signal: AbortSignal.timeout(55000),
-    body: JSON.stringify({ model, max_tokens: CFG.MAX_TOKENS, system, messages: history })
+    body: JSON.stringify({ model, max_tokens: CFG.MAX_TOKENS, temperature: 0, system, messages: history })
   });
   if (!resp.ok) { const t = await resp.text().catch(()=>''); throw new Error('API error: ' + resp.status); }
   const d = await resp.json();
