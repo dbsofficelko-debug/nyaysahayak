@@ -1710,7 +1710,8 @@ function addBubble(role, text, suggestions=[]) {
   const bub = document.createElement('div');
   bub.className = 'bubble';
   if (role === 'bot') {
-    bub.innerHTML = mdToHtml(text);
+    // Stream-render: show content word by word instantly
+    bub.innerHTML = '';
     if (suggestions.length) {
       const sr = document.createElement('div');
       sr.className = 'suggestion-row';
@@ -1720,65 +1721,105 @@ function addBubble(role, text, suggestions=[]) {
         c.onclick = () => sendChip(s);
         sr.appendChild(c);
       });
-      bub.appendChild(sr);
+      bub._suggRow = sr; // store for later
     }
   } else {
     bub.style.whiteSpace = 'pre-wrap';
     bub.textContent = text;
   }
-  if (role === 'bot') {
-    const actRow = document.createElement('div');
-    actRow.style.cssText = 'display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;align-items:center;';
-
-    const copyBtn = document.createElement('button');
-    
-    copyBtn.textContent = '📋 कॉपी';
-    copyBtn.style.cssText = 'background:var(--gold-pale);border:1px solid var(--gold);cursor:pointer;font-size:11px;color:var(--navy);padding:4px 10px;border-radius:6px;font-weight:600;';
-    copyBtn.onclick = () => { navigator.clipboard.writeText(text); copyBtn.textContent = '✓ Copied!'; setTimeout(() => copyBtn.textContent = '📋 Copy', 2000); };
-
-    const waBtn = document.createElement('button');
-    waBtn.style.cssText = 'background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);padding:3px 7px;border-radius:4px;';
-    waBtn.textContent = '📤 Share';
-    waBtn.onclick = () => {
-      const short = text.length > 300 ? text.slice(0, 297) + '…' : text;
-      window.open('https://wa.me/?text=' + encodeURIComponent('न्यायसहायक से उत्तर:\n\n' + short + '\n\n— nyaysahayak.co.in'), '_blank');
-    };
-
-    const thumbUp = document.createElement('button');
-    thumbUp.style.cssText = 'background:none;border:none;cursor:pointer;font-size:16px;padding:3px 6px;transition:transform 0.2s;';
-    thumbUp.textContent = '👍';
-    thumbUp.title = 'उत्तर सही है';
-    thumbUp.onclick = () => {
-      thumbUp.textContent = '✅'; thumbUp.disabled = true; thumbDown.disabled = true;
-      const fb = JSON.parse(localStorage.getItem('ny_feedback') || '[]');
-      fb.push({ type: 'up', q: text.slice(0,100), ts: Date.now() });
-      localStorage.setItem('ny_feedback', JSON.stringify(fb.slice(-50)));
-    };
-
-    const thumbDown = document.createElement('button');
-    thumbDown.style.cssText = 'background:none;border:none;cursor:pointer;font-size:16px;padding:3px 6px;transition:transform 0.2s;';
-    thumbDown.textContent = '👎';
-    thumbDown.title = 'उत्तर गलत/अधूरा है';
-    thumbDown.onclick = () => {
-      thumbDown.textContent = '❌'; thumbUp.disabled = true; thumbDown.disabled = true;
-      const fb = JSON.parse(localStorage.getItem('ny_feedback') || '[]');
-      fb.push({ type: 'down', q: text.slice(0,100), ts: Date.now() });
-      localStorage.setItem('ny_feedback', JSON.stringify(fb.slice(-50)));
-      const note = document.createElement('span');
-      note.style.cssText = 'font-size:11px;color:var(--muted);margin-left:4px;';
-      note.textContent = '🙏 धन्यवाद — हम सुधार करेंगे';
-      actRow.appendChild(note);
-    };
-
-    actRow.appendChild(copyBtn);
-    actRow.appendChild(waBtn);
-    actRow.appendChild(thumbUp);
-    actRow.appendChild(thumbDown);
-    bub.appendChild(actRow);
-  }
   row.appendChild(bub); msgs.appendChild(row);
   msgs.scrollTop = msgs.scrollHeight;
+  
+  // Stream the text for bot messages
+  if (role === 'bot') {
+    streamTextInto(bub, text, suggestions, msgs);
+  }
+  
   return row;
+}
+
+/* ── STREAMING SIMULATION ── */
+function streamTextInto(bub, text, suggestions, msgs) {
+  // Split into tokens (words + spaces + punctuation)
+  const tokens = text.split(/(\s+|(?<=[।,;:!?])|(?=[।,;:!?]))/);
+  let i = 0;
+  let rendered = '';
+  
+  // Base delay: faster for short responses
+  const totalLen = text.length;
+  const baseDelay = totalLen < 200 ? 8 : totalLen < 600 ? 5 : 3;
+  
+  function renderNext() {
+    if (i >= tokens.length) {
+      // Done — add action buttons and suggestions
+      addActionsTo(bub, text, suggestions, msgs);
+      msgs.scrollTop = msgs.scrollHeight;
+      return;
+    }
+    
+    // Batch 3-5 tokens per frame for speed
+    const batch = Math.min(4, tokens.length - i);
+    for (let b = 0; b < batch; b++) {
+      if (i < tokens.length) { rendered += tokens[i]; i++; }
+    }
+    
+    bub.innerHTML = mdToHtml(rendered);
+    // Auto scroll while streaming
+    const isNearBottom = msgs.scrollHeight - msgs.scrollTop - msgs.clientHeight < 80;
+    if (isNearBottom) msgs.scrollTop = msgs.scrollHeight;
+    
+    // Tiny pause on sentence boundaries for natural feel
+    const lastChar = rendered.trim().slice(-1);
+    const pause = /[।\.\?!]/.test(lastChar) ? baseDelay * 8 : baseDelay;
+    setTimeout(renderNext, pause);
+  }
+  
+  // Start immediately
+  requestAnimationFrame(renderNext);
+}
+
+function addActionsTo(bub, text, suggestions, msgs) {
+  if (suggestions && suggestions.length) {
+    bub.appendChild(bub._suggRow || (() => {
+      const sr = document.createElement('div');
+      sr.className = 'suggestion-row';
+      suggestions.forEach(s => {
+        const c = document.createElement('button');
+        c.className = 'sugg-chip'; c.textContent = s;
+        c.onclick = () => sendChip(s);
+        sr.appendChild(c);
+      });
+      return sr;
+    })());
+  }
+  
+  const actRow = document.createElement('div');
+  actRow.style.cssText = 'display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;align-items:center;';
+
+  const copyBtn = document.createElement('button');
+  copyBtn.textContent = '📋 कॉपी';
+  copyBtn.style.cssText = 'background:var(--gold-pale);border:1px solid var(--gold);cursor:pointer;font-size:11px;color:var(--navy);padding:4px 10px;border-radius:6px;font-weight:600;';
+  copyBtn.onclick = () => { navigator.clipboard.writeText(text); copyBtn.textContent = '✓ Copied!'; setTimeout(() => copyBtn.textContent = '📋 कॉपी', 2000); };
+
+  const waBtn = document.createElement('button');
+  waBtn.style.cssText = 'background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);padding:3px 7px;border-radius:4px;';
+  waBtn.textContent = '📤 Share';
+  waBtn.onclick = () => { const s = text.length > 300 ? text.slice(0,297)+'…' : text; window.open('https://wa.me/?text='+encodeURIComponent('न्यायसहायक से उत्तर:\n\n'+s+'\n\n— nyaysahayak.co.in'),'_blank'); };
+
+  const thumbUp = document.createElement('button');
+  thumbUp.style.cssText = 'background:none;border:none;cursor:pointer;font-size:16px;padding:3px 6px;';
+  thumbUp.textContent = '👍';
+  thumbUp.onclick = () => { thumbUp.textContent = '✅'; thumbUp.disabled = true; thumbDown.disabled = true; };
+
+  const thumbDown = document.createElement('button');
+  thumbDown.style.cssText = 'background:none;border:none;cursor:pointer;font-size:16px;padding:3px 6px;';
+  thumbDown.textContent = '👎';
+  thumbDown.onclick = () => { thumbDown.textContent = '❌'; thumbUp.disabled = true; thumbDown.disabled = true; const n = document.createElement('span'); n.style.cssText = 'font-size:11px;color:var(--muted);margin-left:4px;'; n.textContent = '🙏 धन्यवाद'; actRow.appendChild(n); };
+
+  actRow.appendChild(copyBtn); actRow.appendChild(waBtn);
+  actRow.appendChild(thumbUp); actRow.appendChild(thumbDown);
+  bub.appendChild(actRow);
+  msgs.scrollTop = msgs.scrollHeight;
 }
 
 function addTyping() {
