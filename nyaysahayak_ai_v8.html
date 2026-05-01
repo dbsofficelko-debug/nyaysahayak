@@ -1792,6 +1792,24 @@ function closeDocGen() {
   document.getElementById('docgenOutput').style.display = 'none';
 }
 
+function selectWorkflow(wf) {
+  // Highlight workflow button
+  document.getElementById('wf-office-btn').style.outline = 'none';
+  document.getElementById('wf-court-btn').style.outline = 'none';
+  if (wf === 'office') {
+    document.getElementById('wf-office-btn').style.outline = '3px solid #c9a84c';
+    selectDocType('allinone', document.getElementById('tab-noting')); // use allinone mode
+    // Override — set to special office workflow
+    currentDocType = 'office_workflow';
+    // Show office workflow combined input
+    document.querySelectorAll('.docgen-section').forEach(s => s.style.display = 'none');
+    document.getElementById('docgen-office-workflow').style.display = 'block';
+  } else {
+    document.getElementById('wf-court-btn').style.outline = '3px solid #e8a0a0';
+    selectDocType('parawise', document.getElementById('tab-parawise'));
+  }
+}
+
 function selectDocType(type, btn) {
   currentDocType = type;
   document.querySelectorAll('.docgen-type-btn').forEach(b => b.classList.remove('active'));
@@ -2128,6 +2146,93 @@ DOCUMENT 4: पैरावार टिप्पणी (Table — for CSC)
 ${input}`;
   },
 
+  office_workflow: (input, file, caseNo, date, dept) => {
+    const deptKB = activeDept ? ('विभाग: ' + activeDept.label + '. ' + activeDept.prompt) : '';
+    return `आप UP सचिवालय के वरिष्ठ अधिकारी हैं। नीचे दिए गए प्रकरण के लिए चारों कार्यालयीन दस्तावेज़ एक साथ तैयार करें।
+
+${deptKB}
+
+ANTI-HALLUCINATION नियम (अनिवार्य):
+- केवल PROVIDED तथ्य उपयोग करें — कोई fact, date, GO number invent न करें
+- Rule/GO cite करें ONLY यदि certain हों — अन्यथा "[verify करें]" लिखें
+- SC/HC judgment cite करें ONLY यदि दिया गया हो
+
+फाइल: ${file || '........'} | Case: ${caseNo || '........'} | तिथि: ${date || '........'} | विभाग: ${dept || '........'}
+
+══════════════════════════════════════════════
+दस्तावेज़ 1: प्रकरण का संक्षिप्त इतिहास (Annexure)
+══════════════════════════════════════════════
+
+FORMAT:
+● वाद का विवरण एवं पक्षकार
+● घटनाक्रम (Chronology — dates के साथ)
+● न्यायालयी कार्यवाही (प्रथम/द्वितीय/तृतीय चरण)
+● नवीन तथ्य/साक्ष्य (यदि हों)
+● विधिक स्थिति एवं शासनादेश
+
+══════════════════════════════════════════════
+दस्तावेज़ 2: टिप्पण (Noting — SAD Manual)
+══════════════════════════════════════════════
+
+FORMAT (सीधे प्रस्तर से शुरू करें — कोई header नहीं):
+कृपया विचाराधीन पत्र का संलग्नक सहित अवलोकन करना चाहें।
+2. [Court notice — case number, date, अगली सुनवाई]
+3. [Operative para in quotes]
+4. [विभाग की कार्यवाही — GO number, dates]
+5. [विभाग का पक्ष — क्यों कोई अवमानना नहीं / पक्ष मजबूत है]
+
+उपर्युक्त वर्णित स्थिति के दृष्टिगत प्रश्नगत प्रकरण में निम्नवत कार्यवाही किया जाना प्रस्तावित है:
+(क) [Action 1]
+(ख) [Action 2]
+(ग) [Action 3]
+
+कृपया सहमति की दशा में यथामाध्यम अनुमोदन प्राप्त किया जाना निवेदित है।
+
+══════════════════════════════════════════════
+दस्तावेज़ 3: CSC को निर्देश पत्र
+══════════════════════════════════════════════
+
+FORMAT (Letter format — Sachiv se CSC ko):
+संख्या- ........./[Year]/[Section]
+प्रेषक, सचिव/विशेष सचिव, उत्तर प्रदेश शासन।
+सेवा में, मुख्य स्थायी अधिवक्ता, माननीय उच्च न्यायालय, [Bench]।
+[विभाग] अनुभाग लखनऊ: दिनांक: ........., [Year]
+
+विषय: [Case Number] में Counter Affidavit/Compliance Affidavit दाखिल किए जाने के सम्बन्ध में।
+
+महोदय,
+[Letter body — 3-4 paragraphs — case background, compliance done, parawise comments enclosed, request to file CA and get case dismissed]
+
+अतः अनुरोध है कि:
+(क) Counter Affidavit/Compliance Affidavit दाखिल करें
+(ख) पैरावार टिप्पणी के आधार पर पक्ष रखें
+(ग) निर्धारित तिथि पर याचिका निस्तारित/खारिज कराएं
+
+भवदीय, संख्या एवं दिनांक यथोक्त।
+
+══════════════════════════════════════════════
+दस्तावेज़ 4: पैरवी बिंदु (Effective Arguments)
+══════════════════════════════════════════════
+
+A. विभाग के पक्ष में मजबूत तर्क:
+1. [Argument + Rule/Section]
+2. [Argument + Rule/Section]
+
+B. लागू SC/HC निर्णय (यदि provided हों):
+1. [Case Name + holding]
+
+C. याचीगण के संभावित तर्क और खंडन:
+• याचीगण: [argument] → खंडन: [rebuttal]
+
+D. CSC को विशेष निर्देश:
+[What to argue on next date]
+
+══════════════════════════════════════════════
+
+प्रकरण के तथ्य:
+${input}`;
+  },
+
   pairvi: (input) => {
     const deptKB = activeDept ? ('विभाग: ' + activeDept.label + '. ' + activeDept.prompt) : '';
     return `आप UP सरकार के वरिष्ठ विधिक अधिकारी हैं। प्रभावी पैरवी के लिए strategic points तैयार करें।
@@ -2222,6 +2327,29 @@ async function generateDoc() {
     const stand = document.getElementById('dg-parainst-dept').value.trim();
     if (!input) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; return; }
     userInput = DOCGEN_PROMPTS.parawise_instructions(input, stand);
+  } else if (currentDocType === 'office_workflow') {
+    const caseno = document.getElementById('dg-ow-caseno').value.trim();
+    const date = document.getElementById('dg-ow-date').value.trim();
+    const petitioner = document.getElementById('dg-ow-petitioner').value.trim();
+    const bench = document.getElementById('dg-ow-bench').value;
+    const file = document.getElementById('dg-ow-file').value.trim();
+    const dept = document.getElementById('dg-ow-dept').value.trim();
+    const relief = document.getElementById('dg-ow-relief').value.trim();
+    const order = document.getElementById('dg-ow-order').value.trim();
+    const facts = document.getElementById('dg-ow-facts').value.trim();
+    if (!facts && !docgenPdfBase64) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; alert('विभाग का पक्ष / तथ्य भरें या PDF upload करें।'); return; }
+    const structured = [
+      caseno ? 'प्रकरण: ' + caseno : '',
+      petitioner ? 'याची: ' + petitioner : '',
+      bench ? 'न्यायालय: ' + bench : '',
+      relief ? 'अनुतोष: ' + relief : '',
+      order ? 'न्यायालय आदेश: ' + order : '',
+      facts ? 'विभाग के तथ्य/कार्यवाही:\n' + facts : (docgenPdfBase64 ? '[PDF संलग्न है — सभी तथ्य PDF से extract करें]' : ''),
+      date ? 'अगली सुनवाई: ' + date : '',
+      file ? 'फाइल संख्या: ' + file : '',
+      dept ? 'विभाग: ' + dept : '',
+    ].filter(Boolean).join('\n');
+    userInput = DOCGEN_PROMPTS.office_workflow(structured, file, caseno, date, dept);
   } else if (currentDocType === 'allinone') {
     const input = document.getElementById('dg-allinone-input').value.trim();
     const file = document.getElementById('dg-allinone-file').value.trim();
@@ -2349,24 +2477,54 @@ function shareDocGen() {
     </div>
 
     <!-- Format selector -->
-    <div style="padding:14px 18px;border-bottom:1px solid var(--border);background:var(--parchment);flex-shrink:0;">
-      <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">प्रारूप चुनें</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <button class="docgen-type-btn active" onclick="selectDocType('noting',this)">
-          📝 टिप्पण (Noting)
-          <span style="display:block;font-size:10px;font-weight:400;opacity:0.7;margin-top:2px;">SAD Manual Prastar 127-136</span>
+    <div style="padding:12px 18px;border-bottom:1px solid var(--border);background:var(--parchment);flex-shrink:0;">
+
+      <!-- WORKFLOW BUTTONS — 2 main paths -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+
+        <!-- Workflow 1: Office Work -->
+        <button id="wf-office-btn" onclick="selectWorkflow('office')" style="padding:12px 10px;background:linear-gradient(135deg,#1a2b4a,#2d4a7a);color:white;border:2px solid #c9a84c;border-radius:12px;cursor:pointer;font-family:inherit;text-align:left;transition:all 0.2s;">
+          <div style="font-size:15px;margin-bottom:4px;">📋 कार्यालय कार्य</div>
+          <div style="font-size:10px;opacity:0.85;line-height:1.5;">Noting + Brief History<br>+ CSC Instructions + पैरवी बिंदु</div>
+          <div style="margin-top:6px;padding:3px 8px;background:#c9a84c;color:#1a2b4a;border-radius:4px;font-size:10px;font-weight:700;display:inline-block;">एक क्लिक — सभी 4 दस्तावेज़</div>
         </button>
-        <button class="docgen-type-btn" onclick="selectDocType('csc',this)">
-          ⚖️ CSC निर्देश
-          <span style="display:block;font-size:10px;font-weight:400;opacity:0.7;margin-top:2px;">Court Pairvi हेतु</span>
+
+        <!-- Workflow 2: Court Work -->
+        <button id="wf-court-btn" onclick="selectWorkflow('court')" style="padding:12px 10px;background:linear-gradient(135deg,#5c1a1a,#8b2e2e);color:white;border:2px solid #e8a0a0;border-radius:12px;cursor:pointer;font-family:inherit;text-align:left;transition:all 0.2s;">
+          <div style="font-size:15px;margin-bottom:4px;">⚖️ न्यायालयीन कार्य</div>
+          <div style="font-size:10px;opacity:0.85;line-height:1.5;">Parawise Counter Affidavit<br>SC/HC Standard English Format</div>
+          <div style="margin-top:6px;padding:3px 8px;background:#e8a0a0;color:#5c1a1a;border-radius:4px;font-size:10px;font-weight:700;display:inline-block;">Print-Ready Court Document</div>
         </button>
-        <button class="docgen-type-btn" onclick="selectDocType('parawise',this)">
-          📋 पैरावार प्रतिउत्तर
-          <span style="display:block;font-size:10px;font-weight:400;opacity:0.7;margin-top:2px;">Writ Petition Reply</span>
+      </div>
+
+      <!-- DIVIDER with "या अलग दस्तावेज़ चुनें" -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:10px;color:var(--muted);white-space:nowrap;">या अलग दस्तावेज़ चुनें</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <!-- INDIVIDUAL TABS — 2x2 grid -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        <button class="docgen-type-btn active" id="tab-noting" onclick="selectDocType('noting',this)">
+          📝 टिप्पण
+          <span style="display:block;font-size:10px;font-weight:400;opacity:0.7;margin-top:1px;">SAD Manual 127-136</span>
         </button>
-        <button class="docgen-type-btn" onclick="selectDocType('pairvi',this)">
+        <button class="docgen-type-btn" id="tab-csc" onclick="selectDocType('csc',this)">
+          📨 CSC निर्देश
+          <span style="display:block;font-size:10px;font-weight:400;opacity:0.7;margin-top:1px;">Court Pairvi Letter</span>
+        </button>
+        <button class="docgen-type-btn" id="tab-pairvi" onclick="selectDocType('pairvi',this)">
           🏛️ पैरवी बिंदु
-          <span style="display:block;font-size:10px;font-weight:400;opacity:0.7;margin-top:2px;">Effective Pairvi Points</span>
+          <span style="display:block;font-size:10px;font-weight:400;opacity:0.7;margin-top:1px;">Effective Arguments</span>
+        </button>
+        <button class="docgen-type-btn" id="tab-history" onclick="selectDocType('history',this)">
+          📖 संक्षिप्त इतिहास
+          <span style="display:block;font-size:10px;font-weight:400;opacity:0.7;margin-top:1px;">Case Brief History</span>
+        </button>
+        <button class="docgen-type-btn" id="tab-parawise" onclick="selectDocType('parawise',this)" style="grid-column:1/-1;border-color:#8b2e2e;color:#8b2e2e;">
+          ⚖️ पैरावार Counter Affidavit — SC/HC English
+          <span style="display:block;font-size:10px;font-weight:400;opacity:0.7;margin-top:1px;">Standard Court Format — Print Ready</span>
         </button>
       </div>
     </div>
@@ -2391,6 +2549,49 @@ function shareDocGen() {
       </div>
 
       <div id="docgenInputArea">
+
+        <!-- OFFICE WORKFLOW — Combined Input -->
+        <div id="docgen-office-workflow" class="docgen-section" style="display:none;">
+          <div style="background:linear-gradient(135deg,#1a2b4a,#2d4a7a);color:white;border-radius:10px;padding:12px 14px;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:4px;">📋 कार्यालय कार्य — एक साथ 4 दस्तावेज़</div>
+            <div style="font-size:11px;opacity:0.85;">Noting + Brief History + CSC Instructions + पैरवी बिंदु</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">⚖️ Case Number ★</label>
+            <input id="dg-ow-caseno" placeholder="CAPL(L) 520/2026" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
+            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📅 अगली सुनवाई तिथि</label>
+            <input id="dg-ow-date" placeholder="30.03.2026" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">👤 याची का नाम ★</label>
+            <input id="dg-ow-petitioner" placeholder="श्रीमती संजना दुबे" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
+            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">🏛️ Court/Bench</label>
+            <select id="dg-ow-bench" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;">
+              <option value="माननीय उच्च न्यायालय, लखनऊ खण्डपीठ">HC — लखनऊ खण्डपीठ</option>
+              <option value="माननीय उच्च न्यायालय, इलाहाबाद">HC — इलाहाबाद</option>
+              <option value="माननीय सर्वोच्च न्यायालय">Supreme Court</option>
+            </select></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📁 फाइल संख्या</label>
+            <input id="dg-ow-file" placeholder="6/SNP/2024" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
+            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">🏛️ विभाग/अनुभाग</label>
+            <input id="dg-ow-dept" placeholder="SNP / गृह विभाग" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
+          </div>
+          <div style="margin-bottom:8px;"><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📋 मुख्य अनुतोष — याची ने क्या माँगा? ★</label>
+          <input id="dg-ow-relief" placeholder="अनुकम्पा नियुक्ति दिलाई जाए / बर्खास्तगी निरस्त की जाए" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
+          <div style="margin-bottom:8px;"><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📋 Court का अंतिम आदेश (Operative Para)</label>
+          <textarea id="dg-ow-order" placeholder="HC ने कहा: '6 सप्ताह में निर्णय लें' / नोटिस जारी किया — स्पष्टीकरण माँगा" style="width:100%;min-height:60px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);box-sizing:border-box;"></textarea></div>
+          <div style="margin-bottom:8px;"><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">🏛️ विभाग का पक्ष / तथ्य / कार्यवाही ★ <span style="color:#999;font-weight:400">(PDF upload हो तो AI खुद पढ़ेगा)</span></label>
+          <textarea id="dg-ow-facts" placeholder="याची के पति की मृत्यु बीमारी से हुई — शहीद श्रेणी में नहीं। GO दि. 19.03.2018 के अनुसार अनुकम्पा नियुक्ति अस्वीकृत। 6 सप्ताह में कार्यवाही पूर्ण — office memo 05.01.2026 निर्गत।" style="width:100%;min-height:90px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);box-sizing:border-box;"></textarea></div>
+          <div style="background:#f0f9f0;border:1px solid #86efac;border-radius:8px;padding:10px 12px;font-size:11px;color:#166534;">
+            ✅ <strong>AI इन सभी दस्तावेज़ों को एक साथ तैयार करेगा:</strong><br>
+            1. प्रकरण का संक्षिप्त इतिहास (Brief History / Annexure)<br>
+            2. टिप्पण (Noting — SAD Manual format)<br>
+            3. CSC को निर्देश पत्र (Letter format)<br>
+            4. पैरवी बिंदु (Effective Arguments)
+          </div>
+        </div>
         <!-- Dynamic inputs based on type -->
         <div id="docgen-noting" class="docgen-section">
           <div style="background:#fef9f0;border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:11px;color:#7a5c1e;">⚡ <strong>Precision Mode:</strong> PDF upload करें या fields भरें — AI hallucination-free टिप्पण तैयार करेगा।</div>
