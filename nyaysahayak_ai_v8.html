@@ -939,7 +939,11 @@ const DEMO_CASES = {
 /* ════════════════════════════════════════
    SYSTEM PROMPT
 ════════════════════════════════════════ */
-const BASE_SYSTEM = `आप DBS · न्यायसहायक हैं — UP सरकार के न्यायिक कार्यों में सहायता।
+const BASE_SYSTEM = `आप DBS · न्यायसहायक हैं — UP सरकार के न्यायिक एवं प्रशासनिक कार्यों में सहायता।
+
+ज्ञान आधार — सभी विभागों हेतु:
+FHB Vol-1,2,3,5,6 · SAD Manual · Seva Vidhi · UP Procurement Manual · Karmik/Vitt/Nyay GOs (16,000+ entries)
+Secretariat हेतु अतिरिक्त: SAD Manual Prastar 127-136
 
 कठोर नियम — कभी तोड़े नहीं:
 
@@ -1509,31 +1513,41 @@ async function send() {
 async function searchKB(query, books) {
   const all = [];
   const deptId = activeDept ? activeDept.id : '';
+  // Departments with specific KB entries
+  const hasSpecificKB = ['sad', 'sss_mod', 'puvvnl', 'sss_up', 'secretariat'];
+  const useSpecific = deptId && hasSpecificKB.includes(deptId);
 
+  // Always fetch universal first (primary source for all depts)
   try {
-    const deptUrl = `https://nyaysahayak-api-production.up.railway.app/search?q=${encodeURIComponent(query)}&dept=${encodeURIComponent(deptId)}&limit=6`;
-    const r = await fetch(deptUrl, { signal: AbortSignal.timeout(4000) });
+    const uniUrl = 'https://nyaysahayak-api-production.up.railway.app/search?q=' + encodeURIComponent(query) + '&dept=universal&limit=6';
+    const r = await fetch(uniUrl, { signal: AbortSignal.timeout(4000) });
     if (r.ok) {
       const d = await r.json();
-      (d.results || d.entries || []).forEach(e => all.push({ ...e, _book: e.book || e.dept || 'ज्ञान आधार' }));
+      (d.results || d.entries || []).forEach(e => all.push({ ...e, _book: e.book || 'Universal KB' }));
     }
   } catch {}
 
-  if (all.length < 4) {
+  // If dept has specific KB, also fetch that
+  if (useSpecific) {
     try {
-      const uniUrl = `https://nyaysahayak-api-production.up.railway.app/search?q=${encodeURIComponent(query)}&dept=universal&limit=4`;
-      const r = await fetch(uniUrl, { signal: AbortSignal.timeout(3000) });
+      const deptUrl = 'https://nyaysahayak-api-production.up.railway.app/search?q=' + encodeURIComponent(query) + '&dept=' + encodeURIComponent(deptId) + '&limit=4';
+      const r = await fetch(deptUrl, { signal: AbortSignal.timeout(3000) });
       if (r.ok) {
         const d = await r.json();
-        (d.results || d.entries || []).forEach(e => all.push({ ...e, _book: e.book || 'सार्वभौमिक' }));
+        (d.results || d.entries || []).forEach(e => all.push({ ...e, _book: e.book || deptId }));
       }
     } catch {}
   }
 
-  if (!all.length) {
+  // Secretariat - also add SAD Manual entries
+  if (deptId === 'secretariat') {
     try {
-      const r = await fetch(`https://nyaysahayak-api-production.up.railway.app/search?q=${encodeURIComponent(query)}&limit=5`);
-      if (r.ok) { const d = await r.json(); (d.results||d.entries||[]).forEach(e => all.push({...e,_book:e.book||'ज्ञान आधार'})); }
+      const sadUrl = 'https://nyaysahayak-api-production.up.railway.app/search?q=' + encodeURIComponent(query) + '&dept=sad&limit=4';
+      const r = await fetch(sadUrl, { signal: AbortSignal.timeout(3000) });
+      if (r.ok) {
+        const d = await r.json();
+        (d.results || d.entries || []).forEach(e => all.push({ ...e, _book: e.book || 'SAD Manual' }));
+      }
     } catch {}
   }
 
