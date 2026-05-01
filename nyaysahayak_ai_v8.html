@@ -157,14 +157,15 @@ html, body {
 }
 .carousel-track { display: flex; flex-direction: column; gap: 7px; max-width: 340px; margin: 0 auto; }
 .carousel-chip {
-  padding: 10px 14px; background: var(--paper);
-  border: 1.5px solid var(--border); border-radius: var(--r);
-  font-size: 13px; color: var(--ink-soft); cursor: pointer;
-  text-align: left; font-family: inherit;
-  transition: border-color .2s, color .2s;
-  animation: fadeUp .35s ease;
+  padding: 11px 16px; background: var(--paper);
+  border: 2px solid var(--gold); border-radius: var(--r);
+  font-size: 13px; color: var(--navy); cursor: pointer;
+  text-align: left; font-family: inherit; font-weight: 600;
+  transition: all .2s; animation: fadeUp .35s ease;
+  box-shadow: 0 2px 6px rgba(201,152,30,0.15);
 }
-.carousel-chip:hover { border-color: var(--gold); color: var(--navy); }
+.carousel-chip:hover { background: var(--gold-pale); color: var(--navy); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(201,152,30,0.25); }
+.carousel-chip:active { transform: translateY(0); }
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -506,6 +507,19 @@ html, body {
   font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit;
 }
 
+/* ── DOCGEN ── */
+.docgen-type-btn {
+  padding: 10px 12px; border: 1.5px solid var(--border);
+  border-radius: 8px; background: var(--paper);
+  font-size: 12px; font-weight: 700; color: var(--ink-soft);
+  cursor: pointer; font-family: inherit; text-align: left;
+  transition: all .15s; line-height: 1.3;
+}
+.docgen-type-btn:hover { border-color: var(--gold); color: var(--navy); }
+.docgen-type-btn.active { border-color: var(--gold); background: var(--gold-pale); color: var(--navy); }
+.docgen-section textarea:focus,
+.docgen-section input:focus { border-color: var(--gold) !important; }
+
 /* ── SCROLLBARS ── */
 .msgs::-webkit-scrollbar,
 .items-list::-webkit-scrollbar,
@@ -546,7 +560,7 @@ html, body {
         </div>
       </div>
       <div class="hdr-right">
-        <a href="#" class="doc-gen-btn" onclick="alert("DocGen — Coming Soon! Abhi development mein hai. 🚀"); return false;">📄 दस्तावेज़ निर्माता</a>
+        <a href="#" class="doc-gen-btn" onclick="showDocGen(); return false;">📄 दस्तावेज़ निर्माता</a>
         <span class="badge-dbs">DBS</span>
       </div>
     </div>
@@ -602,10 +616,10 @@ html, body {
         <span class="tab-ico">💬</span>विभाग बॉट
       </button>
       <button class="main-tab" onclick="switchTab('gos')" id="tab-btn-gos">
-        <span class="tab-ico">📜</span>शासनादेश
+        <span class="tab-ico">📜</span>शासनादेश 🔒
       </button>
       <button class="main-tab" onclick="switchTab('judgments')" id="tab-btn-judgments">
-        <span class="tab-ico">⚖️</span>न्यायालय निर्णय
+        <span class="tab-ico">⚖️</span>निर्णय 🔒
       </button>
       <button class="main-tab" onclick="switchTab('pulse')" id="tab-btn-pulse">
         <span class="tab-ico">📊</span>केस पल्स
@@ -1745,6 +1759,249 @@ function hideCS() {
   if(t) t.textContent = 'न्यायसहायक';
 }
 
+
+/* ════════════════════════════════════════
+   DOCGEN
+════════════════════════════════════════ */
+let currentDocType = 'noting';
+let currentDocOutput = '';
+
+function openDocGen() {
+  const el = document.getElementById('docgenOverlay');
+  el.style.display = 'flex';
+  setTimeout(() => el.querySelector('div').style.transform = 'translateY(0)', 10);
+}
+
+function closeDocGen() {
+  document.getElementById('docgenOverlay').style.display = 'none';
+  document.getElementById('docgenOutput').style.display = 'none';
+}
+
+function selectDocType(type, btn) {
+  currentDocType = type;
+  document.querySelectorAll('.docgen-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.docgen-section').forEach(s => s.style.display = 'none');
+  document.getElementById('docgen-' + type).style.display = 'block';
+  document.getElementById('docgenOutput').style.display = 'none';
+}
+
+const DOCGEN_PROMPTS = {
+  noting: (input, file, dept) => {
+    return 'आप UP सचिवालय में वरिष्ठ अधिकारी हैं। SAD Manual Prastar 127-136 के अनुसार निम्न विषय पर औपचारिक टिप्पण तैयार करें।\n\n'
+      + 'टिप्पण का क्रम अनिवार्य रूप से इस प्रकार होगा:\n'
+      + '1. प्राप्ति (Praapti)\n2. नियम स्थिति (Niyam Sthiti) — exact rule/section quote करें\n'
+      + '3. तथ्य (Tathya)\n4. अस्पष्टता (यदि हो)\n5. पूर्वदृष्टान्त (यदि हो)\n'
+      + '6. प्रस्ताव (Prastaav)\n7. अनुमति (Anumati) — उचित स्तर से\n\n'
+      + 'पत्र SO से नहीं, Under Secretary या उससे ऊपर से जारी होगा।\n'
+      + 'फाइल संख्या: ' + (file || '[फाइल संख्या]') + '\n'
+      + 'विभाग/अनुभाग: ' + (dept || '[विभाग]') + '\n\n'
+      + 'विषय/प्रकरण:\n' + input;
+  },
+  csc: (input, caseNo, date) => {
+    return 'आप UP सरकार के विधि विभाग में अधिकारी हैं। CSC (Chief Standing Counsel) को court case में पैरवी हेतु हिंदी में निर्देश तैयार करें।\n\n'
+      + 'निर्देश में शामिल करें:\n'
+      + '1. प्रकरण का संक्षिप्त विवरण\n2. विभाग का स्पष्ट पक्ष एवं तथ्य\n'
+      + '3. जिन बिंदुओं पर बल देना है\n4. उपलब्ध साक्ष्य एवं दस्तावेज\n'
+      + '5. अगली सुनवाई तक करने योग्य कार्य\n6. यदि counter affidavit अपेक्षित हो तो उसके मुख्य बिंदु\n\n'
+      + 'Case: ' + (caseNo || '[Case Number]') + ' | अगली तारीख: ' + (date || '[Date]') + '\n\n'
+      + 'विवरण:\n' + input;
+  },
+  parawise: (input, deptStand) => {
+    return 'आप UP सरकार के वरिष्ठ विधिक अधिकारी हैं। निम्न Writ Petition के पैराओं का औपचारिक पैरावार प्रतिउत्तर तैयार करें।\n\n'
+      + 'प्रत्येक पैरे के लिए:\n'
+      + '- "Para [X] के संदर्भ में: स्वीकार/अस्वीकार/आंशिक रूप से स्वीकार" से शुरू करें\n'
+      + '- विभाग का पक्ष स्पष्ट रूप से लिखें\n'
+      + '- जहाँ applicable हो — exact rule/section/GO quote करें\n'
+      + '- English legal terms जहाँ आवश्यक हो वहाँ रखें\n\n'
+      + 'याचीगण के आरोप:\n' + input + '\n\n'
+      + 'विभाग का पक्ष/तथ्य:\n' + (deptStand || '');
+  },
+  pairvi: (input) => {
+    return 'आप UP सरकार के वरिष्ठ विधिक अधिकारी हैं। निम्न case में प्रभावी पैरवी के लिए मुख्य बिंदु तैयार करें।\n\n'
+      + 'पैरवी बिंदुओं में शामिल करें:\n'
+      + '1. विभाग के पक्ष में सबसे मजबूत कानूनी तर्क\n'
+      + '2. लागू होने वाले प्रमुख SC/HC judgments (cite करें)\n'
+      + '3. जिन कमजोर बिंदुओं पर याचीगण जोर दे सकते हैं — और उनका जवाब\n'
+      + '4. Counter के लिए important documents/evidence\n'
+      + '5. अगली सुनवाई में CSC को क्या argue करना चाहिए\n\n'
+      + 'प्रकरण विवरण:\n' + input;
+  }
+};
+
+async function generateDoc() {
+  const btn = document.getElementById('docgenGenerateBtn');
+  btn.textContent = '⏳ तैयार हो रहा है...';
+  btn.disabled = true;
+
+  let systemPrompt = '';
+  let userInput = '';
+
+  if (currentDocType === 'noting') {
+    const input = document.getElementById('dg-noting-input').value.trim();
+    const file = document.getElementById('dg-noting-file').value.trim();
+    const dept = document.getElementById('dg-noting-dept').value.trim();
+    if (!input) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; return; }
+    userInput = DOCGEN_PROMPTS.noting(input, file, dept);
+  } else if (currentDocType === 'csc') {
+    const input = document.getElementById('dg-csc-input').value.trim();
+    const caseNo = document.getElementById('dg-csc-case').value.trim();
+    const date = document.getElementById('dg-csc-date').value.trim();
+    if (!input) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; return; }
+    userInput = DOCGEN_PROMPTS.csc(input, caseNo, date);
+  } else if (currentDocType === 'parawise') {
+    const input = document.getElementById('dg-parawise-input').value.trim();
+    const stand = document.getElementById('dg-parawise-dept').value.trim();
+    if (!input) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; return; }
+    userInput = DOCGEN_PROMPTS.parawise(input, stand);
+  } else if (currentDocType === 'pairvi') {
+    const input = document.getElementById('dg-pairvi-input').value.trim();
+    if (!input) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; return; }
+    userInput = DOCGEN_PROMPTS.pairvi(input);
+  }
+
+  const deptCtx = activeDept ? ('सक्रिय विभाग: ' + activeDept.label + '. ' + activeDept.prompt) : 'सामान्य UP सरकार प्रकरण।';
+
+  try {
+    const resp = await fetch(CFG.API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: CFG.MODEL_SONNET,
+        max_tokens: 2500,
+        system: deptCtx + '\n\nशुद्ध सरकारी हिंदी में लिखें। Format bilkul standard रखें। Markdown use न करें।',
+        messages: [{ role: 'user', content: userInput }]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content?.filter(b => b.type === 'text').map(b => b.text).join('') || '';
+    currentDocOutput = text;
+    document.getElementById('docgenOutputText').textContent = text;
+    document.getElementById('docgenOutput').style.display = 'block';
+    document.getElementById('docgenOutput').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch(e) {
+    document.getElementById('docgenOutputText').textContent = 'त्रुटि: ' + e.message;
+    document.getElementById('docgenOutput').style.display = 'block';
+  }
+
+  btn.textContent = '⚡ दस्तावेज़ बनाएं';
+  btn.disabled = false;
+}
+
+function copyDocGen() {
+  navigator.clipboard.writeText(currentDocOutput);
+  const btn = document.querySelector('[onclick="copyDocGen()"]');
+  btn.textContent = '✅ Copied!';
+  setTimeout(() => btn.textContent = '📋 Copy', 2000);
+}
+
+function shareDocGen() {
+  const short = currentDocOutput.length > 500 ? currentDocOutput.slice(0, 497) + '...' : currentDocOutput;
+  window.open('https://wa.me/?text=' + encodeURIComponent('न्यायसहायक — दस्तावेज़:\n\n' + short), '_blank');
+}
 </script>
+
+<!-- ══════════════════════════════════════
+     DOCGEN MODAL
+══════════════════════════════════════ -->
+<div id="docgenOverlay" style="display:none;position:fixed;inset:0;background:rgba(13,27,42,0.75);z-index:500;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px);">
+  <div style="background:white;width:100%;max-width:860px;max-height:92vh;border-radius:20px 20px 0 0;display:flex;flex-direction:column;overflow:hidden;">
+    
+    <!-- Header -->
+    <div style="background:var(--navy);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div>
+        <div style="font-family:Playfair Display,serif;font-size:18px;color:white;font-weight:700;">📄 दस्तावेज़ निर्माता</div>
+        <div style="font-size:11px;color:var(--gold-light);margin-top:2px;">UP सरकार के मानक प्रारूप — AI से तैयार</div>
+      </div>
+      <button onclick="closeDocGen()" style="background:rgba(255,255,255,0.1);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+
+    <!-- Format selector -->
+    <div style="padding:14px 18px;border-bottom:1px solid var(--border);background:var(--parchment);flex-shrink:0;">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">प्रारूप चुनें</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button class="docgen-type-btn active" onclick="selectDocType('noting',this)">
+          📝 टिप्पण (Noting)
+          <span style="display:block;font-size:10px;font-weight:400;opacity:0.7;margin-top:2px;">SAD Manual Prastar 127-136</span>
+        </button>
+        <button class="docgen-type-btn" onclick="selectDocType('csc',this)">
+          ⚖️ CSC निर्देश
+          <span style="display:block;font-size:10px;font-weight:400;opacity:0.7;margin-top:2px;">Court Pairvi हेतु</span>
+        </button>
+        <button class="docgen-type-btn" onclick="selectDocType('parawise',this)">
+          📋 पैरावार प्रतिउत्तर
+          <span style="display:block;font-size:10px;font-weight:400;opacity:0.7;margin-top:2px;">Writ Petition Reply</span>
+        </button>
+        <button class="docgen-type-btn" onclick="selectDocType('pairvi',this)">
+          🏛️ पैरवी बिंदु
+          <span style="display:block;font-size:10px;font-weight:400;opacity:0.7;margin-top:2px;">Effective Pairvi Points</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Input area -->
+    <div style="flex:1;overflow-y:auto;padding:16px 18px;">
+      <div id="docgenInputArea">
+        <!-- Dynamic inputs based on type -->
+        <div id="docgen-noting" class="docgen-section">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">
+            विषय, प्रकरण संख्या, नियम एवं अनुशंसा बताएं — AI SAD Manual Prastar 127-136 के अनुसार टिप्पण तैयार करेगा।
+          </div>
+          <textarea id="dg-noting-input" placeholder="जैसे: शिक्षक रमेश कुमार की सेवा समाप्ति के विरुद्ध HC याचिका Writ-A 1234/2024 में सरकार का पक्ष — UP Intermediate Education Act Section 16E के अनुसार कार्रवाई सही है।" style="width:100%;min-height:100px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);"></textarea>
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+            <input id="dg-noting-file" placeholder="फाइल संख्या" style="flex:1;min-width:120px;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;">
+            <input id="dg-noting-dept" placeholder="विभाग/अनुभाग" style="flex:1;min-width:120px;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;">
+          </div>
+        </div>
+
+        <div id="docgen-csc" class="docgen-section" style="display:none;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">
+            Case details, HC order, aur department ka stand batayein — CSC ko Hindi mein निर्देश तैयार होंगे।
+          </div>
+          <textarea id="dg-csc-input" placeholder="जैसे: PUVVNL Writ-B 5678/2024 — याचीगण ने 240 दिन से अधिक सेवा का दावा किया है। Department की स्थिति: याचीगण ठेका श्रमिक थे, नियमित नियुक्ति नहीं। Section 6-N लागू नहीं।" style="width:100%;min-height:100px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);"></textarea>
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+            <input id="dg-csc-case" placeholder="Case Number" style="flex:1;min-width:140px;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;">
+            <input id="dg-csc-date" placeholder="अगली तारीख" style="flex:1;min-width:120px;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;">
+          </div>
+        </div>
+
+        <div id="docgen-parawise" class="docgen-section" style="display:none;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">
+            Writ Petition के पैरा संख्या एवं याचीगण के आरोप बताएं — पैरावार प्रतिउत्तर तैयार होगा।
+          </div>
+          <textarea id="dg-parawise-input" placeholder="जैसे: Para 1 — याचीगण का कहना है कि उनकी नियुक्ति नियमित थी। Para 2 — वेतन में विसंगति का आरोप। Para 3 — सेवा समाप्ति बिना कारण बताए।" style="width:100%;min-height:120px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);"></textarea>
+          <textarea id="dg-parawise-dept" placeholder="विभाग का पक्ष / तथ्य (यहाँ वास्तविक स्थिति लिखें)" style="width:100%;min-height:80px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);margin-top:8px;"></textarea>
+        </div>
+
+        <div id="docgen-pairvi" class="docgen-section" style="display:none;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">
+            Case की nature, department ka stand, aur available judgments/rules batayein — effective pairvi points milenge।
+          </div>
+          <textarea id="dg-pairvi-input" placeholder="जैसे: Grih Vibhag — अनुकम्पा नियुक्ति याचिका — CRPF शहीद के पुत्र ने UP में नौकरी माँगी है — शासनादेश 2020 के अंतर्गत पात्रता विवादित है।" style="width:100%;min-height:120px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);"></textarea>
+        </div>
+      </div>
+
+      <!-- Generated output -->
+      <div id="docgenOutput" style="display:none;margin-top:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div style="font-size:12px;font-weight:700;color:var(--navy);">✅ दस्तावेज़ तैयार है</div>
+          <div style="display:flex;gap:6px;">
+            <button onclick="copyDocGen()" style="padding:6px 12px;background:var(--navy);color:white;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;">📋 Copy</button>
+            <button onclick="shareDocGen()" style="padding:6px 12px;background:#25D366;color:white;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;">📤 WhatsApp</button>
+          </div>
+        </div>
+        <div id="docgenOutputText" style="background:var(--parchment);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;line-height:1.9;white-space:pre-wrap;color:var(--ink);max-height:350px;overflow-y:auto;"></div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="padding:12px 18px;border-top:1px solid var(--border);background:var(--parchment);flex-shrink:0;display:flex;gap:10px;">
+      <button id="docgenGenerateBtn" onclick="generateDoc()" style="flex:1;padding:12px;background:linear-gradient(135deg,var(--navy),var(--navy-soft));color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;">
+        ⚡ दस्तावेज़ बनाएं
+      </button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
