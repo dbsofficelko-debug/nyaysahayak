@@ -2096,7 +2096,7 @@ PART 2: टिप्पण
 ${input}`;
   },
 
-  all_in_one: (input, file, caseNo, date) => {
+  allinone: (input, file, caseNo, date) => {
     const deptKB = activeDept ? ('विभाग: ' + activeDept.label + '. ' + activeDept.prompt) : '';
     return `आप UP सरकार के वरिष्ठ विधिक अधिकारी हैं। एक ही प्रकरण के लिए चारों दस्तावेज़ एक साथ तैयार करें।
 
@@ -2190,13 +2190,13 @@ async function generateDoc() {
     const stand = document.getElementById('dg-parainst-dept').value.trim();
     if (!input) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; return; }
     userInput = DOCGEN_PROMPTS.parawise_instructions(input, stand);
-  } else if (currentDocType === 'all_in_one') {
+  } else if (currentDocType === 'allinone') {
     const input = document.getElementById('dg-allinone-input').value.trim();
     const file = document.getElementById('dg-allinone-file').value.trim();
     const caseNo = document.getElementById('dg-allinone-case').value.trim();
     const date = document.getElementById('dg-allinone-date').value.trim();
     if (!input) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; return; }
-    userInput = DOCGEN_PROMPTS.all_in_one(input, file, caseNo, date);
+    userInput = DOCGEN_PROMPTS.allinone(input, file, caseNo, date);
   } else if (currentDocType === 'history') {
     const input = document.getElementById('dg-history-input').value.trim();
     const caseNo = document.getElementById('dg-history-case').value.trim();
@@ -2367,7 +2367,7 @@ function shareDocGen() {
           <textarea id="dg-parainst-dept" placeholder="विभाग का पक्ष / तथ्य (GO number, dates, compliance status)" style="width:100%;min-height:70px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);margin-top:8px;"></textarea>
         </div>
 
-        <div id="docgen-all_in_one" class="docgen-section" style="display:none;">
+        <div id="docgen-allinone" class="docgen-section" style="display:none;">
           <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">
             सभी दस्तावेज़ एक साथ — Case History + टिप्पण + CSC निर्देश + पैरावार टिप्पणी।
           </div>
