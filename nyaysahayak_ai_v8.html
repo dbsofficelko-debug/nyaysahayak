@@ -1759,6 +1759,28 @@ function hideCS() {
 let currentDocType = 'noting';
 let currentDocOutput = '';
 
+let docgenPdfBase64 = null;
+
+function onDocGenPdf(input) {
+  const f = input.files[0];
+  if (!f) return;
+  if (f.size > 4 * 1024 * 1024) { alert("PDF 4MB से बड़ी है।"); input.value=''; return; }
+  const reader = new FileReader();
+  reader.onload = () => {
+    docgenPdfBase64 = reader.result.split(',')[1];
+    document.getElementById('docgenPdfName').textContent = f.name;
+    const chip = document.getElementById('docgenPdfChip');
+    chip.style.display = 'flex';
+  };
+  reader.readAsDataURL(f);
+  input.value = '';
+}
+
+function removeDocGenPdf() {
+  docgenPdfBase64 = null;
+  document.getElementById('docgenPdfChip').style.display = 'none';
+}
+
 function openDocGen() {
   const el = document.getElementById('docgenOverlay');
   el.style.display = 'flex';
@@ -1781,44 +1803,199 @@ function selectDocType(type, btn) {
 
 const DOCGEN_PROMPTS = {
   noting: (input, file, dept) => {
-    return 'आप UP सचिवालय में वरिष्ठ अधिकारी हैं। SAD Manual Prastar 127-136 के अनुसार निम्न विषय पर औपचारिक टिप्पण तैयार करें।\n\n'
-      + 'टिप्पण का क्रम अनिवार्य रूप से इस प्रकार होगा:\n'
-      + '1. प्राप्ति (Praapti)\n2. नियम स्थिति (Niyam Sthiti) — exact rule/section quote करें\n'
-      + '3. तथ्य (Tathya)\n4. अस्पष्टता (यदि हो)\n5. पूर्वदृष्टान्त (यदि हो)\n'
-      + '6. प्रस्ताव (Prastaav)\n7. अनुमति (Anumati) — उचित स्तर से\n\n'
-      + 'पत्र SO से नहीं, Under Secretary या उससे ऊपर से जारी होगा।\n'
-      + 'फाइल संख्या: ' + (file || '[फाइल संख्या]') + '\n'
-      + 'विभाग/अनुभाग: ' + (dept || '[विभाग]') + '\n\n'
-      + 'विषय/प्रकरण:\n' + input;
+    const deptKB = activeDept ? ('विभाग: ' + activeDept.label + '. ' + activeDept.prompt) : '';
+    return `आप UP सचिवालय के वरिष्ठ अधिकारी हैं। SAD Manual Prastar 127-136 के अनुसार EXACTLY निम्न format में टिप्पण तैयार करें।
+
+${deptKB}
+फाइल संख्या: ${file || '[फाइल संख्या]'} | विभाग: ${dept || '[विभाग/अनुभाग]'}
+
+EXACT FORMAT (कोई deviation नहीं):
+
+सरकारी गोपनीय
+
+उत्तर प्रदेश सरकार
+[विभाग का नाम]
+लखनऊ
+
+टिप्पण
+
+प्रति: [उचित अधिकारी — मुख्य सचिव/सचिव]
+से: [अपर मुख्य सचिव/प्रमुख सचिव/विशेष सचिव — SO नहीं]
+विषय: [विषय]
+फाइल संख्या: ${file || '............'}
+दिनांक: ............
+
+1. प्राप्ति:
+[याचिका/पत्र/प्रकरण का विवरण — कौन, कहाँ, क्या माँगा]
+
+2. नियम स्थिति:
+[Exact Act/Rule/Section quote करें — जैसे: UP Civil Services (CCA) Rules 1991, Rule 3 के अनुसार...]
+
+3. तथ्य:
+[प्रकरण के वस्तुनिष्ठ तथ्य — क्या हुआ, कब हुआ, विभाग ने क्या किया]
+
+4. अस्पष्टता:
+[यदि कोई अस्पष्टता है तो लिखें, अन्यथा: कोई अस्पष्टता नहीं है।]
+
+5. पूर्वदृष्टान्त:
+[SC/HC judgment quote करें — जैसे: State of Rajasthan vs B.K. Meena (1996) 6 SCC 417]
+
+6. प्रस्ताव:
+[विभाग का proposed action — (i), (ii), (iii) में]
+
+7. अनुमति:
+स्वीकृत।
+उपरोक्त प्रस्ताव के अनुसार कार्यवाही की जाए।
+
+...........................................
+([अधिकारी का पद])
+
+...........................................
+([वरिष्ठ अधिकारी का पद])
+दिनांक: .................
+
+---
+
+अब इस format में टिप्पण तैयार करें:
+${input}`;
   },
+
   csc: (input, caseNo, date) => {
-    return 'आप UP सरकार के विधि विभाग में अधिकारी हैं। CSC (Chief Standing Counsel) को court case में पैरवी हेतु हिंदी में निर्देश तैयार करें।\n\n'
-      + 'निर्देश में शामिल करें:\n'
-      + '1. प्रकरण का संक्षिप्त विवरण\n2. विभाग का स्पष्ट पक्ष एवं तथ्य\n'
-      + '3. जिन बिंदुओं पर बल देना है\n4. उपलब्ध साक्ष्य एवं दस्तावेज\n'
-      + '5. अगली सुनवाई तक करने योग्य कार्य\n6. यदि counter affidavit अपेक्षित हो तो उसके मुख्य बिंदु\n\n'
-      + 'Case: ' + (caseNo || '[Case Number]') + ' | अगली तारीख: ' + (date || '[Date]') + '\n\n'
-      + 'विवरण:\n' + input;
+    const deptKB = activeDept ? ('Department: ' + activeDept.label + '. ' + activeDept.prompt) : '';
+    return `You are a senior UP Government law officer drafting instructions to the Chief Standing Counsel (CSC), Allahabad High Court / Lucknow Bench.
+
+${deptKB}
+Case: ${caseNo || '[Case Number]'} | Next Date: ${date || '[Date]'}
+
+Draft a formal letter in the EXACT following format:
+
+संख्या- ............/[Year]/[Section]
+प्रेषक,
+[Secretary/Special Secretary],
+उत्तर प्रदेश शासन।
+
+सेवा में,
+मुख्य स्थायी अधिवक्ता,
+माननीय उच्च न्यायालय,
+[लखनऊ खण्डपीठ/इलाहाबाद], लखनऊ/इलाहाबाद।
+
+[विभाग] अनुभाग लखनऊ: दिनांक: ........., [Year]
+
+विषय: [Case Name and Number] में [Counter Affidavit/Compliance Affidavit] दाखिल किए जाने के सम्बन्ध में।
+
+महोदय,
+
+[Para 1: Case reference and notice]
+
+[Para 2: Background — what HC directed]
+
+[Para 3: What department has done — compliance status]  
+
+[Para 4: Legal position — why department's stand is correct, cite rules/GOs]
+
+[Para 5: Request to CSC — what to file, what to argue]
+
+भवदीय,
+संख्या एवं दिनांक यथोक्त।
+
+प्रतिलिपि निम्नलिखित को सूचनार्थ:
+1.
+2.
+गार्ड फाईल।
+
+---
+
+Now draft this letter based on:
+${input}`;
   },
+
   parawise: (input, deptStand) => {
-    return 'आप UP सरकार के वरिष्ठ विधिक अधिकारी हैं। निम्न Writ Petition के पैराओं का औपचारिक पैरावार प्रतिउत्तर तैयार करें।\n\n'
-      + 'प्रत्येक पैरे के लिए:\n'
-      + '- "Para [X] के संदर्भ में: स्वीकार/अस्वीकार/आंशिक रूप से स्वीकार" से शुरू करें\n'
-      + '- विभाग का पक्ष स्पष्ट रूप से लिखें\n'
-      + '- जहाँ applicable हो — exact rule/section/GO quote करें\n'
-      + '- English legal terms जहाँ आवश्यक हो वहाँ रखें\n\n'
-      + 'याचीगण के आरोप:\n' + input + '\n\n'
-      + 'विभाग का पक्ष/तथ्य:\n' + (deptStand || '');
+    const deptKB = activeDept ? ('Department: ' + activeDept.label + '. ' + activeDept.prompt) : '';
+    return `You are a Senior Government Counsel / Law Officer preparing a Parawise Reply / Counter Affidavit for the Allahabad High Court (Lucknow Bench / Allahabad Bench).
+
+${deptKB}
+
+STRICT FORMAT RULES:
+1. Use proper legal English — HC/SC standard
+2. Each para: "As regards Para [X] of the writ petition, it is submitted that..."
+3. For factual paras: "The contents of Para [X] are a matter of record."
+4. For false/misleading paras: "The contents of Para [X] are denied being false and misleading. It is submitted that..."
+5. Quote exact GO numbers, Rule numbers, Section numbers
+6. End with: "In view of the above, the writ petition is liable to be dismissed with costs."
+7. Professional spacing — leave line between each para response
+
+FORMAT:
+IN THE HIGH COURT OF JUDICATURE AT ALLAHABAD
+[LUCKNOW BENCH]
+
+[Case Type and Number]
+[Petitioner] vs. [Respondent]
+
+PARAWISE REPLY ON BEHALF OF RESPONDENT NO. [X]
+
+[Date of affidavit, deponent details if provided]
+
+PRELIMINARY OBJECTIONS:
+[If any]
+
+REPLY ON MERITS:
+
+1. As regards Para 1...
+
+2. As regards Para 2...
+
+[Continue for all paras]
+
+It is therefore most respectfully prayed that this Hon'ble Court may be pleased to dismiss the writ petition with costs.
+
+---
+
+Petitioner's allegations:
+${input}
+
+Department's stand/facts:
+${deptStand || '[Department facts to be incorporated]'}`;
   },
+
   pairvi: (input) => {
-    return 'आप UP सरकार के वरिष्ठ विधिक अधिकारी हैं। निम्न case में प्रभावी पैरवी के लिए मुख्य बिंदु तैयार करें।\n\n'
-      + 'पैरवी बिंदुओं में शामिल करें:\n'
-      + '1. विभाग के पक्ष में सबसे मजबूत कानूनी तर्क\n'
-      + '2. लागू होने वाले प्रमुख SC/HC judgments (cite करें)\n'
-      + '3. जिन कमजोर बिंदुओं पर याचीगण जोर दे सकते हैं — और उनका जवाब\n'
-      + '4. Counter के लिए important documents/evidence\n'
-      + '5. अगली सुनवाई में CSC को क्या argue करना चाहिए\n\n'
-      + 'प्रकरण विवरण:\n' + input;
+    const deptKB = activeDept ? ('विभाग: ' + activeDept.label + '. ' + activeDept.prompt) : '';
+    return `आप UP सरकार के वरिष्ठ विधिक अधिकारी हैं। निम्न प्रकरण में प्रभावी पैरवी के लिए strategic legal points तैयार करें।
+
+${deptKB}
+
+निम्न format में pairvi points दें:
+
+═══════════════════════════════
+पैरवी बिंदु — [Case Name/Number]
+═══════════════════════════════
+
+A. विभाग के पक्ष में सबसे मजबूत तर्क:
+1. [Legal argument with rule/section]
+2. [Legal argument with rule/section]
+3. [Legal argument with rule/section]
+
+B. लागू SC/HC Judgments:
+1. [Case Name (Year) SCC/AIR — key holding]
+2. [Case Name (Year) — key holding]
+
+C. याचीगण के संभावित तर्क और उनका खंडन:
+• याचीगण कह सकते हैं: [argument]
+  → खंडन: [rebuttal with rule/judgment]
+
+D. आवश्यक दस्तावेज/साक्ष्य:
+1. [Document/Evidence]
+2. [Document/Evidence]
+
+E. CSC को अगली सुनवाई में क्या argue करना है:
+[Specific instructions]
+
+F. Counter Affidavit के मुख्य बिंदु:
+[If CA required]
+
+═══════════════════════════════
+
+प्रकरण विवरण:
+${input}`;
   }
 };
 
@@ -1856,15 +2033,23 @@ async function generateDoc() {
   const deptCtx = activeDept ? ('सक्रिय विभाग: ' + activeDept.label + '. ' + activeDept.prompt) : 'सामान्य UP सरकार प्रकरण।';
 
   try {
+    // Build message with optional PDF
+    const msgContent = [];
+    if (docgenPdfBase64) {
+      msgContent.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: docgenPdfBase64 } });
+    }
+    msgContent.push({ type: 'text', text: userInput });
+    
+    const useModel = docgenPdfBase64 ? CFG.MODEL_SONNET : CFG.MODEL_HAIKU;
     const resp = await fetch(CFG.API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      signal: AbortSignal.timeout(60000),
+      signal: AbortSignal.timeout(90000),
       body: JSON.stringify({
-        model: CFG.MODEL_HAIKU,
-        max_tokens: 2000,
-        system: deptCtx + '\nशुद्ध सरकारी हिंदी। Standard format। No markdown asterisks।',
-        messages: [{ role: 'user', content: userInput }]
+        model: useModel,
+        max_tokens: 2500,
+        system: deptCtx + '\nशुद्ध सरकारी हिंदी/Legal English। Standard UP government format। No markdown asterisks। Exact format as instructed।',
+        messages: [{ role: 'user', content: docgenPdfBase64 ? msgContent : userInput }]
       })
     });
     if (!resp.ok) throw new Error('Server error: ' + resp.status);
@@ -1940,6 +2125,23 @@ function shareDocGen() {
 
     <!-- Input area -->
     <div style="flex:1;overflow-y:auto;padding:16px 18px;">
+      <!-- PDF Upload for DocGen -->
+      <div style="margin-bottom:14px;padding:10px 12px;background:var(--gold-pale);border:1.5px dashed var(--gold);border-radius:8px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:20px;">📎</span>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:700;color:var(--navy);">याचिका PDF संलग्न करें (वैकल्पिक)</div>
+          <div style="font-size:11px;color:var(--muted);">Court petition upload करें — AI उसे पढ़कर दस्तावेज़ तैयार करेगा</div>
+        </div>
+        <label style="padding:6px 12px;background:var(--navy);color:white;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">
+          📄 Upload
+          <input type="file" accept=".pdf" id="docgenPdfInput" onchange="onDocGenPdf(this)" style="display:none;">
+        </label>
+      </div>
+      <div id="docgenPdfChip" style="display:none;background:#dcfce7;border:1px solid #bbf7d0;border-radius:6px;padding:6px 10px;font-size:12px;color:#166534;margin-bottom:10px;display:none;align-items:center;gap:6px;">
+        <span>✅</span><span id="docgenPdfName">—</span>
+        <button onclick="removeDocGenPdf()" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:14px;margin-left:auto;">✕</button>
+      </div>
+
       <div id="docgenInputArea">
         <!-- Dynamic inputs based on type -->
         <div id="docgen-noting" class="docgen-section">
