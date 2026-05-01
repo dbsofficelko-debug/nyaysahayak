@@ -2289,6 +2289,37 @@ async function generateDoc() {
   btn.disabled = false;
 }
 
+function downloadDocGen() {
+  const text = document.getElementById('docgenOutputText').textContent;
+  if (!text) return;
+  const docType = currentDocType || 'document';
+  const fname = 'nyaysahayak_' + docType + '_' + new Date().toISOString().slice(0,10) + '.txt';
+  const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fname;
+  a.click();
+}
+
+function printDocGen() {
+  const text = document.getElementById('docgenOutputText').textContent;
+  if (!text) return;
+  const w = window.open('', '_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>न्यायसहायक — दस्तावेज़</title>
+  <style>
+    @page { margin: 1in 1in 1in 1.5in; }
+    body { font-family: 'Times New Roman', serif; font-size: 12pt; line-height: 2.0; color: #000; }
+    h1 { font-size: 14pt; font-weight: bold; text-align: center; margin-bottom: 24pt; }
+    pre { font-family: 'Times New Roman', serif; font-size: 12pt; line-height: 2.0; white-space: pre-wrap; word-wrap: break-word; }
+    @media print { button { display: none; } }
+  </style></head><body>
+  <h1>न्यायसहायक — दस्तावेज़</h1>
+  <pre>${text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+  <script>window.onload=function(){window.print();}<\/script>
+  </body></html>`);
+  w.document.close();
+}
+
 function copyDocGen() {
   navigator.clipboard.writeText(currentDocOutput);
   const btn = document.querySelector('[onclick="copyDocGen()"]');
@@ -2421,9 +2452,11 @@ function shareDocGen() {
       <div id="docgenOutput" style="display:none;margin-top:16px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
           <div style="font-size:12px;font-weight:700;color:var(--navy);">✅ दस्तावेज़ तैयार है</div>
-          <div style="display:flex;gap:6px;">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
             <button onclick="copyDocGen()" style="padding:6px 12px;background:var(--navy);color:white;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;">📋 Copy</button>
-            <button onclick="shareDocGen()" style="padding:6px 12px;background:#25D366;color:white;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;">📤 WhatsApp</button>
+            <button onclick="downloadDocGen()" style="padding:6px 12px;background:#1a5c2a;color:white;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;">⬇️ Download</button>
+            <button onclick="printDocGen()" style="padding:6px 12px;background:#5c3a1a;color:white;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;">🖨️ Print/PDF</button>
+            <button onclick="shareDocGen()" style="padding:6px 12px;background:#25D366;color:white;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;">📤 WA</button>
           </div>
         </div>
         <div id="docgenOutputText" style="background:var(--parchment);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;line-height:1.9;white-space:pre-wrap;color:var(--ink);max-height:350px;overflow-y:auto;"></div>
