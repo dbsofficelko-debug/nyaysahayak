@@ -2178,14 +2178,13 @@ async function generateDoc() {
     const relief = (document.getElementById('dg-noting-relief')||{}).value||'';
     const nextdate = (document.getElementById('dg-noting-nextdate')||{}).value||'';
     if (!input && !docgenPdfBase64) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; alert('विभाग का पक्ष / तथ्य भरें या PDF upload करें।'); return; }
-    const structured = [
-      caseno ? `याचिका/Case: ${caseno}` : '',
-      petitioner ? `याची: ${petitioner}` : '',
-      relief ? `मुख्य अनुतोष: ${relief}` : '',
-      nextdate ? `अगली सुनवाई: ${nextdate}` : '',
-      input ? `विभाग का पक्ष/तथ्य: ${input}` : '',
-    ].filter(Boolean).join('
-');
+    const nParts2 = [];
+    if (caseno) nParts2.push('Case: ' + caseno);
+    if (petitioner) nParts2.push('याची: ' + petitioner);
+    if (relief) nParts2.push('अनुतोष: ' + relief);
+    if (nextdate) nParts2.push('तारीख: ' + nextdate);
+    if (input) nParts2.push('पक्ष: ' + input);
+    const structured = nParts2.join(' | ');
     userInput = DOCGEN_PROMPTS.noting(structured, file, dept);
   } else if (currentDocType === 'csc') {
     const input = document.getElementById('dg-csc-input').value.trim();
@@ -2196,14 +2195,13 @@ async function generateDoc() {
     const lastorder = (document.getElementById('dg-csc-lastorder')||{}).value||'';
     const special = (document.getElementById('dg-csc-special')||{}).value||'';
     if (!input && !docgenPdfBase64) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; alert('विभाग का पक्ष भरें या PDF upload करें।'); return; }
-    const structured = [
-      petitioner ? `याची: ${petitioner}` : '',
-      bench ? `Court/Bench: ${bench}` : '',
-      lastorder ? `अंतिम आदेश: ${lastorder}` : '',
-      input ? `विभाग का पक्ष: ${input}` : '',
-      special ? `विशेष निर्देश: ${special}` : '',
-    ].filter(Boolean).join('
-');
+    const cParts2 = [];
+    if (petitioner) cParts2.push('याची: ' + petitioner);
+    if (bench) cParts2.push('Court: ' + bench);
+    if (lastorder) cParts2.push('आदेश: ' + lastorder);
+    if (input) cParts2.push('पक्ष: ' + input);
+    if (special) cParts2.push('निर्देश: ' + special);
+    const structured = cParts2.join(' | ');
     userInput = DOCGEN_PROMPTS.csc(structured, caseNo, date);
   } else if (currentDocType === 'parawise') {
     const input = document.getElementById('dg-parawise-input').value.trim();
@@ -2211,16 +2209,13 @@ async function generateDoc() {
     const caseno = (document.getElementById('dg-parawise-caseno')||{}).value||'';
     const bench = (document.getElementById('dg-parawise-bench')||{}).value||'';
     if (!input && !docgenPdfBase64) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; alert('Para-wise आरोप भरें या PDF upload करें।'); return; }
-    const structured = [
-      caseno ? `Case Number: ${caseno}` : '',
-      bench ? `Court: ${bench}` : '',
-      input ? `याचिका के आरोप:
-${input}` : (docgenPdfBase64 ? '[याचिका PDF संलग्न है — सभी paragraphs PDF से extract करें]' : ''),
-      stand ? `विभाग का पक्ष:
-${stand}` : '',
-    ].filter(Boolean).join('
-
-');
+    const pParts = [];
+    if (caseno) pParts.push('Case: ' + caseno);
+    if (bench) pParts.push('Court: ' + bench);
+    if (input) pParts.push(input);
+    else if (docgenPdfBase64) pParts.push('[PDF se paragraphs extract karo]');
+    if (stand) pParts.push('Vibhag ka paksh: ' + stand);
+    const structured = pParts.join(' | ');
     userInput = DOCGEN_PROMPTS.parawise(structured, stand);
   } else if (currentDocType === 'parawise_instructions') {
     const input = document.getElementById('dg-parainst-input').value.trim();
@@ -2367,59 +2362,34 @@ function shareDocGen() {
       <div id="docgenInputArea">
         <!-- Dynamic inputs based on type -->
         <div id="docgen-noting" class="docgen-section">
-          <div style="background:#fef9f0;border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:11px;color:#7a5c1e;">
-            ⚡ <strong>Precision Mode:</strong> PDF upload करें या नीचे fields भरें — AI hallucination-free टिप्पण तैयार करेगा।
+          <div style="background:#fef9f0;border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:11px;color:#7a5c1e;">⚡ <strong>Precision Mode:</strong> PDF upload करें या fields भरें — AI hallucination-free टिप्पण तैयार करेगा।</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📁 फाइल संख्या</label><input id="dg-noting-file" placeholder="6/SNP/2024" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
+            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">🏛️ विभाग/अनुभाग</label><input id="dg-noting-dept" placeholder="SNP / गृह विभाग" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📁 फाइल संख्या</label>
-            <input id="dg-noting-file" placeholder="जैसे: 6/SNP/2024" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
-            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">🏛️ विभाग/अनुभाग</label>
-            <input id="dg-noting-dept" placeholder="जैसे: SNP / गृह विभाग" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
+            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">⚖️ Case Number</label><input id="dg-noting-caseno" placeholder="Writ-A 1234/2024" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
+            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">👤 याची का नाम</label><input id="dg-noting-petitioner" placeholder="राम प्रसाद यादव" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">⚖️ याचिका/Case Number</label>
-            <input id="dg-noting-caseno" placeholder="जैसे: Writ-A 1234/2024" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
-            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">👤 याची का नाम</label>
-            <input id="dg-noting-petitioner" placeholder="जैसे: राम प्रसाद यादव" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
-          </div>
-          <div style="margin-bottom:8px;"><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📋 मुख्य अनुतोष — याची ने क्या माँगा?</label>
-          <input id="dg-noting-relief" placeholder="जैसे: बर्खास्तगी आदेश दि. 01.03.2024 निरस्त कर सेवा में वापस लिया जाए" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;margin-bottom:0;"></div>
-          <div style="margin-bottom:8px;"><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">🏛️ विभाग का पक्ष / वास्तविक तथ्य <span style="color:#c00;font-weight:400">★ सबसे जरूरी</span></label>
-          <textarea id="dg-noting-input" placeholder="जैसे: याची ने विभागीय जाँच में दोषी पाए जाने पर UP CCA Rules 1991 Rule 3 के अनुसार सेवा समाप्त की गई। प्रक्रिया पूरी तरह नियमसम्मत। SC का X बनाम Y (2019) भी इसी पक्ष में।" style="width:100%;min-height:90px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);box-sizing:border-box;"></textarea></div>
-          <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📅 अगली सुनवाई तिथि</label>
-          <input id="dg-noting-nextdate" placeholder="जैसे: 15.06.2025" style="width:160px;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;"></div>
+          <div style="margin-bottom:8px;"><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📋 मुख्य अनुतोष — याची ने क्या माँगा?</label><input id="dg-noting-relief" placeholder="बर्खास्तगी आदेश निरस्त कर सेवा में वापस लिया जाए" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
+          <div style="margin-bottom:8px;"><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">🏛️ विभाग का पक्ष / वास्तविक तथ्य <span style="color:#c00;">★</span></label><textarea id="dg-noting-input" placeholder="याची UP CCA Rules 1991 के अनुसार दोषी — सेवा समाप्ति नियमसम्मत।" style="width:100%;min-height:90px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);box-sizing:border-box;"></textarea></div>
+          <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📅 अगली सुनवाई तिथि</label><input id="dg-noting-nextdate" placeholder="15.06.2025" style="width:160px;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;"></div>
         </div>
-
-        <div id="docgen-csc" class="docgen-section" style="display:none;">
-          <div style="background:#fef9f0;border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:11px;color:#7a5c1e;">
-            ⚡ <strong>Precision Mode:</strong> Fields भरें — CSC को precise, actionable निर्देश मिलेंगे।
+<div id="docgen-csc" class="docgen-section" style="display:none;">
+          <div style="background:#fef9f0;border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:11px;color:#7a5c1e;">⚡ <strong>Precision Mode:</strong> Fields भरें — CSC को precise निर्देश मिलेंगे।</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">⚖️ Case Number ★</label><input id="dg-csc-case" placeholder="Writ-B 5678/2024" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
+            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📅 अगली सुनवाई ★</label><input id="dg-csc-date" placeholder="20.06.2025" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">⚖️ Case Number <span style="color:#c00">★</span></label>
-            <input id="dg-csc-case" placeholder="जैसे: Writ-B 5678/2024" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
-            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📅 अगली सुनवाई तिथि <span style="color:#c00">★</span></label>
-            <input id="dg-csc-date" placeholder="जैसे: 20.06.2025" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
+            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">👤 याची/वादी</label><input id="dg-csc-petitioner" placeholder="Ram Prasad" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
+            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">🏛️ Court/Bench</label><select id="dg-csc-bench" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"><option value="">-- चुनें --</option><option value="Allahabad HC - Allahabad Bench">Allahabad HC — Allahabad</option><option value="Allahabad HC - Lucknow Bench">Allahabad HC — Lucknow</option><option value="Supreme Court of India">Supreme Court</option></select></div>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">👤 याची/वादी का नाम</label>
-            <input id="dg-csc-petitioner" placeholder="जैसे: Ram Prasad & Others" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
-            <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">🏛️ Court/Bench</label>
-            <select id="dg-csc-bench" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;">
-              <option value="">-- चुनें --</option>
-              <option value="Allahabad HC — Allahabad Bench">Allahabad HC — Allahabad</option>
-              <option value="Allahabad HC — Lucknow Bench">Allahabad HC — Lucknow</option>
-              <option value="Supreme Court of India">Supreme Court</option>
-            </select></div>
-          </div>
-          <div style="margin-bottom:8px;"><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📋 Court का अंतिम आदेश</label>
-          <input id="dg-csc-lastorder" placeholder="जैसे: Counter affidavit 4 सप्ताह में दाखिल करें" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
-          <div style="margin-bottom:8px;"><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">🏛️ विभाग का पक्ष / तथ्य <span style="color:#c00">★</span></label>
-          <textarea id="dg-csc-input" placeholder="जैसे: याचीगण ठेका श्रमिक थे — नियमित नहीं। Industrial Disputes Act Section 6-N लागू नहीं। विभाग का पक्ष मजबूत।" style="width:100%;min-height:80px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);box-sizing:border-box;"></textarea></div>
-          <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📌 CSC को विशेष निर्देश</label>
-          <input id="dg-csc-special" placeholder="जैसे: Stay vacate के लिए argue करें / Counter Affidavit priority pe file करें" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
+          <div style="margin-bottom:8px;"><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📋 Court का अंतिम आदेश</label><input id="dg-csc-lastorder" placeholder="Counter affidavit 4 सप्ताह में दाखिल करें" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
+          <div style="margin-bottom:8px;"><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">🏛️ विभाग का पक्ष ★</label><textarea id="dg-csc-input" placeholder="याचीगण ठेका श्रमिक — Section 6-N लागू नहीं।" style="width:100%;min-height:80px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);box-sizing:border-box;"></textarea></div>
+          <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📌 CSC को विशेष निर्देश</label><input id="dg-csc-special" placeholder="Stay vacate के लिए argue करें" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
         </div>
-
-        <div id="docgen-parawise_instructions" class="docgen-section" style="display:none;">
+<div id="docgen-parawise_instructions" class="docgen-section" style="display:none;">
           <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">
             याची के प्रस्तर एवं विभाग का पक्ष बताएं — CSC को भेजने के लिए Table format में पैरावार टिप्पणी तैयार होगी।
           </div>
