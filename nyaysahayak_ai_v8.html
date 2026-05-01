@@ -1562,7 +1562,7 @@ async function callAPI(kCtx='', isPdf=false) {
   const model = isPdf ? CFG.MODEL_SONNET : CFG.MODEL_HAIKU;
   const dept  = activeDept;
   const system = BASE_SYSTEM
-    + (dept ? '\n\nसक्रिय विभाग: ' + dept.label + '\nनिर्देश: ' + dept.prompt + '\n⚠️ संदर्भ विभाग ' + dept.label + ' के नियम प्राथमिक हैं। FHB, सेवा विधि, CSR एवं वित्त/कार्मिक/न्याय के शासनादेश सभी विभागों पर लागू हैं।')
+    + (dept ? ['\n\nसक्रिय विभाग: ', dept.label, '\nनिर्देश: ', dept.prompt, '\nFHB, सेवा विधि, CSR एवं वित्त विभाग के शासनादेश भी लागू हैं।'].join('') : '')
     + kCtx;
 
   const resp = await fetch(CFG.API, {
