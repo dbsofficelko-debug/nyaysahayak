@@ -157,12 +157,13 @@ html, body {
 }
 .carousel-track { display: flex; flex-direction: column; gap: 7px; max-width: 340px; margin: 0 auto; }
 .carousel-chip {
-  padding: 11px 16px; background: var(--paper);
+  padding: 12px 18px; background: var(--navy);
   border: 2px solid var(--gold); border-radius: var(--r);
-  font-size: 13px; color: var(--navy); cursor: pointer;
-  text-align: left; font-family: inherit; font-weight: 600;
+  font-size: 13px; color: var(--gold-light); cursor: pointer;
+  text-align: left; font-family: inherit; font-weight: 700;
   transition: all .2s; animation: fadeUp .35s ease;
-  box-shadow: 0 2px 6px rgba(201,152,30,0.15);
+  box-shadow: 0 3px 10px rgba(201,152,30,0.2);
+  display: flex; align-items: center; gap: 8px;
 }
 .carousel-chip:hover { background: var(--gold-pale); color: var(--navy); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(201,152,30,0.25); }
 .carousel-chip:active { transform: translateY(0); }
@@ -662,7 +663,7 @@ html, body {
           <button class="send-btn" id="sendBtn" onclick="send()" title="भेजें">➤</button>
         </div>
         <div class="input-hint">Enter = भेजें &nbsp;·&nbsp; Shift+Enter = नई पंक्ति</div>
-        <div id="freeCounter" style="text-align:center;font-size:11px;color:#166534;margin-top:3px;">🧪 बीटा — पूर्णतः निःशुल्क &nbsp;·&nbsp; प्रतिक्रिया दें 👍👎</div>
+        <div id="freeCounter" style="text-align:center;font-size:11px;color:#166534;margin-top:3px;">🔄 बीटा चरण · निःशुल्क · ज्ञान आधार प्रतिदिन बढ़ रहा है &nbsp;|&nbsp; प्रतिक्रिया: 👍👎 नीचे हर उत्तर में</div>
         <input type="file" id="fileInput" accept=".pdf" onchange="onPdfSelect(this)">
       </div>
     </div>
@@ -1003,7 +1004,13 @@ SUGGESTIONS:
 3. [specific actionable question]
 SUGGESTIONS के बाद कुछ मत लिखो।
 
-नियम 5 — भाषा: शुद्ध सरकारी हिंदी। "Claude" का उल्लेख नहीं।
+नियम 5 — भाषा: शुद्ध सरकारी हिंदी। "Claude" या "न्यायसहायक" का उल्लेख उत्तर में नहीं।
+
+नियम 6 — KB उपलब्ध न हो तो:
+यदि विभाग-विशिष्ट ज्ञान आधार में प्रावधान नहीं मिला, तो FHB/Seva Vidhi/SAD Manual/Vitt/Karmik GOs के universal entries से उत्तर दें।
+उत्तर के शुरू में एक पंक्ति लिखें: "यद्यपि विभागीय विशिष्ट प्रावधान ज्ञान आधार में सीमित हैं, तथापि सामान्य सेवा नियमों के अनुसार —"
+अंत में लिखें: "🔄 बीटा चरण — ज्ञान आधार प्रतिदिन विस्तारित हो रहा है।"
+कभी भी "प्रावधान उपलब्ध नहीं" बोलकर खाली हाथ मत लौटाओ।
 
 📚 स्रोत: [exact book, exact section number] — उत्तर के अंत में अनिवार्य।`;
 
@@ -1664,8 +1671,9 @@ function addBubble(role, text, suggestions=[]) {
     actRow.style.cssText = 'display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;align-items:center;';
 
     const copyBtn = document.createElement('button');
-    copyBtn.style.cssText = 'background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);padding:3px 7px;border-radius:4px;';
-    copyBtn.textContent = '📋 Copy';
+    
+    copyBtn.textContent = '📋 कॉपी';
+    copyBtn.style.cssText = 'background:var(--gold-pale);border:1px solid var(--gold);cursor:pointer;font-size:11px;color:var(--navy);padding:4px 10px;border-radius:6px;font-weight:600;';
     copyBtn.onclick = () => { navigator.clipboard.writeText(text); copyBtn.textContent = '✓ Copied!'; setTimeout(() => copyBtn.textContent = '📋 Copy', 2000); };
 
     const waBtn = document.createElement('button');
@@ -1677,7 +1685,7 @@ function addBubble(role, text, suggestions=[]) {
     };
 
     const thumbUp = document.createElement('button');
-    thumbUp.style.cssText = 'background:none;border:none;cursor:pointer;font-size:13px;padding:3px 6px;';
+    thumbUp.style.cssText = 'background:none;border:none;cursor:pointer;font-size:16px;padding:3px 6px;transition:transform 0.2s;';
     thumbUp.textContent = '👍';
     thumbUp.title = 'उत्तर सही है';
     thumbUp.onclick = () => {
@@ -1688,7 +1696,7 @@ function addBubble(role, text, suggestions=[]) {
     };
 
     const thumbDown = document.createElement('button');
-    thumbDown.style.cssText = 'background:none;border:none;cursor:pointer;font-size:13px;padding:3px 6px;';
+    thumbDown.style.cssText = 'background:none;border:none;cursor:pointer;font-size:16px;padding:3px 6px;transition:transform 0.2s;';
     thumbDown.textContent = '👎';
     thumbDown.title = 'उत्तर गलत/अधूरा है';
     thumbDown.onclick = () => {
