@@ -548,6 +548,11 @@ html, body {
 </head>
 <body>
 <div class="shell">
+<!-- BETA BANNER -->
+<div id="betaBanner" style="background:linear-gradient(135deg,#166534,#15803d);color:white;padding:8px 16px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-family:Noto Sans Devanagari,sans-serif;flex-shrink:0;">
+  <span>🧪 <strong>बीटा चरण:</strong> यह निःशुल्क है — आपकी प्रतिक्रिया से हम बेहतर बनेंगे। जल्द आएगा: <strong>पोस्टपेड खाता ₹599/माह</strong></span>
+  <button onclick="document.getElementById('betaBanner').style.display='none'" style="background:rgba(255,255,255,0.2);border:none;color:white;width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:13px;line-height:1;flex-shrink:0;margin-left:8px;">✕</button>
+</div>
 
   <!-- ── HEADER ── -->
   <div class="hdr">
@@ -657,7 +662,7 @@ html, body {
           <button class="send-btn" id="sendBtn" onclick="send()" title="भेजें">➤</button>
         </div>
         <div class="input-hint">Enter = भेजें &nbsp;·&nbsp; Shift+Enter = नई पंक्ति</div>
-        <div id="freeCounter" style="text-align:center;font-size:11px;color:var(--muted);margin-top:3px;">ℹ️ निःशुल्क सीमा: <span id="freeCount">3</span>/3 प्रश्न शेष</div>
+        <div id="freeCounter" style="text-align:center;font-size:11px;color:#166534;margin-top:3px;">🧪 बीटा — पूर्णतः निःशुल्क &nbsp;·&nbsp; प्रतिक्रिया दें 👍👎</div>
         <input type="file" id="fileInput" accept=".pdf" onchange="onPdfSelect(this)">
       </div>
     </div>
@@ -1463,19 +1468,7 @@ async function send() {
   const pdf  = pdfBase64;
   if (!text && !pdf) return;
 
-  // Free counter check
-  try {
-    const freeCount = parseInt(localStorage.getItem('ny_free_count') || '3');
-    const isPremium = localStorage.getItem('ny_premium') === 'true';
-    if (!isPremium && freeCount <= 0) { showPaywall(); return; }
-    if (!isPremium) {
-      const newCount = freeCount - 1;
-      localStorage.setItem('ny_free_count', newCount);
-      const el = document.getElementById('freeCount');
-      if (el) { el.textContent = newCount; }
-      if (newCount === 0) { const fc = document.getElementById('freeCounter'); if (fc) fc.style.color = '#dc2626'; }
-    }
-  } catch(e) {}
+  // BETA: fully free — no paywall
 
   const w = document.getElementById('welcome');
   if (w) { if (carouselTimer) clearInterval(carouselTimer); w.remove(); }
