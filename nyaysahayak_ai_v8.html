@@ -1556,7 +1556,7 @@ async function callAPI(kCtx='', isPdf=false) {
   const model = isPdf ? CFG.MODEL_SONNET : CFG.MODEL_HAIKU;
   const dept  = activeDept;
   const system = BASE_SYSTEM
-    + (dept ? `\n\nसक्रिय विभाग: ${dept.label}\nनिर्देश: ${dept.prompt}\n⚠️ संदर्भ विभाग ${dept.label} के नियम प्राथमिक हैं। FHB, सेवा विधि, CSR एवं वित्त/कार्मिक/न्याय के शासनादेश सभी विभागों पर लागू हैं।')
+    + (dept ? '\n\nVibhag: ' + dept.label + '\nNirdesh: ' + dept.prompt + '\nFHB, Seva Vidhi, CSR aur Vitt/Karmik/Nyay ke shasanadesh bhi laagu hain.' : '')
     + kCtx;
 
   const resp = await fetch(CFG.API, {
@@ -1564,7 +1564,7 @@ async function callAPI(kCtx='', isPdf=false) {
     signal: AbortSignal.timeout(55000),
     body: JSON.stringify({ model, max_tokens: CFG.MAX_TOKENS, system, messages: history })
   });
-  if (!resp.ok) { const t = await resp.text().catch(()=>''); throw new Error(`API ${resp.status}${t?' — '+t.slice(0,80):''}`); }
+  if (!resp.ok) { const t = await resp.text().catch(()=>''); throw new Error('API error: ' + resp.status); }
   const d = await resp.json();
   if (d.content && Array.isArray(d.content)) return d.content.filter(b=>b.type==='text').map(b=>b.text).join('\n').trim();
   return d.reply || d.message || d.text || (() => { throw new Error('Unknown response'); })();
