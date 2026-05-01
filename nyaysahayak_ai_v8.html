@@ -749,6 +749,7 @@ html, body {
 ════════════════════════════════════════ */
 const CFG = {
   API: '/.netlify/functions/ai',
+  DOCGEN_API: 'https://nyaysahayak-api-production.up.railway.app/docgen',
   MODEL_HAIKU: 'claude-haiku-4-5-20251001',
   MODEL_SONNET: 'claude-sonnet-4-20250514',
   MAX_TOKENS: 2000,
@@ -2401,11 +2402,11 @@ async function generateDoc() {
           btn.textContent = '⏳ पुनः प्रयास ' + attempt + '/3...';
           await new Promise(r => setTimeout(r, 3000));
         }
-        resp = await fetch(CFG.API, {
+        resp = await fetch(CFG.DOCGEN_API, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          signal: AbortSignal.timeout(90000),
-          body: reqBody
+          signal: AbortSignal.timeout(120000),
+          body: JSON.stringify({ prompt: userInput, department: activeDept ? activeDept.label : 'सामान्य' })
         });
         if (resp.ok) break;
         lastErr = new Error('Server error: ' + resp.status);
@@ -2415,9 +2416,9 @@ async function generateDoc() {
     }
     if (!resp || !resp.ok) throw (lastErr || new Error('Server unavailable'));
     const data = await resp.json();
-    const text = data.content?.filter(b => b.type === 'text').map(b => b.text).join('') 
+    const text = data.content?.filter(b => b.type === 'text').map(b => b.text).join('')
       || data.reply || data.message || '';
-    if (!text) throw new Error('Empty response');
+    if (!text) throw new Error('Empty response from server');
     currentDocOutput = text;
     document.getElementById('docgenOutputText').textContent = text;
     document.getElementById('docgenOutput').style.display = 'block';
@@ -2488,7 +2489,7 @@ function shareDocGen() {
     <div style="background:var(--navy);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
       <div>
         <div style="font-family:Playfair Display,serif;font-size:18px;color:white;font-weight:700;">📄 दस्तावेज़ निर्माता</div>
-        <div style="font-size:11px;color:var(--gold-light);margin-top:2px;">UP सरकार के मानक प्रारूप — AI से तैयार</div>
+        <div style="font-size:11px;color:var(--gold-light);margin-top:2px;">UP सरकार के मानक प्रारूप — न्यायसहायक द्वारा</div>
       </div>
       <button onclick="closeDocGen()" style="background:rgba(255,255,255,0.1);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">✕</button>
     </div>
@@ -2553,7 +2554,7 @@ function shareDocGen() {
         <span style="font-size:20px;">📎</span>
         <div style="flex:1;">
           <div style="font-size:12px;font-weight:700;color:var(--navy);">याचिका PDF संलग्न करें (वैकल्पिक)</div>
-          <div style="font-size:11px;color:var(--muted);">Court petition upload करें — AI उसे पढ़कर दस्तावेज़ तैयार करेगा</div>
+          <div style="font-size:11px;color:var(--muted);">Court petition upload करें — न्यायसहायक उसे पढ़कर दस्तावेज़ तैयार करेगा</div>
         </div>
         <label style="padding:6px 12px;background:var(--navy);color:white;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">
           📄 Upload
@@ -2599,10 +2600,10 @@ function shareDocGen() {
           <input id="dg-ow-relief" placeholder="अनुकम्पा नियुक्ति दिलाई जाए / बर्खास्तगी निरस्त की जाए" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
           <div style="margin-bottom:8px;"><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📋 Court का अंतिम आदेश (Operative Para)</label>
           <textarea id="dg-ow-order" placeholder="HC ने कहा: '6 सप्ताह में निर्णय लें' / नोटिस जारी किया — स्पष्टीकरण माँगा" style="width:100%;min-height:60px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);box-sizing:border-box;"></textarea></div>
-          <div style="margin-bottom:8px;"><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">🏛️ विभाग का पक्ष / तथ्य / कार्यवाही ★ <span style="color:#999;font-weight:400">(PDF upload हो तो AI खुद पढ़ेगा)</span></label>
+          <div style="margin-bottom:8px;"><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">🏛️ विभाग का पक्ष / तथ्य / कार्यवाही ★ <span style="color:#999;font-weight:400">(PDF upload हो तो न्यायसहायक खुद पढ़ेगा)</span></label>
           <textarea id="dg-ow-facts" placeholder="याची के पति की मृत्यु बीमारी से हुई — शहीद श्रेणी में नहीं। GO दि. 19.03.2018 के अनुसार अनुकम्पा नियुक्ति अस्वीकृत। 6 सप्ताह में कार्यवाही पूर्ण — office memo 05.01.2026 निर्गत।" style="width:100%;min-height:90px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);box-sizing:border-box;"></textarea></div>
           <div style="background:#f0f9f0;border:1px solid #86efac;border-radius:8px;padding:10px 12px;font-size:11px;color:#166534;">
-            ✅ <strong>AI इन सभी दस्तावेज़ों को एक साथ तैयार करेगा:</strong><br>
+            ✅ <strong>न्यायसहायक इन सभी दस्तावेज़ों को एक साथ तैयार करेगा:</strong><br>
             1. प्रकरण का संक्षिप्त इतिहास (Brief History / Annexure)<br>
             2. टिप्पण (Noting — SAD Manual format)<br>
             3. CSC को निर्देश पत्र (Letter format)<br>
@@ -2611,7 +2612,7 @@ function shareDocGen() {
         </div>
         <!-- Dynamic inputs based on type -->
         <div id="docgen-noting" class="docgen-section">
-          <div style="background:#fef9f0;border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:11px;color:#7a5c1e;">⚡ <strong>Precision Mode:</strong> PDF upload करें या fields भरें — AI hallucination-free टिप्पण तैयार करेगा।</div>
+          <div style="background:#fef9f0;border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:11px;color:#7a5c1e;">⚡ <strong>Precision Mode:</strong> PDF upload करें या fields भरें — न्यायसहायक सटीक टिप्पण तैयार करेगा।</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
             <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📁 फाइल संख्या</label><input id="dg-noting-file" placeholder="6/SNP/2024" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
             <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">🏛️ विभाग/अनुभाग</label><input id="dg-noting-dept" placeholder="SNP / गृह विभाग" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;box-sizing:border-box;"></div>
@@ -2693,7 +2694,7 @@ function shareDocGen() {
 </body>
 </html><div id="docgen-parawise" class="docgen-section" style="display:none;">
           <div style="background:#fef9f0;border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:11px;color:#7a5c1e;">
-            ⚡ <strong>Tip:</strong> याचिका PDF upload करें → AI paragraphs खुद पढ़ेगा। या नीचे manually भरें।
+            ⚡ <strong>Tip:</strong> याचिका PDF upload करें → न्यायसहायक paragraphs पढ़ेगा। या नीचे manually भरें।
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
             <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">⚖️ Case Number <span style="color:#c00">★</span></label>
@@ -2707,7 +2708,7 @@ function shareDocGen() {
             </select></div>
           </div>
           <div style="margin-bottom:8px;"><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">📋 याचिका के para-wise आरोप <span style="color:#999;font-weight:400">(PDF upload हो तो blank छोड़ें)</span></label>
-          <textarea id="dg-parawise-input" placeholder="Para 1 — याचीगण का कहना है कि नियुक्ति नियमित थी।&#10;Para 2 — वेतन में विसंगति।&#10;Para 3 — बिना कारण सेवा समाप्ति।&#10;(PDF upload पर AI खुद extract करेगा)" style="width:100%;min-height:100px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);box-sizing:border-box;"></textarea></div>
+          <textarea id="dg-parawise-input" placeholder="Para 1 — याचीगण का कहना है कि नियुक्ति नियमित थी।&#10;Para 2 — वेतन में विसंगति।&#10;Para 3 — बिना कारण सेवा समाप्ति।&#10;(PDF upload पर न्यायसहायक extract करेगा)" style="width:100%;min-height:100px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);box-sizing:border-box;"></textarea></div>
           <div><label style="font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;">🏛️ विभाग का पक्ष / सत्य तथ्य <span style="color:#c00">★</span></label>
           <textarea id="dg-parawise-dept" placeholder="जैसे: याची की नियुक्ति ठेके पर थी। UP CCA Rules 1991 के अनुसार विभागीय जाँच पूरी हुई।" style="width:100%;min-height:75px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);box-sizing:border-box;"></textarea></div>
         </div>
