@@ -599,7 +599,7 @@ html, body {
     <!-- 4 MAIN TABS -->
     <div class="main-tabs">
       <button class="main-tab active" onclick="switchTab('bot')" id="tab-btn-bot">
-        <span class="tab-ico">💬</span>⚖️ न्यायसहायक
+        <span class="tab-ico">⚖️</span>न्यायसहायक
       </button>
       <button class="main-tab" onclick="switchTab('gos')" id="tab-btn-gos">
         <span class="tab-ico">📜</span>शासनादेश
@@ -1445,21 +1445,24 @@ async function send() {
   if (!text && !pdf) return;
 
   // Free counter
-  const freeCount = parseInt(localStorage.getItem('ny_free_count') || '3');
-  const isPremium = localStorage.getItem('ny_premium') === 'true';
-  if (!isPremium && freeCount <= 0) {
-    showPaywall();
-    return;
-  }
-  if (!isPremium) {
-    const newCount = freeCount - 1;
-    localStorage.setItem('ny_free_count', newCount);
-    const el = document.getElementById('freeCount');
-    if (el) el.textContent = newCount;
-    if (newCount === 0) {
-      document.getElementById('freeCounter').style.color = '#dc2626';
+  try {
+    const freeCount = parseInt(localStorage.getItem('ny_free_count') || '3');
+    const isPremium = localStorage.getItem('ny_premium') === 'true';
+    if (!isPremium && freeCount <= 0) {
+      showPaywall();
+      return;
     }
-  }
+    if (!isPremium) {
+      const newCount = freeCount - 1;
+      localStorage.setItem('ny_free_count', newCount);
+      const el = document.getElementById('freeCount');
+      if (el) el.textContent = newCount;
+      if (newCount === 0) {
+        const fc = document.getElementById('freeCounter');
+        if (fc) fc.style.color = '#dc2626';
+      }
+    }
+  } catch(e) { /* localStorage blocked — ignore */ }
 
   const w = document.getElementById('welcome');
   if (w) { if (carouselTimer) clearInterval(carouselTimer); w.remove(); }
