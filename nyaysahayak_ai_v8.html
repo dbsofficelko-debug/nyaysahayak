@@ -1802,56 +1802,60 @@ function selectDocType(type, btn) {
 }
 
 const DOCGEN_PROMPTS = {
+
   noting: (input, file, dept) => {
     const deptKB = activeDept ? ('विभाग: ' + activeDept.label + '. ' + activeDept.prompt) : '';
-    return `आप UP सचिवालय के वरिष्ठ अधिकारी हैं। SAD Manual Prastar 127-136 के अनुसार EXACTLY निम्न format में टिप्पण तैयार करें।
+    return `आप UP सचिवालय के वरिष्ठ अधिकारी हैं। SAD Manual Prastar 127-136 के अनुसार टिप्पण तैयार करें।
 
 ${deptKB}
-फाइल संख्या: ${file || '[फाइल संख्या]'} | विभाग: ${dept || '[विभाग/अनुभाग]'}
 
-EXACT FORMAT (कोई deviation नहीं):
+नियम:
+- टिप्पण में "प्रेषक" नहीं लिखा जाता — यह internal noting है
+- प्रस्तरों की संख्या flexible है — जितने जरूरी हों उतने
+- Flow: informative, easy to understand, सरकारी हिंदी
+- Exact rule/section/GO quote करें जहाँ applicable हो
+- पूर्वदृष्टान्त में SC/HC judgment cite करें
+
+FORMAT:
 
 सरकारी गोपनीय
 
 उत्तर प्रदेश सरकार
-[विभाग का नाम]
+[विभाग]
 लखनऊ
 
 टिप्पण
 
-प्रति: [उचित अधिकारी — मुख्य सचिव/सचिव]
-से: [अपर मुख्य सचिव/प्रमुख सचिव/विशेष सचिव — SO नहीं]
 विषय: [विषय]
 फाइल संख्या: ${file || '............'}
 दिनांक: ............
 
 1. प्राप्ति:
-[याचिका/पत्र/प्रकरण का विवरण — कौन, कहाँ, क्या माँगा]
+[याचिका/पत्र/प्रकरण — कौन, क्या माँगा, कहाँ दायर]
 
 2. नियम स्थिति:
-[Exact Act/Rule/Section quote करें — जैसे: UP Civil Services (CCA) Rules 1991, Rule 3 के अनुसार...]
+[Exact Rule/Section/GO — जैसे: UP CCA Rules 1991 Rule 3 के अनुसार...]
 
 3. तथ्य:
-[प्रकरण के वस्तुनिष्ठ तथ्य — क्या हुआ, कब हुआ, विभाग ने क्या किया]
+[वस्तुनिष्ठ तथ्य — क्या हुआ, कब, विभाग की स्थिति]
 
-4. अस्पष्टता:
-[यदि कोई अस्पष्टता है तो लिखें, अन्यथा: कोई अस्पष्टता नहीं है।]
+4. अस्पष्टता (यदि हो):
+[यदि कोई नहीं: "कोई अस्पष्टता नहीं है।"]
 
 5. पूर्वदृष्टान्त:
-[SC/HC judgment quote करें — जैसे: State of Rajasthan vs B.K. Meena (1996) 6 SCC 417]
+[SC/HC judgment with citation]
 
 6. प्रस्ताव:
-[विभाग का proposed action — (i), (ii), (iii) में]
+(i) [Action 1]
+(ii) [Action 2]
+(iii) [Action 3]
 
-7. अनुमति:
-स्वीकृत।
-उपरोक्त प्रस्ताव के अनुसार कार्यवाही की जाए।
-
-...........................................
-([अधिकारी का पद])
+[X]. अनुमति:
+स्वीकृत। उपरोक्त प्रस्ताव के अनुसार कार्यवाही की जाए।
 
 ...........................................
-([वरिष्ठ अधिकारी का पद])
+([विशेष सचिव/प्रमुख सचिव])
+
 दिनांक: .................
 
 ---
@@ -1861,39 +1865,47 @@ ${input}`;
   },
 
   csc: (input, caseNo, date) => {
-    const deptKB = activeDept ? ('Department: ' + activeDept.label + '. ' + activeDept.prompt) : '';
-    return `You are a senior UP Government law officer drafting instructions to the Chief Standing Counsel (CSC), Allahabad High Court / Lucknow Bench.
+    const deptKB = activeDept ? ('विभाग: ' + activeDept.label + '. ' + activeDept.prompt) : '';
+    return `आप UP सरकार के वरिष्ठ अधिकारी हैं। Chief Standing Counsel को Hindi में निर्देश तैयार करें।
 
 ${deptKB}
-Case: ${caseNo || '[Case Number]'} | Next Date: ${date || '[Date]'}
 
-Draft a formal letter in the EXACT following format:
+FORMAT — EXACTLY इस प्रकार:
 
-संख्या- ............/[Year]/[Section]
+संख्या- ............/[Year]/[Section Code]
 प्रेषक,
-[Secretary/Special Secretary],
+[सचिव/विशेष सचिव],
 उत्तर प्रदेश शासन।
 
 सेवा में,
 मुख्य स्थायी अधिवक्ता,
 माननीय उच्च न्यायालय,
-[लखनऊ खण्डपीठ/इलाहाबाद], लखनऊ/इलाहाबाद।
+[लखनऊ खण्डपीठ/इलाहाबाद]।
 
 [विभाग] अनुभाग लखनऊ: दिनांक: ........., [Year]
 
-विषय: [Case Name and Number] में [Counter Affidavit/Compliance Affidavit] दाखिल किए जाने के सम्बन्ध में।
+विषय: [Case Name & Number] में [Counter Affidavit/Compliance Affidavit] दाखिल किए जाने के सम्बन्ध में।
 
 महोदय,
 
-[Para 1: Case reference and notice]
+कृपया विचाराधीन पत्र का संलग्नक सहित अवलोकन करना चाहें।
 
-[Para 2: Background — what HC directed]
+2. [Case background — HC notice का विवरण, case number, अगली तारीख]
 
-[Para 3: What department has done — compliance status]  
+3. [HC के operative order का शब्दशः उल्लेख — "The operative para of the order dated ....reads as under: '...'"]
 
-[Para 4: Legal position — why department's stand is correct, cite rules/GOs]
+4. [विभाग ने क्या किया — compliance status, GO number, date]
 
-[Para 5: Request to CSC — what to file, what to argue]
+5. [विभाग का पक्ष — क्यों याची का दावा गलत है, GO/Rule का हवाला]
+
+6. [चूँकि आदेश का पूर्ण अनुपालन हो चुका है / अथवा अनुपालन की स्थिति — अतः अवमानना नहीं बनती / विभाग का पक्ष मजबूत है]
+
+अतः अनुरोध है कि:
+(क) [Counter Affidavit / Compliance Affidavit दाखिल करें]
+(ख) [Parawise comments के आधार पर पक्ष रखें]
+(ग) [Next date पर याचिका निस्तारित/खारिज कराएं]
+
+कृपया सहमति की दशा में यथामाध्यम सचिव/अपर मुख्य सचिव महोदय का अनुमोदन प्राप्त किया जाना निवेदित है।
 
 भवदीय,
 संख्या एवं दिनांक यथोक्त।
@@ -1901,56 +1913,95 @@ Draft a formal letter in the EXACT following format:
 प्रतिलिपि निम्नलिखित को सूचनार्थ:
 1.
 2.
-गार्ड फाईल।
+3. गार्ड फाईल।
 
 ---
 
-Now draft this letter based on:
+अब इस format में CSC को निर्देश तैयार करें:
+Case: ${caseNo || '[Case Number]'} | अगली तारीख: ${date || '[Date]'}
 ${input}`;
+  },
+
+  parawise_instructions: (input, deptStand) => {
+    const deptKB = activeDept ? ('विभाग: ' + activeDept.label + '. ' + activeDept.prompt) : '';
+    return `आप UP सरकार के वरिष्ठ विधिक अधिकारी हैं। CSC को भेजने के लिए Hindi में पैरावार टिप्पणी (Parawise Instructions) तैयार करें — TABLE FORMAT में।
+
+${deptKB}
+
+FORMAT:
+
+पैरावार टिप्पणी
+वाद: [Case Name & Number]
+
+क्र०  |  याचिका का प्रस्तर  |  शासन का पक्ष / पैरावार टिप्पणी
+-----|-------------------|--------------------------------
+1.   |  प्रस्तर 1 से [X]  |  [ये प्रस्तर अभिलेखों पर आधारित होने के कारण स्वीकार्य हैं। / ये प्रस्तर पूर्णतः भ्रामक एवं असत्य हैं, अतः अस्वीकार हैं।]
+2.   |  प्रस्तर [X]       |  [विस्तृत टिप्पणी — तथ्य, GO, dates सहित]
+...
+
+अंत में प्रस्ताव:
+उपर्युक्त वर्णित स्थिति के दृष्टिगत प्रश्नगत प्रकरण में निम्नवत कार्यवाही किया जाना प्रस्तावित है:
+(क) [Action 1 — CSC को अनुपालन आख्या एवं पैरावार टिप्पणी प्रेषित की जाए]
+(ख) [Action 2 — Counter Affidavit दाखिल हो]
+(ग) [Action 3 — Next date पर याचिका निस्तारित कराएं]
+
+---
+
+याचीगण के आरोप/प्रस्तर:
+${input}
+
+विभाग का पक्ष/तथ्य:
+${deptStand || '[विभाग के तथ्य यहाँ लिखें]'}`;
   },
 
   parawise: (input, deptStand) => {
     const deptKB = activeDept ? ('Department: ' + activeDept.label + '. ' + activeDept.prompt) : '';
-    return `You are a Senior Government Counsel / Law Officer preparing a Parawise Reply / Counter Affidavit for the Allahabad High Court (Lucknow Bench / Allahabad Bench).
+    return `You are Senior Government Counsel preparing a Parawise Reply / Counter Affidavit for the Allahabad High Court.
 
 ${deptKB}
 
-STRICT FORMAT RULES:
-1. Use proper legal English — HC/SC standard
-2. Each para: "As regards Para [X] of the writ petition, it is submitted that..."
-3. For factual paras: "The contents of Para [X] are a matter of record."
-4. For false/misleading paras: "The contents of Para [X] are denied being false and misleading. It is submitted that..."
-5. Quote exact GO numbers, Rule numbers, Section numbers
-6. End with: "In view of the above, the writ petition is liable to be dismissed with costs."
-7. Professional spacing — leave line between each para response
+STRICT FORMAT — HC Standard:
 
-FORMAT:
 IN THE HIGH COURT OF JUDICATURE AT ALLAHABAD
-[LUCKNOW BENCH]
+[LUCKNOW BENCH / ALLAHABAD]
 
-[Case Type and Number]
-[Petitioner] vs. [Respondent]
+[Case Type] No. [Number] of [Year]
+[Petitioner Name]
+versus
+[Respondent Name]
 
-PARAWISE REPLY ON BEHALF OF RESPONDENT NO. [X]
+COUNTER AFFIDAVIT ON BEHALF OF RESPONDENT NO. [X]
 
-[Date of affidavit, deponent details if provided]
+I, [Name], [Designation], do hereby solemnly affirm and state as under:
+
+1. That the deponent is [designation] and is well conversant with the facts of the case.
 
 PRELIMINARY OBJECTIONS:
-[If any]
+i. That the writ petition is not maintainable...
+ii. That the petitioner has not come with clean hands...
 
 REPLY ON MERITS:
 
-1. As regards Para 1...
+2. As regards Para 1 of the writ petition, it is submitted that the contents thereof are a matter of record and need no specific reply.
 
-2. As regards Para 2...
+3. As regards Para [X] of the writ petition, it is submitted that the contents thereof are denied being false and misleading. It is submitted that... [Department facts + GO/Rule citation]
 
-[Continue for all paras]
+4. As regards Para [X], it is submitted that the contents thereof are admitted to the extent that... [partial admission with clarification]
 
-It is therefore most respectfully prayed that this Hon'ble Court may be pleased to dismiss the writ petition with costs.
+[Continue for all paras...]
+
+[LAST PARA]: In view of the foregoing, it is most respectfully submitted that the writ petition is devoid of any merit and is liable to be dismissed with costs. The petitioner has failed to make out any case for interference by this Hon'ble Court.
+
+DEPONENT
+
+VERIFICATION:
+Verified at [City] on [Date] that the contents of the above affidavit are true and correct to the best of my knowledge and belief.
+
+DEPONENT
 
 ---
 
-Petitioner's allegations:
+Petitioner's allegations/paras:
 ${input}
 
 Department's stand/facts:
@@ -1959,45 +2010,44 @@ ${deptStand || '[Department facts to be incorporated]'}`;
 
   history: (input, caseNo, dept) => {
     const deptKB = activeDept ? ('विभाग: ' + activeDept.label + '. ' + activeDept.prompt) : '';
-    return `आप UP सरकार के वरिष्ठ विधिक अधिकारी हैं। निम्न प्रकरण का संक्षिप्त इतिहास EXACTLY इस format में तैयार करें:
+    return `आप UP सरकार के वरिष्ठ विधिक अधिकारी हैं। Annexure format में संक्षिप्त इतिहास तैयार करें।
 
 ${deptKB}
 
-═══════════════════════════════════════════════
+FORMAT:
+
+══════════════════════════════════════════
 प्रकरण का संक्षिप्त इतिहास (Case History)
 (Annexure)
-═══════════════════════════════════════════════
+══════════════════════════════════════════
 
-विषय: [Case Name and Number] में [आदेश/कार्यवाही] के सम्बन्ध में तथ्यात्मक पृष्ठभूमि।
+विषय: [Case Name & Number] — तथ्यात्मक पृष्ठभूमि
 
 1. वाद का विवरण एवं पक्षकार:
-● याची का नाम: [Name, relation, designation of deceased if applicable]
-● मृतक कर्मचारी (यदि लागू): [Name, PIS No., Unit, Force]
-● विपक्षीगण: (1) [Respondent 1] (2) [Respondent 2]
-● टिप्पणी: [Any important note — जैसे नोडल विभाग को पक्षकार नहीं बनाया गया]
+● याची: [Name, relation/designation]
+● विपक्षी: (1) [Respondent 1] (2) [Respondent 2]
+● नोट: [कोई महत्वपूर्ण बात — जैसे नोडल विभाग को पक्षकार नहीं बनाया]
 
-2. घटनाक्रम एवं मृत्यु/घटना का विवरण:
-● [Date wise chronological facts]
-● [Key facts that establish department's position]
+2. घटनाक्रम (Chronology):
+● [Date]: [Event]
+● [Date]: [Event]
 
-3. न्यायालयी कार्यवाही का संक्षिप्त इतिहास:
-● प्रथम चरण (याची का दावा): [What petitioner claimed]
-● द्वितीय चरण (विभाग का पक्ष/त्रुटि): [What department did/missed]
-● तृतीय चरण (न्यायालय का आदेश): [HC/SC order — date, operative para]
+3. न्यायालयी कार्यवाही:
+● प्रथम चरण: [Petitioner's claim]
+● द्वितीय चरण: [Department's action / what was missed]
+● तृतीय चरण: [HC/SC order — date, operative para in quotes]
 
-4. नवीन तथ्य एवं साक्ष्य (यदि उपलब्ध):
-● [New facts/evidence that came to light after order]
+4. नवीन तथ्य/साक्ष्य (यदि हों):
+● [New facts after order]
 
-5. विधिक स्थिति एवं समस्या:
-● शासनादेश: [Relevant GO — what it says]
-● नेचुरल जस्टिस का उल्लंघन (यदि लागू): [If department wasn't heard]
-● पूर्व निर्णय: [Relevant SC/HC judgment with citation]
+5. विधिक स्थिति:
+● शासनादेश: [Relevant GO]
+● पूर्व निर्णय: [SC/HC citation]
 
-उपरोक्त तथ्यों के दृष्टिगत [proposed action — Recall/Counter Affidavit etc.] किया जाना विधिक एवं प्रशासनिक रूप से आवश्यक है।
+उपरोक्त तथ्यों के दृष्टिगत [proposed action] किया जाना आवश्यक है।
 
-───────────────────────────────────────────────
+---
 
-अब इस format में Case History तैयार करें:
 Case: ${caseNo || '[Case Number]'} | विभाग: ${dept || (activeDept ? activeDept.label : '[विभाग]')}
 ${input}`;
   },
@@ -2009,102 +2059,103 @@ ${input}`;
 ${deptKB}
 फाइल संख्या: ${file || '[फाइल संख्या]'} | विभाग: ${dept || '[विभाग/अनुभाग]'}
 
-पहले यह Annexure तैयार करें:
+══════════════════════════════════════════
+PART 1: प्रकरण का संक्षिप्त इतिहास (Annexure)
+══════════════════════════════════════════
+[1. पक्षकार — 2. घटनाक्रम — 3. न्यायालयी इतिहास — 4. नवीन तथ्य — 5. विधिक स्थिति]
 
-═══════════════════════════════════════════════
-प्रकरण का संक्षिप्त इतिहास (Case History)
-(Annexure)
-═══════════════════════════════════════════════
-[1. वाद का विवरण — 2. घटनाक्रम — 3. न्यायालयी इतिहास — 4. नवीन तथ्य — 5. विधिक स्थिति]
-
-═══════════════════════════════════════════════
-फिर यह पूर्ण टिप्पण तैयार करें:
-═══════════════════════════════════════════════
+══════════════════════════════════════════
+PART 2: टिप्पण
+══════════════════════════════════════════
 
 सरकारी गोपनीय
 
 उत्तर प्रदेश सरकार
-[विभाग का नाम]
+[विभाग]
 लखनऊ
 
 टिप्पण
 
-प्रति: [उचित अधिकारी]
-से: [अपर मुख्य सचिव/प्रमुख सचिव/विशेष सचिव]
 विषय: [विषय]
 फाइल संख्या: ${file || '............'}
 दिनांक: ............
 
-1. प्राप्ति: [याचिका/प्रकरण का विवरण — उपर्युक्त Annexure से सम्बद्ध करें]
-
-2. नियम स्थिति: [Exact Act/Rule/Section/GO quote करें]
-
-3. तथ्य: [वस्तुनिष्ठ तथ्य — Annexure की key facts से जोड़ें]
-
-4. अस्पष्टता: [कोई अस्पष्टता नहीं है। / यदि हो तो लिखें]
-
-5. पूर्वदृष्टान्त: [SC/HC judgment — citation सहित]
-
-6. प्रस्ताव:
-(i) [Proposed action 1]
-(ii) [Proposed action 2]
-(iii) [Proposed action 3]
-
-7. अनुमति:
-स्वीकृत।
-उपरोक्त प्रस्ताव के अनुसार कार्यवाही की जाए।
+1. प्राप्ति: [Annexure से जोड़ते हुए प्रकरण का विवरण]
+2. नियम स्थिति: [Exact Rule/Section/GO]
+3. तथ्य: [Key facts from Annexure]
+4. अस्पष्टता: [यदि हो / नहीं है]
+5. पूर्वदृष्टान्त: [SC/HC citation]
+6. प्रस्ताव: (i) (ii) (iii)
+[X]. अनुमति: स्वीकृत।
 
 ...........................................
 ([अधिकारी का पद])
-
-...........................................
-([वरिष्ठ अधिकारी का पद])
 दिनांक: .................
 
-───────────────────────────────────────────────
+---
+${input}`;
+  },
 
-अब इस format में दोनों दस्तावेज़ तैयार करें:
+  all_in_one: (input, file, caseNo, date) => {
+    const deptKB = activeDept ? ('विभाग: ' + activeDept.label + '. ' + activeDept.prompt) : '';
+    return `आप UP सरकार के वरिष्ठ विधिक अधिकारी हैं। एक ही प्रकरण के लिए चारों दस्तावेज़ एक साथ तैयार करें।
+
+${deptKB}
+फाइल संख्या: ${file || '[फाइल संख्या]'} | Case: ${caseNo || '[Case Number]'} | अगली तारीख: ${date || '[Date]'}
+
+══════════════════════════
+DOCUMENT 1: संक्षिप्त इतिहास (Annexure)
+══════════════════════════
+[Case History format]
+
+══════════════════════════
+DOCUMENT 2: टिप्पण
+══════════════════════════
+[Noting format — SAD Manual]
+
+══════════════════════════
+DOCUMENT 3: CSC को निर्देश (Hindi)
+══════════════════════════
+[Instructions to Chief Standing Counsel]
+
+══════════════════════════
+DOCUMENT 4: पैरावार टिप्पणी (Table — for CSC)
+══════════════════════════
+[Parawise instructions table]
+
+---
 ${input}`;
   },
 
   pairvi: (input) => {
     const deptKB = activeDept ? ('विभाग: ' + activeDept.label + '. ' + activeDept.prompt) : '';
-    return `आप UP सरकार के वरिष्ठ विधिक अधिकारी हैं। निम्न प्रकरण में प्रभावी पैरवी के लिए strategic legal points तैयार करें।
+    return `आप UP सरकार के वरिष्ठ विधिक अधिकारी हैं। प्रभावी पैरवी के लिए strategic points तैयार करें।
 
 ${deptKB}
-
-निम्न format में pairvi points दें:
 
 ═══════════════════════════════
 पैरवी बिंदु — [Case Name/Number]
 ═══════════════════════════════
 
 A. विभाग के पक्ष में सबसे मजबूत तर्क:
-1. [Legal argument with rule/section]
-2. [Legal argument with rule/section]
-3. [Legal argument with rule/section]
+1. [With rule/section]
+2. [With rule/section]
 
 B. लागू SC/HC Judgments:
-1. [Case Name (Year) SCC/AIR — key holding]
+1. [Case Name (Year) SCC — key holding]
 2. [Case Name (Year) — key holding]
 
-C. याचीगण के संभावित तर्क और उनका खंडन:
-• याचीगण कह सकते हैं: [argument]
-  → खंडन: [rebuttal with rule/judgment]
+C. याचीगण के संभावित तर्क और खंडन:
+• याचीगण: [argument] → खंडन: [rebuttal]
 
 D. आवश्यक दस्तावेज/साक्ष्य:
-1. [Document/Evidence]
-2. [Document/Evidence]
+1. [Document]
+2. [Document]
 
 E. CSC को अगली सुनवाई में क्या argue करना है:
 [Specific instructions]
 
-F. Counter Affidavit के मुख्य बिंदु:
-[If CA required]
-
 ═══════════════════════════════
-
-प्रकरण विवरण:
 ${input}`;
   }
 };
@@ -2134,6 +2185,18 @@ async function generateDoc() {
     const stand = document.getElementById('dg-parawise-dept').value.trim();
     if (!input) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; return; }
     userInput = DOCGEN_PROMPTS.parawise(input, stand);
+  } else if (currentDocType === 'parawise_instructions') {
+    const input = document.getElementById('dg-parainst-input').value.trim();
+    const stand = document.getElementById('dg-parainst-dept').value.trim();
+    if (!input) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; return; }
+    userInput = DOCGEN_PROMPTS.parawise_instructions(input, stand);
+  } else if (currentDocType === 'all_in_one') {
+    const input = document.getElementById('dg-allinone-input').value.trim();
+    const file = document.getElementById('dg-allinone-file').value.trim();
+    const caseNo = document.getElementById('dg-allinone-case').value.trim();
+    const date = document.getElementById('dg-allinone-date').value.trim();
+    if (!input) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; return; }
+    userInput = DOCGEN_PROMPTS.all_in_one(input, file, caseNo, date);
   } else if (currentDocType === 'history') {
     const input = document.getElementById('dg-history-input').value.trim();
     const caseNo = document.getElementById('dg-history-case').value.trim();
@@ -2294,6 +2357,26 @@ function shareDocGen() {
           </div>
           <textarea id="dg-parawise-input" placeholder="जैसे: Para 1 — याचीगण का कहना है कि उनकी नियुक्ति नियमित थी। Para 2 — वेतन में विसंगति का आरोप। Para 3 — सेवा समाप्ति बिना कारण बताए।" style="width:100%;min-height:120px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);"></textarea>
           <textarea id="dg-parawise-dept" placeholder="विभाग का पक्ष / तथ्य (यहाँ वास्तविक स्थिति लिखें)" style="width:100%;min-height:80px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);margin-top:8px;"></textarea>
+        </div>
+
+        <div id="docgen-parawise_instructions" class="docgen-section" style="display:none;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">
+            याची के प्रस्तर एवं विभाग का पक्ष बताएं — CSC को भेजने के लिए Table format में पैरावार टिप्पणी तैयार होगी।
+          </div>
+          <textarea id="dg-parainst-input" placeholder="याचिका के प्रस्तर 1-16 के आरोप यहाँ लिखें।" style="width:100%;min-height:100px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);"></textarea>
+          <textarea id="dg-parainst-dept" placeholder="विभाग का पक्ष / तथ्य (GO number, dates, compliance status)" style="width:100%;min-height:70px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);margin-top:8px;"></textarea>
+        </div>
+
+        <div id="docgen-all_in_one" class="docgen-section" style="display:none;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">
+            सभी दस्तावेज़ एक साथ — Case History + टिप्पण + CSC निर्देश + पैरावार टिप्पणी।
+          </div>
+          <textarea id="dg-allinone-input" placeholder="प्रकरण का पूरा विवरण — पक्षकार, घटनाक्रम, HC order, विभाग का पक्ष, याची के आरोप — सब लिखें।" style="width:100%;min-height:130px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);"></textarea>
+          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+            <input id="dg-allinone-file" placeholder="फाइल संख्या" style="flex:1;min-width:120px;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;">
+            <input id="dg-allinone-case" placeholder="Case Number" style="flex:1;min-width:130px;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;">
+            <input id="dg-allinone-date" placeholder="अगली तारीख" style="flex:1;min-width:110px;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;">
+          </div>
         </div>
 
         <div id="docgen-pairvi" class="docgen-section" style="display:none;">
