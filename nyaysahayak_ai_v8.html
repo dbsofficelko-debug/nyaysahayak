@@ -1957,6 +1957,116 @@ Department's stand/facts:
 ${deptStand || '[Department facts to be incorporated]'}`;
   },
 
+  history: (input, caseNo, dept) => {
+    const deptKB = activeDept ? ('विभाग: ' + activeDept.label + '. ' + activeDept.prompt) : '';
+    return `आप UP सरकार के वरिष्ठ विधिक अधिकारी हैं। निम्न प्रकरण का संक्षिप्त इतिहास EXACTLY इस format में तैयार करें:
+
+${deptKB}
+
+═══════════════════════════════════════════════
+प्रकरण का संक्षिप्त इतिहास (Case History)
+(Annexure)
+═══════════════════════════════════════════════
+
+विषय: [Case Name and Number] में [आदेश/कार्यवाही] के सम्बन्ध में तथ्यात्मक पृष्ठभूमि।
+
+1. वाद का विवरण एवं पक्षकार:
+● याची का नाम: [Name, relation, designation of deceased if applicable]
+● मृतक कर्मचारी (यदि लागू): [Name, PIS No., Unit, Force]
+● विपक्षीगण: (1) [Respondent 1] (2) [Respondent 2]
+● टिप्पणी: [Any important note — जैसे नोडल विभाग को पक्षकार नहीं बनाया गया]
+
+2. घटनाक्रम एवं मृत्यु/घटना का विवरण:
+● [Date wise chronological facts]
+● [Key facts that establish department's position]
+
+3. न्यायालयी कार्यवाही का संक्षिप्त इतिहास:
+● प्रथम चरण (याची का दावा): [What petitioner claimed]
+● द्वितीय चरण (विभाग का पक्ष/त्रुटि): [What department did/missed]
+● तृतीय चरण (न्यायालय का आदेश): [HC/SC order — date, operative para]
+
+4. नवीन तथ्य एवं साक्ष्य (यदि उपलब्ध):
+● [New facts/evidence that came to light after order]
+
+5. विधिक स्थिति एवं समस्या:
+● शासनादेश: [Relevant GO — what it says]
+● नेचुरल जस्टिस का उल्लंघन (यदि लागू): [If department wasn't heard]
+● पूर्व निर्णय: [Relevant SC/HC judgment with citation]
+
+उपरोक्त तथ्यों के दृष्टिगत [proposed action — Recall/Counter Affidavit etc.] किया जाना विधिक एवं प्रशासनिक रूप से आवश्यक है।
+
+───────────────────────────────────────────────
+
+अब इस format में Case History तैयार करें:
+Case: ${caseNo || '[Case Number]'} | विभाग: ${dept || (activeDept ? activeDept.label : '[विभाग]')}
+${input}`;
+  },
+
+  noting_full: (input, file, dept) => {
+    const deptKB = activeDept ? ('विभाग: ' + activeDept.label + '. ' + activeDept.prompt) : '';
+    return `आप UP सचिवालय के वरिष्ठ अधिकारी हैं। पहले Annexure (Case History) फिर पूर्ण टिप्पण — दोनों एक साथ तैयार करें।
+
+${deptKB}
+फाइल संख्या: ${file || '[फाइल संख्या]'} | विभाग: ${dept || '[विभाग/अनुभाग]'}
+
+पहले यह Annexure तैयार करें:
+
+═══════════════════════════════════════════════
+प्रकरण का संक्षिप्त इतिहास (Case History)
+(Annexure)
+═══════════════════════════════════════════════
+[1. वाद का विवरण — 2. घटनाक्रम — 3. न्यायालयी इतिहास — 4. नवीन तथ्य — 5. विधिक स्थिति]
+
+═══════════════════════════════════════════════
+फिर यह पूर्ण टिप्पण तैयार करें:
+═══════════════════════════════════════════════
+
+सरकारी गोपनीय
+
+उत्तर प्रदेश सरकार
+[विभाग का नाम]
+लखनऊ
+
+टिप्पण
+
+प्रति: [उचित अधिकारी]
+से: [अपर मुख्य सचिव/प्रमुख सचिव/विशेष सचिव]
+विषय: [विषय]
+फाइल संख्या: ${file || '............'}
+दिनांक: ............
+
+1. प्राप्ति: [याचिका/प्रकरण का विवरण — उपर्युक्त Annexure से सम्बद्ध करें]
+
+2. नियम स्थिति: [Exact Act/Rule/Section/GO quote करें]
+
+3. तथ्य: [वस्तुनिष्ठ तथ्य — Annexure की key facts से जोड़ें]
+
+4. अस्पष्टता: [कोई अस्पष्टता नहीं है। / यदि हो तो लिखें]
+
+5. पूर्वदृष्टान्त: [SC/HC judgment — citation सहित]
+
+6. प्रस्ताव:
+(i) [Proposed action 1]
+(ii) [Proposed action 2]
+(iii) [Proposed action 3]
+
+7. अनुमति:
+स्वीकृत।
+उपरोक्त प्रस्ताव के अनुसार कार्यवाही की जाए।
+
+...........................................
+([अधिकारी का पद])
+
+...........................................
+([वरिष्ठ अधिकारी का पद])
+दिनांक: .................
+
+───────────────────────────────────────────────
+
+अब इस format में दोनों दस्तावेज़ तैयार करें:
+${input}`;
+  },
+
   pairvi: (input) => {
     const deptKB = activeDept ? ('विभाग: ' + activeDept.label + '. ' + activeDept.prompt) : '';
     return `आप UP सरकार के वरिष्ठ विधिक अधिकारी हैं। निम्न प्रकरण में प्रभावी पैरवी के लिए strategic legal points तैयार करें।
@@ -2024,6 +2134,18 @@ async function generateDoc() {
     const stand = document.getElementById('dg-parawise-dept').value.trim();
     if (!input) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; return; }
     userInput = DOCGEN_PROMPTS.parawise(input, stand);
+  } else if (currentDocType === 'history') {
+    const input = document.getElementById('dg-history-input').value.trim();
+    const caseNo = document.getElementById('dg-history-case').value.trim();
+    const dept = document.getElementById('dg-history-dept').value.trim();
+    if (!input) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; return; }
+    userInput = DOCGEN_PROMPTS.history(input, caseNo, dept);
+  } else if (currentDocType === 'noting_full') {
+    const input = document.getElementById('dg-notingfull-input').value.trim();
+    const file = document.getElementById('dg-notingfull-file').value.trim();
+    const dept = document.getElementById('dg-notingfull-dept').value.trim();
+    if (!input) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; return; }
+    userInput = DOCGEN_PROMPTS.noting_full(input, file, dept);
   } else if (currentDocType === 'pairvi') {
     const input = document.getElementById('dg-pairvi-input').value.trim();
     if (!input) { btn.textContent = '⚡ दस्तावेज़ बनाएं'; btn.disabled = false; return; }
