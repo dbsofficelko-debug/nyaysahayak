@@ -2878,5 +2878,65 @@ function shareDocGen() {
   </div>
 </div>
 
+
+<script>
+/* ── MOBILE KEYBOARD: Header collapse when keyboard opens ── */
+(function(){
+  var hdr = document.querySelector('.hdr');
+  var betaBanner = document.getElementById('betaBanner');
+  var collapsed = false;
+
+  function collapseHeader(){
+    if(collapsed) return;
+    collapsed = true;
+    if(hdr) hdr.style.display = 'none';
+    if(betaBanner) betaBanner.style.display = 'none';
+  }
+
+  function expandHeader(){
+    if(!collapsed) return;
+    collapsed = false;
+    if(hdr) hdr.style.display = '';
+    if(betaBanner && betaBanner.dataset.dismissed !== '1'){
+      betaBanner.style.display = '';
+    }
+  }
+
+  var closeBtn = betaBanner ? betaBanner.querySelector('button') : null;
+  if(closeBtn){
+    closeBtn.addEventListener('click', function(){
+      betaBanner.dataset.dismissed = '1';
+    });
+  }
+
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize', function(){
+      var vvh = window.visualViewport.height;
+      var wh  = window.innerHeight;
+      if(wh - vvh > 150){
+        collapseHeader();
+        var msgs = document.querySelector('.msgs');
+        if(msgs) msgs.scrollTop = msgs.scrollHeight;
+      } else {
+        expandHeader();
+      }
+    });
+  }
+
+  var msgInput = document.getElementById('msgInput');
+  if(msgInput){
+    msgInput.addEventListener('focus', function(){
+      if(window.innerWidth < 640) collapseHeader();
+      setTimeout(function(){
+        var msgs = document.querySelector('.msgs');
+        if(msgs) msgs.scrollTop = msgs.scrollHeight;
+      }, 400);
+    });
+    msgInput.addEventListener('blur', function(){
+      setTimeout(expandHeader, 250);
+    });
+  }
+})();
+</script>
 </body>
 </html>
