@@ -566,7 +566,7 @@ html, body {
         </div>
       </div>
       <div class="hdr-right">
-        <a href="#" class="doc-gen-btn" onclick="openDocGen(); return false;">📄 दस्तावेज़ निर्माता</a>
+        <span class="doc-gen-btn" style="opacity:0.5;cursor:not-allowed;">📄 दस्तावेज़ निर्माता <span style="font-size:8px;background:#c9a84c;color:#000;padding:1px 6px;border-radius:8px;margin-left:2px;">जल्द</span></span>
         <span class="badge-dbs">DBS</span>
       </div>
     </div>
@@ -621,11 +621,11 @@ html, body {
       <button class="main-tab active" onclick="switchTab('bot')" id="tab-btn-bot">
         <span class="tab-ico">💬</span>विभाग बॉट
       </button>
-      <button class="main-tab" onclick="switchTab('gos')" id="tab-btn-gos">
-        <span class="tab-ico">📜</span>शासनादेश 🔒
+      <button class="main-tab" onclick="alert('शासनादेश अनुभाग शीघ्र उपलब्ध होगा।')" id="tab-btn-gos" style="opacity:0.5;cursor:not-allowed;">
+        <span class="tab-ico">📜</span>शासनादेश <span style="font-size:8px;background:#c9a84c;color:#000;padding:1px 4px;border-radius:6px;">जल्द</span>
       </button>
-      <button class="main-tab" onclick="switchTab('judgments')" id="tab-btn-judgments">
-        <span class="tab-ico">⚖️</span>निर्णय 🔒
+      <button class="main-tab" onclick="alert('निर्णय अनुभाग शीघ्र उपलब्ध होगा।')" id="tab-btn-judgments" style="opacity:0.5;cursor:not-allowed;">
+        <span class="tab-ico">⚖️</span>निर्णय <span style="font-size:8px;background:#c9a84c;color:#000;padding:1px 4px;border-radius:6px;">जल्द</span>
       </button>
       <button class="main-tab" onclick="switchTab('pulse')" id="tab-btn-pulse">
         <span class="tab-ico">📊</span>केस पल्स
