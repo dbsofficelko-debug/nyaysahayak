@@ -9,6 +9,22 @@
   <meta name="apple-mobile-web-app-title" content="न्यायसहायक">
   <link rel="apple-touch-icon" href="/icons/icon-180x180.png">
   <script>
+
+/* ════════════════════════════════════════
+   TIMEOUT TRACKER — prevent leaks
+════════════════════════════════════════ */
+const _timeouts = new Set();
+const _safeTimeout = (fn, ms) => {
+  const id = setTimeout(() => { _timeouts.delete(id); fn(); }, ms);
+  _timeouts.add(id);
+  return id;
+};
+window.addEventListener('beforeunload', () => {
+  _timeouts.forEach(id => clearTimeout(id));
+  _timeouts.clear();
+});
+
+
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').catch(() => {});
@@ -1100,7 +1116,19 @@ function init() {
 
   const ta = document.getElementById('msgInput');
   if (ta) {
-    ta.addEventListener('input', () => {
+      ta.addEventListener('paste', (e) => {
+    setTimeout(() => {
+      if (ta.value.length > 2000) {
+        ta.value = ta.value.slice(0, 2000);
+        ta.style.borderColor = '#e53935';
+        setTimeout(() => ta.style.borderColor = '', 1500);
+      }
+      // Auto resize after paste
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+    }, 0);
+  });
+  ta.addEventListener('input', () => {
       ta.style.height = 'auto';
       ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
     });
@@ -1614,6 +1642,10 @@ async function send() {
   const text = ta.value.trim();
   const pdf  = pdfBase64;
   if (!text && !pdf) return;
+  if (!navigator.onLine) {
+    addBubble('bot', '📶 इंटरनेट कनेक्शन नहीं है। कृपया नेटवर्क जांचें और दोबारा प्रयास करें।');
+    return;
+  }
 
   // BETA: fully free — no paywall
 
@@ -1926,7 +1958,39 @@ function addActionsTo(bub, text, suggestions, msgs) {
   const copyBtn = document.createElement('button');
   copyBtn.textContent = '📋 कॉपी';
   copyBtn.style.cssText = 'background:var(--gold-pale);border:1px solid var(--gold);cursor:pointer;font-size:11px;color:var(--navy);padding:4px 10px;border-radius:6px;font-weight:600;';
-  copyBtn.onclick = () => { navigator.clipboard.writeText(text); copyBtn.textContent = '✓ Copied!'; setTimeout(() => copyBtn.textContent = '📋 कॉपी', 2000); };
+  copyBtn.onclick = () => { 
+    navigator.clipboard.writeText(text).then(() => {
+      copyBtn.textContent = '✓ कॉपी!'; 
+      setTimeout(() => copyBtn.textContent = '📋 कॉपी', 2000);
+    }).catch(() => {
+      // Fallback for older browsers
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta);
+      copyBtn.textContent = '✓ कॉपी!';
+      setTimeout(() => copyBtn.textContent = '📋 कॉपी', 2000);
+    });
+  };
+
+  // Native Share API button
+  if (navigator.share || navigator.canShare) {
+    const shareBtn = document.createElement('button');
+    shareBtn.textContent = '📤 Share';
+    shareBtn.style.cssText = 'background:var(--gold-pale);border:1px solid var(--gold);cursor:pointer;font-size:11px;color:var(--navy);padding:4px 10px;border-radius:6px;font-weight:600;';
+    shareBtn.onclick = async () => {
+      try {
+        await navigator.share({ title: 'न्यायसहायक', text: text });
+      } catch(e) {
+        if (e.name !== 'AbortError') {
+          navigator.clipboard.writeText(text);
+          shareBtn.textContent = '✓ कॉपी!';
+          setTimeout(() => shareBtn.textContent = '📤 Share', 2000);
+        }
+      }
+    };
+    actRow.appendChild(shareBtn);
+  }
 
   const waBtn = document.createElement('button');
   waBtn.style.cssText = 'background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);padding:3px 7px;border-radius:4px;';
@@ -2743,7 +2807,32 @@ function printDocGen() {
   <h1>न्यायसहायक — दस्तावेज़</h1>
   <pre>${text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
   <script>window.onload=function(){window.print();}<\/script>
-  </body></html>`);
+  
+/* ════════════════════════════════════════
+   OFFLINE DETECTION
+════════════════════════════════════════ */
+(function() {
+  function showOfflineBanner() {
+    if (document.getElementById('offline-banner')) return;
+    const b = document.createElement('div');
+    b.id = 'offline-banner';
+    b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#B71C1C;color:white;text-align:center;padding:8px 16px;font-size:13px;font-family:sans-serif;';
+    b.textContent = '📶 इंटरनेट कनेक्शन नहीं है — कृपया नेटवर्क जांचें';
+    document.body.prepend(b);
+  }
+  function hideOfflineBanner() {
+    const b = document.getElementById('offline-banner');
+    if (b) b.remove();
+  }
+  window.addEventListener('online', hideOfflineBanner);
+  window.addEventListener('offline', showOfflineBanner);
+  if (!navigator.onLine) showOfflineBanner();
+
+  // Check before API call
+  window.isOnline = () => navigator.onLine;
+})();
+
+</body></html>`);
   w.document.close();
 }
 
