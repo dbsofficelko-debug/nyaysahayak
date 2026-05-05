@@ -582,6 +582,7 @@ html, body {
 }
 </style>
 </head>
+<a href="#msgInput" class="skip-link" style="position:absolute;left:-9999px;top:0;z-index:9999;background:#8B2000;color:white;padding:8px 16px;border-radius:4px;font-size:14px;">मुख्य सामग्री पर जाएं</a>
 <body>
 <div class="shell">
 <!-- BETA BANNER -->
@@ -629,14 +630,14 @@ html, body {
 <!-- DEPT DROPDOWN -->
     <div class="dept-selector-bar">
       <span class="dept-selector-label">विभाग</span>
-      <select class="dept-select" id="deptSelect" onchange="onDeptChange()">
+      <select class="dept-select" id="deptSelect" onchange="onDeptChange()" aria-label="विभाग चुनें">
         <option value="">— विभाग चुनें —</option>
       </select>
     </div>
 
     <!-- 4 MAIN TABS -->
     <div class="main-tabs">
-      <button class="main-tab active" onclick="switchTab('bot')" id="tab-btn-bot">
+      <button class="main-tab active" onclick="switchTab('bot')" id="tab-btn-bot" role="tab" aria-selected="true" aria-controls="tab-bot">
         <span class="tab-ico">💬</span>विभाग बॉट
       </button>
       <button class="main-tab" onclick="alert('शासनादेश अनुभाग शीघ्र उपलब्ध होगा।')" id="tab-btn-gos" style="opacity:0.5;cursor:not-allowed;">
@@ -676,13 +677,13 @@ html, body {
           <span class="chip-remove" onclick="removePdf()">✕</span>
         </div>
         <div class="input-row">
-          <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="PDF संलग्न करें">📎</button>
-          <textarea id="msgInput" rows="1" placeholder="यहाँ प्रश्न लिखें…" maxlength="2000"></textarea>
-          <button class="send-btn" id="sendBtn" onclick="send()" title="भेजें">➤</button>
+          <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="PDF संलग्न करें" aria-label="PDF संलग्न करें">📎</button>
+          <textarea id="msgInput" rows="1" placeholder="यहाँ प्रश्न लिखें…" maxlength="2000" aria-label="प्रश्न लिखें" aria-multiline="true" role="textbox"></textarea>
+          <button class="send-btn" id="sendBtn" onclick="send()" title="भेजें" aria-label="प्रश्न भेजें">➤</button>
         </div>
         <div class="input-hint">Enter = भेजें &nbsp;·&nbsp; Shift+Enter = नई पंक्ति</div>
         <div id="freeCounter" style="text-align:center;font-size:11px;color:#166534;margin-top:3px;">🔄 बीटा चरण · निःशुल्क · ज्ञान आधार प्रतिदिन बढ़ रहा है &nbsp;|&nbsp; प्रतिक्रिया: 👍👎 नीचे हर उत्तर में</div>
-        <input type="file" id="fileInput" accept=".pdf" onchange="onPdfSelect(this)">
+        <input type="file" id="fileInput" accept=".pdf" onchange="onPdfSelect(this)" aria-label="PDF फ़ाइल चुनें">
       </div>
     </div>
 
@@ -690,7 +691,7 @@ html, body {
     <div class="tab-panel" id="panel-gos">
       <div class="content-panel">
         <div class="panel-toolbar">
-          <input class="panel-search" type="text" id="goSearch" placeholder="शासनादेश खोजें…" oninput="filterItems('go')">
+          <input class="panel-search" type="text" id="goSearch" placeholder="शासनादेश खोजें…" aria-label="शासनादेश खोजें" oninput="filterItems('go')">
           <select class="year-filter" id="goYear" onchange="filterItems('go')">
             <option value="">सभी वर्ष</option>
           </select>
@@ -703,7 +704,7 @@ html, body {
     <div class="tab-panel" id="panel-judgments">
       <div class="content-panel">
         <div class="panel-toolbar">
-          <input class="panel-search" type="text" id="jSearch" placeholder="निर्णय खोजें…" oninput="filterItems('j')">
+          <input class="panel-search" type="text" id="jSearch" placeholder="निर्णय खोजें…" aria-label="निर्णय खोजें" oninput="filterItems('j')">
           <select class="year-filter" id="jYear" onchange="filterItems('j')">
             <option value="">सभी वर्ष</option>
           </select>
@@ -720,7 +721,7 @@ html, body {
           <div class="pulse-live"><div class="pulse-dot"></div>लाइव ट्रैकिंग</div>
         </div>
         <div class="case-toolbar">
-          <button class="case-filter-btn active" onclick="filterCases('all', this)">सभी</button>
+          <button class="case-filter-btn active" onclick="filterCases('all', this)" aria-label="सभी केस">सभी</button>
           <button class="case-filter-btn" onclick="filterCases('urgent', this)">🔴 अत्यावश्यक</button>
           <button class="case-filter-btn" onclick="filterCases('upcoming', this)">🟡 आगामी</button>
           <button class="case-filter-btn" onclick="filterCases('normal', this)">🟢 सामान्य</button>
@@ -752,7 +753,7 @@ html, body {
   <div class="drawer-handle"></div>
   <div class="drawer-header">
     <div class="drawer-title" id="drawerTitle">—</div>
-    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <button class="drawer-close" onclick="closeDrawer()" aria-label="बंद करें">✕</button>
   </div>
   <div class="drawer-meta" id="drawerMeta"></div>
   <div class="drawer-body">
