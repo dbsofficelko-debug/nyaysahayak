@@ -1562,6 +1562,52 @@ function removePdf() {
 /* ════════════════════════════════════════
    BOT — SEND
 ════════════════════════════════════════ */
+/* ════════════════════════════════════════
+   RESPONSE CACHE — localStorage, 24hr TTL
+════════════════════════════════════════ */
+const CACHE_PREFIX = 'nyay_cache_';
+const CACHE_TTL    = 24 * 60 * 60 * 1000; // 24 hours
+const CACHE_MAX    = 50; // max 50 entries
+
+function cacheKey(text, deptId) {
+  // Simple hash for cache key
+  const str = (deptId || 'universal') + '|' + text.trim().toLowerCase().slice(0, 120);
+  let h = 0;
+  for (let i = 0; i < str.length; i++) { h = ((h << 5) - h + str.charCodeAt(i)) | 0; }
+  return CACHE_PREFIX + Math.abs(h);
+}
+
+function cacheGet(text, deptId) {
+  try {
+    const key = cacheKey(text, deptId);
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const { reply, ts } = JSON.parse(raw);
+    if (Date.now() - ts > CACHE_TTL) { localStorage.removeItem(key); return null; }
+    return reply;
+  } catch { return null; }
+}
+
+function cacheSet(text, deptId, reply) {
+  try {
+    // Evict oldest if over limit
+    const keys = Object.keys(localStorage).filter(k => k.startsWith(CACHE_PREFIX));
+    if (keys.length >= CACHE_MAX) {
+      // Remove oldest entry
+      let oldest = null, oldestTs = Infinity;
+      keys.forEach(k => {
+        try {
+          const { ts } = JSON.parse(localStorage.getItem(k));
+          if (ts < oldestTs) { oldestTs = ts; oldest = k; }
+        } catch {}
+      });
+      if (oldest) localStorage.removeItem(oldest);
+    }
+    const key = cacheKey(text, deptId);
+    localStorage.setItem(key, JSON.stringify({ reply, ts: Date.now() }));
+  } catch {} // storage full ya private mode — silently ignore
+}
+
 async function send() {
   const ta   = document.getElementById('msgInput');
   const text = ta.value.trim();
@@ -1601,10 +1647,23 @@ async function send() {
     }
     if (history.length > 8) history = history.slice(-8);
 
-    const reply = await callAPI(kCtx, !!pdf);
-    typingEl.remove();
-    const { cleanReply, suggestions } = parseSugg(reply);
-    addBubble('bot', cleanReply, suggestions);
+    // Check cache first (only for text queries, not PDF)
+    const deptId = activeDept ? activeDept.id : 'universal';
+    let reply;
+    const cached = !pdf && cacheGet(text, deptId);
+    if (cached) {
+      reply = cached;
+      typingEl.remove();
+      const { cleanReply, suggestions } = parseSugg(reply);
+      addBubble('bot', cleanReply, suggestions);
+    } else {
+      reply = await callAPI(kCtx, !!pdf);
+      typingEl.remove();
+      const { cleanReply, suggestions } = parseSugg(reply);
+      addBubble('bot', cleanReply, suggestions);
+      // Save to cache (only text replies, not PDF)
+      if (!pdf && text) cacheSet(text, deptId, reply);
+    }
     history.push({ role:'assistant', content: reply });
   } catch(e) {
     typingEl.remove();
