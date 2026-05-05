@@ -1245,7 +1245,11 @@ function startCarousel(dept) {
 }
 
 function renderChips(list) {
-  const track = document.getElementById('carouselTrack');
+  // Find whichever carousel track is currently in the DOM
+  const track = document.getElementById('carouselTrack')
+    || document.getElementById('carouselTrack2')
+    || document.getElementById('carouselTrack3')
+    || document.querySelector('.carousel-track');
   if (!track) return;
   track.innerHTML = '';
   list.forEach(text => {
