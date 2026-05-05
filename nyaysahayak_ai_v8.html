@@ -1986,12 +1986,16 @@ async function searchKB(query, books) {
 
 function buildCtx(chunks) {
   if (!chunks?.length) return '';
-  return '\n\n---\nज्ञान आधार:\n' + chunks.map((c,i) => {
+  // Limit: top 5 chunks, 600 chars each = ~3000 chars total (fast Anthropic response)
+  const top = chunks.slice(0, 5);
+  const ctx = top.map((c,i) => {
     const title = c.section||c.title||c.filename||'';
-    const text  = (c.content||c.text||'').slice(0,2000);
+    const text  = (c.content||c.text||'').slice(0, 600);
     const book  = c._book||c.book||'';
-    return `[स्रोत ${i+1}: ${book}${title?' — '+title:''}]\n${text}`;
+    return `[${book}${title?' — '+title:''}]\n${text}`;
   }).join('\n\n');
+  // Hard cap: 3000 chars total
+  return '\n\n---\nज्ञान आधार:\n' + ctx.slice(0, 3000);
 }
 
 /* ════════════════════════════════════════

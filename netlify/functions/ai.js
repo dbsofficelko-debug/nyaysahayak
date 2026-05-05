@@ -31,8 +31,11 @@ exports.handler = async (event) => {
     };
     if (body.system) anthropicBody.system = body.system;
     if (body.temperature) anthropicBody.temperature = body.temperature;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 22000); // 22s timeout
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      signal: controller.signal,
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': API_KEY,
@@ -41,6 +44,7 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify(anthropicBody)
     });
+    clearTimeout(timeoutId);
     const data = await response.json();
     return {
       statusCode: response.status,
