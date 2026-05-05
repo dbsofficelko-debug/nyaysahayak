@@ -2231,8 +2231,9 @@ function addActionsTo(bub, text, suggestions, msgs) {
   }
 
   const waBtn = document.createElement('button');
-  waBtn.style.cssText = 'background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);padding:3px 7px;border-radius:4px;';
-  waBtn.textContent = '📤 Share';
+  waBtn.style.cssText = 'background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted);padding:3px 7px;border-radius:4px;';
+  waBtn.textContent = '💬 WA';
+  waBtn.title = 'WhatsApp पर शेयर करें';
   waBtn.onclick = () => { const s = text.length > 300 ? text.slice(0,297)+'…' : text; window.open('https://wa.me/?text='+encodeURIComponent('न्यायसहायक से उत्तर:\n\n'+s+'\n\n— nyaysahayak.co.in'),'_blank'); };
 
   const thumbUp = document.createElement('button');
