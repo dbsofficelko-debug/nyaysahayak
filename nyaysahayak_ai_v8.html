@@ -1135,7 +1135,7 @@ function onDeptChange() {
       <p class="welcome-sub">विभाग चुना गया — नीचे से प्रश्न चुनें या स्वयं पूछें</p>
       <div style="max-width:340px;margin:0 auto;">
         <div class="chip-label">⚡ त्वरित प्रश्न</div>
-        <div class="carousel-track" id="carouselTrack"></div>
+        <div class="carousel-track" id="carouselTrack2"></div>
       </div>`;
   } else {
     w.innerHTML = `
@@ -1144,7 +1144,7 @@ function onDeptChange() {
       <p class="welcome-sub">ऊपर विभाग चुनें — सभी tabs उसी के अनुसार खुलेंगे</p>
       <div style="max-width:340px;margin:0 auto;">
         <div class="chip-label">⚡ त्वरित प्रश्न</div>
-        <div class="carousel-track" id="carouselTrack"></div>
+        <div class="carousel-track" id="carouselTrack3"></div>
       </div>`;
   }
   msgs.appendChild(w);
@@ -1667,7 +1667,6 @@ async function send() {
     }
     history.push({ role:'assistant', content: reply });
   } catch(e) {
-    typingEl.remove();
     // Cancelled = user ne naya sawal poocha, koi error nahi dikhana
     if (e.message !== 'cancelled') {
       const msg = e.message.includes('timeout') 
@@ -1677,9 +1676,13 @@ async function send() {
         : `⚠️ त्रुटि: ${e.message}`;
       addBubble('bot', msg);
     }
+  } finally {
+    // ALWAYS cleanup — typing indicator + button state
+    try { typingEl.remove(); } catch {}
+    btn.disabled = false;
+    btn.textContent = '➤';
+    ta.focus();
   }
-  btn.disabled = false;
-  ta.focus();
 }
 
 /* ════════════════════════════════════════
@@ -1787,6 +1790,7 @@ async function callAPI(kCtx='', isPdf=false) {
     } catch(e) {
       if (e.name === 'AbortError' || e.message === 'cancelled') throw new Error('cancelled');
       lastError = e;
+      console.error(`[Nyaysahayak] API attempt ${attempt + 1} failed:`, e.message);
       if (attempt < MAX_RETRIES - 1) continue;
     }
   }
@@ -1847,7 +1851,7 @@ function addBubble(role, text, suggestions=[]) {
     bub.textContent = text;
   }
   row.appendChild(bub); msgs.appendChild(row);
-  msgs.scrollTop = msgs.scrollHeight;
+  requestAnimationFrame(() => { msgs.scrollTop = msgs.scrollHeight; });
   
   // Stream the text for bot messages
   if (role === 'bot') {
@@ -1880,6 +1884,10 @@ function streamTextInto(bub, text, suggestions, msgs) {
     const batch = Math.min(4, tokens.length - i);
     for (let b = 0; b < batch; b++) {
       if (i < tokens.length) { rendered += tokens[i]; i++; }
+    }
+    // Auto-scroll DURING streaming — not just at end
+    if (msgs.scrollTop + msgs.clientHeight >= msgs.scrollHeight - 80) {
+      msgs.scrollTop = msgs.scrollHeight;
     }
     
     bub.innerHTML = mdToHtml(rendered);
@@ -1947,7 +1955,7 @@ function addTyping() {
   row.className = 'msg-row bot';
   row.innerHTML = `<div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
   msgs.appendChild(row);
-  msgs.scrollTop = msgs.scrollHeight;
+  requestAnimationFrame(() => { msgs.scrollTop = msgs.scrollHeight; });
   return row;
 }
 
@@ -2987,36 +2995,36 @@ function shareDocGen() {
           <textarea id="dg-parawise-dept" placeholder="जैसे: याची की नियुक्ति ठेके पर थी। UP CCA Rules 1991 के अनुसार विभागीय जाँच पूरी हुई।" style="width:100%;min-height:75px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);box-sizing:border-box;"></textarea></div>
         </div>
 
-        <div id="docgen-parawise_instructions" class="docgen-section" style="display:none;">
+        <div id="docgen-parawise_instructions-2" class="docgen-section" style="display:none;">
           <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">
             याची के प्रस्तर एवं विभाग का पक्ष बताएं — CSC को भेजने के लिए Table format में पैरावार टिप्पणी तैयार होगी।
           </div>
-          <textarea id="dg-parainst-input" placeholder="याचिका के प्रस्तर 1-16 के आरोप यहाँ लिखें।" style="width:100%;min-height:100px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);"></textarea>
-          <textarea id="dg-parainst-dept" placeholder="विभाग का पक्ष / तथ्य (GO number, dates, compliance status)" style="width:100%;min-height:70px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);margin-top:8px;"></textarea>
+          <textarea id="dg-parainst-input-2" placeholder="याचिका के प्रस्तर 1-16 के आरोप यहाँ लिखें।" style="width:100%;min-height:100px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);"></textarea>
+          <textarea id="dg-parainst-dept-2" placeholder="विभाग का पक्ष / तथ्य (GO number, dates, compliance status)" style="width:100%;min-height:70px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);margin-top:8px;"></textarea>
         </div>
 
-        <div id="docgen-allinone" class="docgen-section" style="display:none;">
+        <div id="docgen-allinone-2" class="docgen-section" style="display:none;">
           <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">
             सभी दस्तावेज़ एक साथ — Case History + टिप्पण + CSC निर्देश + पैरावार टिप्पणी।
           </div>
-          <textarea id="dg-allinone-input" placeholder="प्रकरण का पूरा विवरण — पक्षकार, घटनाक्रम, HC order, विभाग का पक्ष, याची के आरोप — सब लिखें।" style="width:100%;min-height:130px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);"></textarea>
+          <textarea id="dg-allinone-input-2" placeholder="प्रकरण का पूरा विवरण — पक्षकार, घटनाक्रम, HC order, विभाग का पक्ष, याची के आरोप — सब लिखें।" style="width:100%;min-height:130px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);"></textarea>
           <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
-            <input id="dg-allinone-file" placeholder="फाइल संख्या" style="flex:1;min-width:120px;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;">
-            <input id="dg-allinone-case" placeholder="Case Number" style="flex:1;min-width:130px;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;">
-            <input id="dg-allinone-date" placeholder="अगली तारीख" style="flex:1;min-width:110px;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;">
+            <input id="dg-allinone-file-2" placeholder="फाइल संख्या" style="flex:1;min-width:120px;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;">
+            <input id="dg-allinone-case-2" placeholder="Case Number" style="flex:1;min-width:130px;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;">
+            <input id="dg-allinone-date-2" placeholder="अगली तारीख" style="flex:1;min-width:110px;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--parchment);outline:none;">
           </div>
         </div>
 
-        <div id="docgen-pairvi" class="docgen-section" style="display:none;">
+        <div id="docgen-pairvi-2" class="docgen-section" style="display:none;">
           <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">
             Case की nature, department ka stand, aur available judgments/rules batayein — effective pairvi points milenge।
           </div>
-          <textarea id="dg-pairvi-input" placeholder="जैसे: Grih Vibhag — अनुकम्पा नियुक्ति याचिका — CRPF शहीद के पुत्र ने UP में नौकरी माँगी है — शासनादेश 2020 के अंतर्गत पात्रता विवादित है।" style="width:100%;min-height:120px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);"></textarea>
+          <textarea id="dg-pairvi-input-2" placeholder="जैसे: Grih Vibhag — अनुकम्पा नियुक्ति याचिका — CRPF शहीद के पुत्र ने UP में नौकरी माँगी है — शासनादेश 2020 के अंतर्गत पात्रता विवादित है।" style="width:100%;min-height:120px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--parchment);"></textarea>
         </div>
       </div>
 
       <!-- Generated output -->
-      <div id="docgenOutput" style="display:none;margin-top:16px;">
+      <div id="docgenOutput-2" style="display:none;margin-top:16px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
           <div style="font-size:12px;font-weight:700;color:var(--navy);">✅ दस्तावेज़ तैयार है</div>
           <div style="display:flex;gap:6px;">
@@ -3024,13 +3032,13 @@ function shareDocGen() {
             <button onclick="shareDocGen()" style="padding:6px 12px;background:#25D366;color:white;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;">📤 WhatsApp</button>
           </div>
         </div>
-        <div id="docgenOutputText" style="background:var(--parchment);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;line-height:1.9;white-space:pre-wrap;color:var(--ink);max-height:350px;overflow-y:auto;"></div>
+        <div id="docgenOutputText-2" style="background:var(--parchment);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:Noto Sans Devanagari,sans-serif;font-size:13px;line-height:1.9;white-space:pre-wrap;color:var(--ink);max-height:350px;overflow-y:auto;"></div>
       </div>
     </div>
 
     <!-- Footer -->
     <div style="padding:12px 18px;border-top:1px solid var(--border);background:var(--parchment);flex-shrink:0;display:flex;gap:10px;">
-      <button id="docgenGenerateBtn" onclick="generateDoc()" style="flex:1;padding:12px;background:linear-gradient(135deg,var(--navy),var(--navy-soft));color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;">
+      <button id="docgenGenerateBtn-2" onclick="generateDoc()" style="flex:1;padding:12px;background:linear-gradient(135deg,var(--navy),var(--navy-soft));color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;">
         ⚡ दस्तावेज़ बनाएं
       </button>
     </div>
