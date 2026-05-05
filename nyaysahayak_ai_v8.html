@@ -59,23 +59,30 @@ window.addEventListener('beforeunload', () => {
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy:       #0D1B2A;
-  --navy-mid:   #1B2F4A;
-  --navy-soft:  #2C4265;
-  --gold:       #C9981E;
-  --gold-light: #E8B84B;
+  /* === BRAND PALETTE — synced with landing page === */
+  --maroon:     #7A1515;
+  --maroon-deep:#4A0A0A;
+  --maroon-mid: #8B2000;
+  --gold:       #C8973A;
+  --gold-light: #E8B85A;
   --gold-pale:  #FDF3DC;
-  --parchment:  #F6F2EB;
+  --cream:      #FAF6EF;
+  --cream-dark: #F0E8D8;
   --paper:      #FFFFFF;
-  --ink:        #0D1B2A;
-  --ink-soft:   #3D4F63;
-  --muted:      #7A8899;
-  --border:     #DDD8CE;
-  --border-soft:#EDE9E1;
-  --user-bg:    #0D1B2A;
+  --ink:        #1A0A00;
+  --ink-soft:   #4A3020;
+  --muted:      #8A7060;
+  --border:     #D4C4A8;
+  --border-soft:#EDE0CC;
+  --user-bg:    #4A0A0A;
   --danger:     #991B1B;
   --success:    #166534;
   --r: 8px;
+  /* Legacy aliases */
+  --navy:       #4A0A0A;
+  --navy-mid:   #7A1515;
+  --navy-soft:  #8B2000;
+  --parchment:  #FAF6EF;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
@@ -124,8 +131,8 @@ html, body {
 .doc-gen-btn {
   display: inline-flex; align-items: center; gap: 5px;
   padding: 6px 12px;
-  background: linear-gradient(135deg, #C9981E, #E8B84B);
-  color: #0D1B2A; border-radius: 8px; text-decoration: none;
+  background: linear-gradient(135deg, #C8973A, #E8B84B);
+  color: #4A0A0A; border-radius: 8px; text-decoration: none;
   font-size: 12px; font-weight: 800; white-space: nowrap;
 }
 .badge-dbs {
@@ -373,7 +380,7 @@ html, body {
 .subscribe-btn {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 10px 20px;
-  background: linear-gradient(135deg, #C9981E, #E8B84B);
+  background: linear-gradient(135deg, #C8973A, #E8B84B);
   color: var(--navy); border-radius: 8px; border: none;
   font-size: 13px; font-weight: 800; cursor: pointer;
   font-family: inherit; text-decoration: none;
@@ -554,7 +561,7 @@ html, body {
 .coming-soon-case p { font-size: 12px; color: rgba(255,255,255,.7); line-height: 1.6; margin-bottom: 14px; }
 .notify-btn {
   padding: 9px 18px;
-  background: linear-gradient(135deg, #C9981E, #E8B84B);
+  background: linear-gradient(135deg, #C8973A, #E8B84B);
   color: var(--navy); border-radius: 8px; border: none;
   font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit;
 }
@@ -597,6 +604,7 @@ html, body {
   .drawer { max-height: 88dvh; }
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.5/purify.min.js" integrity="sha512-l6L5DFznP4t3IxrDwD7bP7Dn+qL+APGP3ILAmNZNxJbYHRR4bn/lzg+EZJiL9AajHXI5WRfQSUwJrI1CzfFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <a href="#msgInput" class="skip-link" style="position:absolute;left:-9999px;top:0;z-index:9999;background:#8B2000;color:white;padding:8px 16px;border-radius:4px;font-size:14px;">मुख्य सामग्री पर जाएं</a>
 <body>
@@ -1334,7 +1342,13 @@ function closeDrawer() {
 }
 
 // Close on ESC
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer();
+    // Ctrl+K / Cmd+K — focus input
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      const inp = document.getElementById('msgInput');
+      if (inp) { inp.focus(); inp.select(); }
+    } });
 
 /* ════════════════════════════════════════
    TAB 2: GOs
@@ -2000,12 +2014,30 @@ function addActionsTo(bub, text, suggestions, msgs) {
   const thumbUp = document.createElement('button');
   thumbUp.style.cssText = 'background:none;border:none;cursor:pointer;font-size:16px;padding:3px 6px;';
   thumbUp.textContent = '👍';
-  thumbUp.onclick = () => { thumbUp.textContent = '✅'; thumbUp.disabled = true; thumbDown.disabled = true; };
+  thumbUp.onclick = () => {
+    thumbUp.textContent = '✅'; thumbUp.disabled = true; thumbDown.disabled = true;
+    try {
+      const fb = JSON.parse(localStorage.getItem('nyay_feedback') || '[]');
+      fb.push({ type: 'up', q: text.slice(0,100), ts: Date.now(), dept: activeDept?.id || 'universal' });
+      if (fb.length > 100) fb.shift();
+      localStorage.setItem('nyay_feedback', JSON.stringify(fb));
+    } catch {}
+  };
 
   const thumbDown = document.createElement('button');
   thumbDown.style.cssText = 'background:none;border:none;cursor:pointer;font-size:16px;padding:3px 6px;';
   thumbDown.textContent = '👎';
-  thumbDown.onclick = () => { thumbDown.textContent = '❌'; thumbUp.disabled = true; thumbDown.disabled = true; const n = document.createElement('span'); n.style.cssText = 'font-size:11px;color:var(--muted);margin-left:4px;'; n.textContent = '🙏 धन्यवाद'; actRow.appendChild(n); };
+  thumbDown.onclick = () => {
+    thumbDown.textContent = '🙏'; thumbUp.disabled = true; thumbDown.disabled = true;
+    try {
+      const fb = JSON.parse(localStorage.getItem('nyay_feedback') || '[]');
+      fb.push({ type: 'down', q: text.slice(0,100), ts: Date.now(), dept: activeDept?.id || 'universal' });
+      if (fb.length > 100) fb.shift();
+      localStorage.setItem('nyay_feedback', JSON.stringify(fb));
+    } catch {}
+    const msg = encodeURIComponent('न्यायसहायक Feedback:\n' + text.slice(0,100) + '\n\nSamssya:');
+    window.open('https://wa.me/919559050241?text=' + msg, '_blank');
+  };
 
   actRow.appendChild(copyBtn); actRow.appendChild(waBtn);
   actRow.appendChild(thumbUp); actRow.appendChild(thumbDown);
@@ -2029,10 +2061,10 @@ function showPaywall() {
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.innerHTML = '<div style="background:white;border-radius:18px;padding:28px 24px;max-width:320px;width:100%;text-align:center;">'
     + '<div style="font-size:42px;margin-bottom:12px;">⚖️</div>'
-    + '<div style="font-size:20px;font-weight:700;color:#0D1B2A;margin-bottom:6px;font-family:Noto Sans Devanagari,sans-serif;">निःशुल्क सीमा समाप्त</div>'
+    + '<div style="font-size:20px;font-weight:700;color:#4A0A0A;margin-bottom:6px;font-family:Noto Sans Devanagari,sans-serif;">निःशुल्क सीमा समाप्त</div>'
     + '<div style="font-size:13px;color:#666;margin-bottom:20px;line-height:1.6;font-family:Noto Sans Devanagari,sans-serif;">आपके 3 निःशुल्क प्रश्न समाप्त हो गए।<br>गहन विधिक सहायता के लिए सदस्यता लें।</div>'
-    + '<div style="background:#f8f9fa;border-radius:12px;padding:16px;margin-bottom:16px;border:2px solid #C9981E;">'
-    + '<div style="font-size:24px;font-weight:800;color:#0D1B2A;">Rs.599<span style="font-size:14px;font-weight:400;color:#666;">/माह</span></div>'
+    + '<div style="background:#f8f9fa;border-radius:12px;padding:16px;margin-bottom:16px;border:2px solid #C8973A;">'
+    + '<div style="font-size:24px;font-weight:800;color:#4A0A0A;">Rs.599<span style="font-size:14px;font-weight:400;color:#666;">/माह</span></div>'
     + '<div style="font-size:12px;color:#666;margin-top:4px;">पोस्टपेड — पहले उपयोग करें, बाद में भुगतान</div>'
     + '<div style="margin-top:10px;text-align:left;font-size:12px;color:#333;">'
     + '<br>असीमित प्रश्न<br>PDF विश्लेषण<br>दस्तावेज़ निर्माता<br>सभी विभाग<br>न्यायालय निर्णय</div></div>'
