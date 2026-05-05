@@ -1884,7 +1884,7 @@ async function send() {
         const books = dept ? dept.books : ['Financial Handbook Vol-2','SAD Manual','Seva Vidhi'];
         const chunks = await Promise.race([
           searchKB(text, books),
-          new Promise((_,r) => setTimeout(() => r(new Error('timeout')), 8000))
+          new Promise((_,r) => setTimeout(() => r(new Error('timeout')), 5000))
         ]);
         kCtx = buildCtx(chunks);
       } catch {}
@@ -1928,7 +1928,10 @@ async function send() {
     }
   } finally {
     // ALWAYS cleanup — typing indicator + button state
-    try { typingEl.remove(); } catch {}
+    try { 
+    if (typingEl._statusTimers) typingEl._statusTimers.forEach(clearTimeout);
+    typingEl.remove(); 
+  } catch {}
     btn.disabled = false;
     btn.textContent = '➤';
     ta.focus();
@@ -2267,9 +2270,29 @@ function addTyping() {
   const msgs = document.getElementById('msgs');
   const row  = document.createElement('div');
   row.className = 'msg-row bot';
-  row.innerHTML = `<div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  row.innerHTML = `<div class="bubble" id="typingBubble">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="typing"><span></span><span></span><span></span></div>
+      <span id="typingStatus" style="font-size:11px;color:var(--muted);"></span>
+    </div>
+  </div>`;
   msgs.appendChild(row);
   requestAnimationFrame(() => { msgs.scrollTop = msgs.scrollHeight; });
+  
+  // Progressive status messages
+  const steps = [
+    [300,  'KB खोज रहे हैं…'],
+    [3000, 'उत्तर तैयार हो रहा है…'],
+    [8000, 'थोड़ा और समय…'],
+    [15000,'सर्वर से कनेक्ट हो रहा है…'],
+  ];
+  const timers = steps.map(([ms, msg]) =>
+    setTimeout(() => {
+      const el = document.getElementById('typingStatus');
+      if (el) el.textContent = msg;
+    }, ms)
+  );
+  row._statusTimers = timers;
   return row;
 }
 
