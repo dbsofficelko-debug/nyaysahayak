@@ -88,18 +88,22 @@ window.addEventListener('beforeunload', () => {
 html, body {
   height: 100%;
   font-family: 'DM Sans', 'Noto Sans Devanagari', sans-serif;
-  background: var(--parchment);
+  background: var(--cream);
   color: var(--ink);
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
 }
 
 /* ── SHELL ── */
 .shell {
   display: flex; flex-direction: column;
-  height: 100dvh; max-width: 860px;
+  height: 100dvh; width: 100%; max-width: 860px;
   margin: 0 auto; background: var(--paper);
   border-left: 1px solid var(--border);
   border-right: 1px solid var(--border);
+  box-shadow: 0 0 40px rgba(74,10,10,0.08);
 }
 
 /* ── HEADER ── */
@@ -1905,15 +1909,14 @@ async function send() {
       reply = await callAPI(kCtx, !!pdf);
       typingEl.remove();
       const { cleanReply, suggestions } = parseSugg(reply);
-      // Confidence badge based on KB context richness
+      // Confidence badge — store separately, added after streaming
       const confidence = !text ? null
         : kCtx.length > 800 ? { label: '🟢 KB से सत्यापित', color: '#166534', bg: '#EAF3DE' }
         : kCtx.length > 200 ? { label: '🟡 आंशिक संदर्भ — सत्यापित करें', color: '#854F0B', bg: '#FAEEDA' }
         : { label: '🔴 KB में नहीं — स्वयं सत्यापित करें', color: '#A32D2D', bg: '#FCEBEB' };
-      const replyWithBadge = confidence
-        ? cleanReply + `\n\n<span style="font-size:11px;padding:2px 8px;border-radius:4px;background:${confidence.bg};color:${confidence.color};font-weight:600;">${confidence.label}</span>`
-        : cleanReply;
-      addBubble('bot', replyWithBadge, suggestions);
+      // Store confidence on window for addActionsTo to pick up
+      window._pendingConfidence = confidence;
+      addBubble('bot', cleanReply, suggestions);
       // Save to cache (only text replies, not PDF)
       if (!pdf && text) cacheSet(text, deptId, reply);
     }
@@ -2163,6 +2166,15 @@ function streamTextInto(bub, text, suggestions, msgs) {
 }
 
 function addActionsTo(bub, text, suggestions, msgs) {
+  // Confidence badge — rendered after streaming completes
+  const conf = window._pendingConfidence;
+  if (conf) {
+    window._pendingConfidence = null;
+    const badge = document.createElement('div');
+    badge.style.cssText = `display:inline-block;font-size:11px;padding:3px 10px;border-radius:6px;background:${conf.bg};color:${conf.color};font-weight:600;margin-bottom:6px;`;
+    badge.textContent = conf.label;
+    bub.insertBefore(badge, bub.firstChild);
+  }
   if (suggestions && suggestions.length) {
     bub.appendChild(bub._suggRow || (() => {
       const sr = document.createElement('div');
