@@ -1942,47 +1942,46 @@ async function send() {
    RAG
 ════════════════════════════════════════ */
 async function searchKB(query, books) {
-  const all = [];
+  const RAILWAY = 'https://nyaysahayak-api-production.up.railway.app';
   const deptId = activeDept ? activeDept.id : '';
-  // Departments with specific KB entries
   const hasSpecificKB = ['sad', 'sss_mod', 'puvvnl', 'sss_up', 'secretariat'];
   const useSpecific = deptId && hasSpecificKB.includes(deptId);
+  const q = encodeURIComponent(query);
 
-  // Always fetch universal first (primary source for all depts)
-  try {
-    const uniUrl = 'https://nyaysahayak-api-production.up.railway.app/search?q=' + encodeURIComponent(query) + '&dept=universal&limit=6';
-    const r = await fetch(uniUrl, { signal: AbortSignal.timeout(4000) });
-    if (r.ok) {
-      const d = await r.json();
-      (d.results || d.entries || []).forEach(e => all.push({ ...e, _book: e.book || 'Universal KB' }));
-    }
-  } catch {}
+  // Build all fetch promises — run IN PARALLEL
+  const fetches = [];
 
-  // If dept has specific KB, also fetch that
+  // Universal KB — always
+  fetches.push(
+    fetch(`${RAILWAY}/search?q=${q}&dept=universal&limit=6`, { signal: AbortSignal.timeout(4000) })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => (d?.results || d?.entries || []).map(e => ({ ...e, _book: e.book || 'Universal KB' })))
+      .catch(() => [])
+  );
+
+  // Dept-specific KB
   if (useSpecific) {
-    try {
-      const deptUrl = 'https://nyaysahayak-api-production.up.railway.app/search?q=' + encodeURIComponent(query) + '&dept=' + encodeURIComponent(deptId) + '&limit=4';
-      const r = await fetch(deptUrl, { signal: AbortSignal.timeout(3000) });
-      if (r.ok) {
-        const d = await r.json();
-        (d.results || d.entries || []).forEach(e => all.push({ ...e, _book: e.book || deptId }));
-      }
-    } catch {}
+    fetches.push(
+      fetch(`${RAILWAY}/search?q=${q}&dept=${encodeURIComponent(deptId)}&limit=4`, { signal: AbortSignal.timeout(4000) })
+        .then(r => r.ok ? r.json() : null)
+        .then(d => (d?.results || d?.entries || []).map(e => ({ ...e, _book: e.book || deptId })))
+        .catch(() => [])
+    );
   }
 
-  // Secretariat - also add SAD Manual entries
+  // Secretariat — also SAD Manual
   if (deptId === 'secretariat') {
-    try {
-      const sadUrl = 'https://nyaysahayak-api-production.up.railway.app/search?q=' + encodeURIComponent(query) + '&dept=sad&limit=4';
-      const r = await fetch(sadUrl, { signal: AbortSignal.timeout(3000) });
-      if (r.ok) {
-        const d = await r.json();
-        (d.results || d.entries || []).forEach(e => all.push({ ...e, _book: e.book || 'SAD Manual' }));
-      }
-    } catch {}
+    fetches.push(
+      fetch(`${RAILWAY}/search?q=${q}&dept=sad&limit=4`, { signal: AbortSignal.timeout(4000) })
+        .then(r => r.ok ? r.json() : null)
+        .then(d => (d?.results || d?.entries || []).map(e => ({ ...e, _book: e.book || 'SAD Manual' })))
+        .catch(() => [])
+    );
   }
 
-  return all.slice(0, 8);
+  // All parallel — wait for all to complete (or timeout)
+  const results = await Promise.all(fetches);
+  return results.flat().slice(0, 10);
 }
 
 function buildCtx(chunks) {
