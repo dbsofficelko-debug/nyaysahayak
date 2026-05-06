@@ -1,186 +1,292 @@
 <!DOCTYPE html>
-<html lang="hi"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title id="pgTitle">पुस्तक पाठक — Nyaysahayak</title>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>न्यायसहायक — ग्रन्थ वाचक</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-:root{--p:#8B2000;--pd:#5a1400;--pl:#a03000;--g:#9a7000;--gl:#c8961e;--bg:#faf8f5;--s:#fff;--s2:#f5f0ea;--b:#e0d5c8;--bs:#c8b89a;--t:#1a1208;--t2:#4a3820;--m:#7a6550;--sidebar:300px}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--t);height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-.topbar{background:var(--pd);border-bottom:2px solid var(--p);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 2px 12px rgba(90,20,0,0.2);z-index:50}
-.tb-brand{display:flex;align-items:center;gap:10px}
-.tb-icon{width:32px;height:32px;background:rgba(255,255,255,0.12);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;border:1px solid rgba(255,255,255,0.2)}
-.tb-title{font-size:0.95rem;font-weight:700;color:#fff;max-width:400px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tb-sub{font-size:0.65rem;color:rgba(255,220,150,0.8);margin-top:1px}
-.tb-right{display:flex;align-items:center;gap:8px}
-.tb-btn{padding:6px 13px;border:1px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.8);border-radius:7px;cursor:pointer;font-size:0.75rem;text-decoration:none;white-space:nowrap}
-.tb-btn:hover{background:rgba(255,255,255,0.15);color:#fff}
-.layout{display:flex;flex:1;overflow:hidden}
-.sidebar{width:var(--sidebar);background:var(--s);border-right:1px solid var(--b);display:flex;flex-direction:column;flex-shrink:0}
-.sb-head{padding:14px 16px;border-bottom:1px solid var(--b);background:var(--s2)}
-.sb-label{font-size:0.63rem;color:var(--g);text-transform:uppercase;letter-spacing:0.6px;font-weight:600;margin-bottom:8px}
-.sb-search{width:100%;padding:7px 10px;border:1px solid var(--bs);border-radius:7px;font-size:0.82rem;font-family:inherit;outline:none;background:var(--bg);color:var(--t)}
-.sb-search:focus{border-color:var(--p)}
-.sb-list{flex:1;overflow-y:auto;padding:6px 8px}
-.ch-item{padding:9px 12px;border-radius:8px;cursor:pointer;margin-bottom:3px;border-left:2px solid transparent;transition:all 0.15s}
-.ch-item:hover{background:var(--s2);border-left-color:var(--bs)}
-.ch-item.active{background:#fff5f0;border-left-color:var(--p)}
-.ch-num{font-size:0.65rem;color:var(--m);font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:2px}
-.ch-title{font-size:0.8rem;font-weight:600;color:var(--t);line-height:1.3}
-.ch-meta{font-size:0.67rem;color:var(--m);margin-top:2px}
-.content{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.art-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;border-bottom:1px solid var(--b);background:var(--s);flex-shrink:0}
-.nav-btn{padding:7px 14px;background:var(--s2);border:1px solid var(--bs);border-radius:7px;cursor:pointer;font-size:0.78rem;color:var(--t2);display:flex;align-items:center;gap:5px}
-.nav-btn:hover{background:var(--p);color:#fff;border-color:var(--p)}
-.nav-btn:disabled{opacity:0.3;cursor:default;pointer-events:none}
-.nav-info{font-size:0.75rem;color:var(--m);text-align:center}
-.art-view{flex:1;overflow-y:auto;padding:28px 36px}
-.art-title{font-size:1.3rem;font-weight:700;color:var(--pd);margin-bottom:8px;line-height:1.35}
-.art-meta{font-size:0.73rem;color:var(--m);margin-bottom:16px;font-family:monospace;padding-bottom:16px;border-bottom:1px dashed var(--b)}
-.art-summary{font-size:0.95rem;color:var(--t2);line-height:1.75;margin-bottom:20px;padding:16px 20px;background:var(--s2);border-left:3px solid var(--p);border-radius:0 8px 8px 0}
-.art-provisions h4{font-size:0.75rem;color:var(--g);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;margin-bottom:12px}
-.art-provisions ul{list-style:none;padding:0}
-.art-provisions li{padding:10px 14px;border-bottom:1px solid var(--b);font-size:0.88rem;color:var(--t);line-height:1.65}
-.art-provisions li:last-child{border-bottom:none}
-.art-provisions li::before{content:"▸";color:var(--p);margin-right:8px;font-size:0.8rem}
-.cite-row{margin-top:20px;padding-top:16px;border-top:1px solid var(--b);display:flex;gap:8px;align-items:center}
-.cite-btn{padding:6px 14px;background:var(--s2);border:1px solid var(--bs);border-radius:6px;font-size:0.73rem;color:var(--t2);cursor:pointer}
-.cite-btn:hover{background:var(--p);color:#fff;border-color:var(--p)}
-.cite-btn.ok{background:#166534;color:#fff;border-color:#166534}
-.empty{text-align:center;padding:60px 20px;color:var(--m);font-size:0.9rem}
-@media(max-width:700px){:root{--sidebar:240px}.art-view{padding:18px 16px}}
+:root{
+  --maroon:#6B1A1A;--maroon-dark:#4A0F0F;--maroon-light:#f7eded;
+  --gold:#9a7000;--gold-light:#fef9e7;
+  --ink:#1a1208;--paper:#FAF7F2;--muted:#7a6a5a;
+  --border:#ddd0bb;--sidebar-w:300px;--topbar-h:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'EB Garamond','Noto Serif Devanagari',Georgia,serif;background:var(--paper);color:var(--ink);display:flex;flex-direction:column;}
+
+.topbar{height:var(--topbar-h);background:var(--maroon-dark);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;box-shadow:0 2px 12px rgba(74,15,15,0.4);z-index:50;position:relative;}
+.tb-left{display:flex;align-items:center;gap:12px;}
+.tb-title{font-size:1rem;font-weight:600;}
+.tb-sub{font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:1px;}
+.tb-back{color:rgba(255,255,255,0.7);text-decoration:none;font-size:0.82rem;border:1px solid rgba(255,255,255,0.25);padding:5px 12px;border-radius:4px;transition:all 0.2s;}
+.tb-back:hover{background:rgba(255,255,255,0.12);color:#fff;}
+.btn-menu{display:none;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 10px;border-radius:4px;cursor:pointer;font-size:1.1rem;}
+
+.layout{display:flex;flex:1;height:calc(100vh - var(--topbar-h));overflow:hidden;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:#F3EDE4;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.sb-head{padding:14px 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.sb-book{font-size:0.76rem;font-weight:700;color:var(--maroon);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;}
+.sb-search{width:100%;padding:7px 10px;font-size:0.82rem;border:1px solid var(--border);border-radius:5px;background:#fff;color:var(--ink);font-family:inherit;outline:none;}
+.sb-search:focus{border-color:var(--maroon);}
+.sb-stats{padding:7px 16px;background:var(--gold-light);border-bottom:1px solid #e8d9a0;font-size:0.73rem;color:var(--gold);display:flex;justify-content:space-between;}
+
+.index-list{flex:1;overflow-y:auto;padding:6px 0;}
+.index-list::-webkit-scrollbar{width:4px;}
+.index-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.ch-item{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;cursor:pointer;border-left:3px solid transparent;transition:all 0.15s;border-bottom:1px solid rgba(0,0,0,0.04);}
+.ch-item:hover{background:rgba(107,26,26,0.06);border-left-color:rgba(107,26,26,0.3);}
+.ch-item.active{background:var(--maroon-light);border-left-color:var(--maroon);}
+.ch-item.hidden{display:none;}
+.ch-num{flex-shrink:0;min-width:28px;font-size:0.68rem;font-weight:700;color:var(--maroon);background:rgba(107,26,26,0.1);border-radius:3px;padding:2px 5px;text-align:center;margin-top:2px;}
+.ch-topic{font-size:0.82rem;line-height:1.4;color:var(--ink);}
+.ch-pages{font-size:0.68rem;color:var(--muted);margin-top:2px;}
+
+/* READER */
+.reader-area{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+.reader-area::-webkit-scrollbar{width:6px;}
+.reader-area::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.loading-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--muted);}
+.spinner{width:34px;height:34px;border:3px solid var(--border);border-top-color:var(--maroon);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.content-wrap{max-width:760px;margin:0 auto;padding:32px 40px 60px;width:100%;}
+.ch-header{border-bottom:2px solid var(--border);padding-bottom:18px;margin-bottom:24px;}
+.ch-badge{display:inline-flex;align-items:center;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--maroon);background:var(--maroon-light);border:1px solid rgba(107,26,26,0.15);border-radius:4px;padding:3px 10px;margin-bottom:10px;}
+.ch-main-title{font-size:1.4rem;font-weight:700;line-height:1.35;color:var(--ink);font-family:'Noto Serif Devanagari','EB Garamond',serif;}
+.ch-meta{margin-top:8px;font-size:0.78rem;color:var(--muted);}
+
+.nav-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 0 16px;border-bottom:1px dashed var(--border);margin-bottom:8px;}
+.nav-btn{display:flex;align-items:center;gap:5px;padding:7px 13px;font-size:0.79rem;cursor:pointer;border:1px solid var(--border);border-radius:5px;background:#fff;color:var(--maroon);font-family:inherit;transition:all 0.15s;max-width:44%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.nav-btn:hover:not([disabled]){background:var(--maroon);color:#fff;border-color:var(--maroon);}
+.nav-btn[disabled]{opacity:0.35;cursor:default;}
+.nav-top{padding:6px 12px;font-size:0.75rem;cursor:pointer;background:transparent;border:1px solid var(--border);border-radius:5px;color:var(--muted);font-family:inherit;transition:all 0.15s;}
+.nav-top:hover{color:var(--maroon);border-color:var(--maroon);}
+
+.content-body{line-height:1.88;font-size:1.01rem;}
+.para{margin-bottom:10px;text-align:justify;}
+.ch-heading{font-size:1.15rem;font-weight:700;color:var(--maroon);margin:22px 0 10px;font-family:'Noto Serif Devanagari',serif;padding-bottom:5px;border-bottom:1px solid var(--border);}
+.sec-heading{font-size:0.82rem;font-weight:700;color:var(--maroon-dark);margin:16px 0 7px;text-transform:uppercase;letter-spacing:0.6px;}
+.rule-block{background:#fff;border:1px solid var(--border);border-left:4px solid var(--maroon);border-radius:0 6px 6px 0;padding:11px 15px;margin:11px 0;}
+.rule-label{font-size:0.67rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--maroon);margin-bottom:5px;}
+.rule-text{font-size:0.96rem;line-height:1.7;}
+.sub-para{padding-left:22px;margin-bottom:8px;}
+.note-block{background:var(--gold-light);border:1px solid #e8d9a0;border-radius:6px;padding:11px 15px;margin:11px 0;font-size:0.9rem;color:#6b5500;}
+.note-lbl{font-weight:700;margin-right:6px;}
+.empty-content{color:var(--muted);font-style:italic;text-align:center;padding:40px;}
+.bottom-nav{display:flex;align-items:center;justify-content:space-between;padding:18px 0 0;margin-top:28px;border-top:1px solid var(--border);}
+
+@media(max-width:768px){
+  .sidebar{position:fixed;left:-100%;top:var(--topbar-h);height:calc(100vh - var(--topbar-h));z-index:40;transition:left 0.25s ease;width:85%;max-width:310px;box-shadow:4px 0 20px rgba(0,0,0,0.15);}
+  .sidebar.open{left:0;}
+  .btn-menu{display:flex;}
+  .content-wrap{padding:18px 16px 40px;}
+  .ch-main-title{font-size:1.15rem;}
+}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:35;}
+.overlay.show{display:block;}
 </style>
 </head>
 <body>
 <div class="topbar">
-  <div class="tb-brand">
-    <div class="tb-icon">📖</div>
-    <div><div class="tb-title" id="bookName">लोड हो रहा है...</div><div class="tb-sub">DBS · Nyaysahayak</div></div>
+  <div class="tb-left">
+    <button class="btn-menu" onclick="toggleSidebar()">☰</button>
+    <div>
+      <div class="tb-title" id="bookTitle">ग्रन्थ लोड हो रहा है…</div>
+      <div class="tb-sub" id="bookSub">न्यायसहायक डिजिटल पुस्तकालय</div>
+    </div>
   </div>
-  <div class="tb-right">
-    <a class="tb-btn" href="https://nyaysahayak.co.in/library">← पुस्तकालय</a>
-    <a href="https://nyaysahayak.co.in/" class="tb-btn">मुख्य पृष्ठ</a>
-  </div>
+  <a class="tb-back" href="library.html">← पुस्तकालय</a>
 </div>
+
 <div class="layout">
-  <div class="sidebar">
-    <div class="sb-head"><div class="sb-label">अध्याय सूची</div></div>
-    <div class="sb-list" id="sbList"><div class="empty">लोड हो रहा है...</div></div>
-  </div>
-  <div class="content">
-    <div class="art-nav">
-      <button class="nav-btn" id="btnPrev" onclick="navigate(-1)" disabled>← पूर्व</button>
-      <div class="nav-info" id="navInfo">—</div>
-      <button class="nav-btn" id="btnNext" onclick="navigate(1)" disabled>अगला →</button>
-      <button class="nav-btn" onclick="document.getElementById('artView').scrollTop=0">↑ शीर्ष</button>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="sb-book" id="sbTitle">विषय-सूची</div>
+      <input class="sb-search" id="chSearch" type="text" placeholder="अध्याय खोजें…" oninput="filterCh(this.value)">
     </div>
-    <div class="art-view" id="artView"><div class="empty">?book= parameter missing</div></div>
+    <div class="sb-stats" id="sbStats" style="display:none">
+      <span id="chCount">—</span>
+      <span id="curPos">—</span>
+    </div>
+    <div class="index-list" id="indexList">
+      <div style="padding:28px 16px;text-align:center;color:var(--muted);font-size:0.85rem;">
+        <div class="spinner" style="margin:0 auto 10px;width:22px;height:22px;border-width:2px;"></div>
+        विषय-सूची लोड हो रही है…
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <div class="reader-area" id="readerArea">
+    <div class="loading-state" id="loadState">
+      <div class="spinner"></div>
+      <span>ग्रन्थ खुल रहा है…</span>
+    </div>
+    <div style="display:none" id="cWrap" class="content-wrap"></div>
   </div>
 </div>
+
 <script>
-const API='https://nyaysahayak-api-production.up.railway.app';
-let chapters=[], curIdx=0;
+var API='https://nyaysahayak-api-production.up.railway.app';
+var BOOKS={
+  fhb:{name:'वित्तीय पुस्तिका',sub:'Financial Handbook',ep:'/fhb'},
+  sad:{name:'सचिवालय मैनुअल',sub:'Sachivalaya Manual 2004',ep:'/sad'},
+  pm:{name:'क्रय नियम पुस्तिका',sub:'MSME Procurement Manual',ep:'/pm'},
+  sv:{name:'सेवा विधि',sub:'UP Civil Service Rules',ep:'/sv'}
+};
+var p=new URLSearchParams(location.search);
+var BK=p.get('book')||'fhb';
+var STR=parseInt(p.get('ch')||'0',10);
+var bk=BOOKS[BK]||BOOKS.fhb;
+var chapters=[];
+var activeIdx=-1;
 
-const params=new URLSearchParams(window.location.search);
-const bookName=params.get('book')||'';
+document.getElementById('bookTitle').textContent=bk.name;
+document.getElementById('bookSub').textContent=bk.sub;
+document.getElementById('sbTitle').textContent=bk.name+' — विषय-सूची';
 
-// FIX: Agar title ek filename jaisi hai (ends in .html/.md, ya "Chapter File:" se shuru ho)
-// to uski jagah summary ka pehla hissa use karo
-function getTitle(e){
-  const t=(e.title||'').trim();
-  const bad=!t
-    ||/\.(html|md|pdf|txt)$/i.test(t)
-    ||/^chapter\s*file\s*:/i.test(t)
-    ||/^file\s*:/i.test(t)
-    ||/^\d+\.html$/i.test(t)
-    ||/^0\d_/i.test(t);
-  if(bad){
-    const s=(e.summary||'').trim();
-    if(s)return s.length>90?s.substring(0,87)+'…':s;
-    return e.department||e.source||'अध्याय '+(chapters.indexOf(e)+1);
+function init(){
+  fetch(API+bk.ep).then(function(r){
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    return r.json();
+  }).then(function(data){
+    var raw=Array.isArray(data)?data:(data.chapters||[]);
+    chapters=raw.map(function(c,i){
+      return{
+        num:c.num||c.pages||(i+1),
+        topic:cleanTopic(c.topic,i),
+        pages:c.pages||'',
+        content:c.content||''
+      };
+    });
+    buildIndex();
+    document.getElementById('sbStats').style.display='flex';
+    document.getElementById('chCount').textContent=chapters.length+' अध्याय';
+    openCh(Math.max(0,Math.min(STR,chapters.length-1)));
+  }).catch(function(e){
+    document.getElementById('loadState').innerHTML=
+      '<div style="text-align:center;padding:40px;color:#c0392b;">'+
+      '<div style="font-size:2rem;margin-bottom:12px;">⚠️</div>'+
+      '<div style="font-weight:600;margin-bottom:8px;">ग्रन्थ लोड नहीं हो सका</div>'+
+      '<div style="font-size:0.83rem;color:#888;">'+esc(e.message)+'</div>'+
+      '<button onclick="init()" style="margin-top:14px;padding:7px 18px;background:var(--maroon);color:#fff;border:none;border-radius:5px;cursor:pointer;font-family:inherit;">पुनः प्रयास</button>'+
+      '</div>';
+  });
+}
+
+function cleanTopic(raw,i){
+  if(!raw)return 'अध्याय '+(i+1);
+  var s=String(raw).trim();
+  if(/^\d+\.html?$/i.test(s))return 'अध्याय '+(i+1);
+  if(/^[a-z]{2,6}_\d+$/i.test(s))return 'अध्याय '+(i+1);
+  if(/^index\s+\d+$/i.test(s))return 'अध्याय '+(i+1);
+  if(/^chapter\s+file:/i.test(s))return 'अध्याय '+(i+1);
+  return s;
+}
+
+function numLabel(num,i){
+  var n=String(num).replace(/\D/g,'');
+  return n||String(i+1);
+}
+
+function buildIndex(){
+  var html='';
+  for(var i=0;i<chapters.length;i++){
+    var ch=chapters[i];
+    html+='<div class="ch-item" id="ci'+i+'" onclick="openCh('+i+')">'+
+      '<div class="ch-num">'+numLabel(ch.num,i)+'</div>'+
+      '<div><div class="ch-topic">'+esc(ch.topic)+'</div>'+
+      (ch.pages?'<div class="ch-pages">पृ. '+esc(String(ch.pages))+'</div>':'')+
+      '</div></div>';
   }
-  return t;
+  document.getElementById('indexList').innerHTML=html;
 }
 
-async function init(){
-  if(!bookName){document.getElementById('artView').innerHTML='<div class="empty">?book= parameter missing</div>';return;}
-  document.getElementById('bookName').textContent=bookName;
-  document.title=bookName+' — Nyaysahayak';
-  document.getElementById('pgTitle').textContent=bookName+' — Nyaysahayak';
-  try{
-    let all=[],page=1;
-    while(true){
-      const r=await fetch(`${API}/browse/${encodeURIComponent(bookName)}?page=${page}&limit=100`);
-      const d=await r.json();
-      const ents=d.entries||[];
-      all=all.concat(ents);
-      if(ents.length<100||all.length>=d.total)break;
-      page++;
-    }
-    chapters=all;
-    renderSidebar(chapters);
-    if(chapters.length>0)loadChapter(0);
-  }catch(e){
-    document.getElementById('sbList').innerHTML='<div class="empty">API error: '+e.message+'</div>';
-  }
-}
-
-function renderSidebar(list){
-  const ul=document.getElementById('sbList');
-  if(!list.length){ul.innerHTML='<div class="empty">कोई अध्याय नहीं</div>';return;}
-  ul.innerHTML=list.map((e)=>{
-    const origIdx=chapters.indexOf(e);
-    const meta=[e.file_number,e.date].filter(Boolean).join(' · ');
-    return `<div class="ch-item${origIdx===curIdx?' active':''}" id="ci-${origIdx}" onclick="loadChapter(${origIdx})">
-      <div class="ch-num">अध्याय ${origIdx+1}</div>
-      <div class="ch-title">${eh(getTitle(e))}</div>
-      ${meta?`<div class="ch-meta">${eh(meta)}</div>`:''}
-    </div>`;
-  }).join('');
-}
-
-function loadChapter(idx){
+function openCh(idx){
   if(idx<0||idx>=chapters.length)return;
-  curIdx=idx;
-  const e=chapters[idx];
-  const displayTitle=getTitle(e);
-  document.getElementById('navInfo').textContent=`${idx+1} / ${chapters.length}`;
-  document.getElementById('btnPrev').disabled=idx===0;
-  document.getElementById('btnNext').disabled=idx===chapters.length-1;
-  document.querySelectorAll('.ch-item').forEach(el=>el.classList.remove('active'));
-  const ci=document.getElementById('ci-'+idx);
-  if(ci){ci.classList.add('active');ci.scrollIntoView({block:'nearest',behavior:'smooth'});}
-  const meta=[e.file_number,e.date,e.issuing_authority].filter(Boolean).join(' · ');
-  const pvs=(e.key_provisions||[]).filter(p=>p&&p.trim().length>5).map(p=>`<li>${eh(p)}</li>`).join('');
-  const cite=[displayTitle,e.source||e.department,e.file_number,e.date].filter(Boolean).join(' | ');
-  document.getElementById('artView').innerHTML=`
-    <div class="art-title">${eh(displayTitle)}</div>
-    ${meta?`<div class="art-meta">${eh(meta)}</div>`:''}
-    ${e.summary?`<div class="art-summary">${eh(e.summary)}</div>`:''}
-    <div class="art-provisions">
-      ${pvs?`<h4>मुख्य प्रावधान</h4><ul>${pvs}</ul>`:''}
-    </div>
-    <div class="cite-row">
-      <button class="cite-btn" id="citeBtn" onclick="copyCite('${ea(cite)}')">📋 Citation कॉपी</button>
-    </div>`;
+  activeIdx=idx;
+
+  var items=document.querySelectorAll('.ch-item');
+  for(var i=0;i<items.length;i++)items[i].classList.toggle('active',i===idx);
+  var el=document.getElementById('ci'+idx);
+  if(el)el.scrollIntoView({block:'nearest',behavior:'smooth'});
+
+  document.getElementById('curPos').textContent=(idx+1)+' / '+chapters.length;
+
+  var ch=chapters[idx];
+  var prev=idx>0?chapters[idx-1]:null;
+  var next=idx<chapters.length-1?chapters[idx+1]:null;
+
+  document.getElementById('loadState').style.display='none';
+  var wrap=document.getElementById('cWrap');
+  wrap.style.display='block';
+
+  wrap.innerHTML=
+    '<div class="ch-header">'+
+    '<div class="ch-badge">📖 अध्याय '+numLabel(ch.num,idx)+'</div>'+
+    '<div class="ch-main-title">'+esc(ch.topic)+'</div>'+
+    (ch.pages?'<div class="ch-meta">📄 पृष्ठ: '+esc(String(ch.pages))+'</div>':'')+
+    '</div>'+
+
+    '<div class="nav-bar">'+
+    '<button class="nav-btn" onclick="openCh('+(idx-1)+')" '+(prev?'':'disabled')+'>← '+(prev?trunc(prev.topic,20):'प्रथम')+'</button>'+
+    '<button class="nav-top" onclick="document.getElementById(\'readerArea\').scrollTop=0">↑ शीर्ष</button>'+
+    '<button class="nav-btn" onclick="openCh('+(idx+1)+')" '+(next?'':'disabled')+'>'+(next?trunc(next.topic,20):'अंतिम')+' →</button>'+
+    '</div>'+
+
+    '<div class="content-body">'+fmtContent(ch.content)+'</div>'+
+
+    '<div class="bottom-nav">'+
+    '<button class="nav-btn" onclick="openCh('+(idx-1)+')" '+(prev?'':'disabled')+'>← पूर्व अध्याय</button>'+
+    '<button class="nav-top" onclick="document.getElementById(\'readerArea\').scrollTop=0">↑ ऊपर</button>'+
+    '<button class="nav-btn" onclick="openCh('+(idx+1)+')" '+(next?'':'disabled')+'>अगला अध्याय →</button>'+
+    '</div>';
+
+  document.getElementById('readerArea').scrollTop=0;
+  var u=new URL(location.href);
+  u.searchParams.set('ch',String(idx));
+  history.replaceState(null,'',u.toString());
 }
 
-function navigate(dir){
-  loadChapter(curIdx+dir);
-  document.getElementById('artView').scrollTop=0;
+function fmtContent(raw){
+  if(!raw||!raw.trim())return '<div class="empty-content">इस अध्याय की सामग्री उपलब्ध नहीं है।</div>';
+  var lines=raw.split('\n');
+  var html='';
+  for(var i=0;i<lines.length;i++){
+    var l=lines[i].trim();
+    if(!l||l==='---'||l==='***')continue;
+    if(/^--- Page \d+/.test(l))continue;
+    if(/^(अध्याय|भाग|खण्ड)\s*[\d०-९IVX\-\u2013]/i.test(l)){html+='<div class="ch-heading">'+esc(l)+'</div>';continue;}
+    if(l.length<90&&l===l.toUpperCase()&&/[A-Z]{4,}/.test(l)){html+='<div class="sec-heading">'+esc(l)+'</div>';continue;}
+    if(/^(टिप्पणी|नोट|Note)\s*[:\-\u2013]/i.test(l)){html+='<div class="note-block"><span class="note-lbl">टिप्पणी:</span>'+esc(l.replace(/^(टिप्पणी|नोट|Note)\s*[:\-\u2013]\s*/i,''))+'</div>';continue;}
+    var rm=l.match(/^(\d{1,3})\.\s+(.+)/);
+    if(rm){html+='<div class="rule-block"><div class="rule-label">नियम '+rm[1]+'</div><div class="rule-text">'+esc(rm[2])+'</div></div>';continue;}
+    if(/^\([क-हa-z०-९\d]\)\s/i.test(l)){html+='<div class="sub-para">'+esc(l)+'</div>';continue;}
+    html+='<div class="para">'+esc(l)+'</div>';
+  }
+  return html||'<div class="empty-content">सामग्री उपलब्ध नहीं है।</div>';
 }
 
-function copyCite(t){
-  navigator.clipboard.writeText(t).then(()=>{
-    const b=document.getElementById('citeBtn');
-    b.textContent='✅ Copied!';b.classList.add('ok');
-    setTimeout(()=>{b.textContent='📋 Citation कॉपी';b.classList.remove('ok');},2000);
-  }).catch(()=>prompt('Citation:',t));
+function filterCh(q){
+  var s=q.toLowerCase();
+  var items=document.querySelectorAll('.ch-item');
+  for(var i=0;i<items.length;i++){
+    var ch=chapters[i];
+    items[i].classList.toggle('hidden',!!s&&!ch.topic.toLowerCase().includes(s)&&!String(ch.num).includes(s));
+  }
 }
-
-function eh(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function ea(s){if(!s)return'';return String(s).replace(/'/g,'&#39;');}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function trunc(s,n){s=String(s||'');return s.length>n?s.slice(0,n)+'…':s;}
 
 init();
 </script>
-</body></html>
+</body>
+</html>
