@@ -2177,7 +2177,12 @@ function streamTextInto(bub, text, suggestions, msgs) {
     if (i >= tokens.length) {
       // Done — add action buttons and suggestions
       addActionsTo(bub, text, suggestions, msgs);
-      msgs.scrollTop = msgs.scrollHeight;
+      // Double RAF ensures DOM is fully painted before scroll
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          msgs.scrollTop = msgs.scrollHeight;
+        });
+      });
       return;
     }
     
