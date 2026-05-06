@@ -5,145 +5,108 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>ज्ञान पुस्तकालय — Nyaysahayak</title>
 <style>
-:root {
-  --primary:#8B2000; --primary-light:#c0392b; --gold:#c8961e;
-  --bg:#0f0f0f; --surface:#1a1a1a; --surface2:#242424;
-  --border:#2e2e2e; --text:#e8e8e8; --muted:#888; --white:#fff;
-}
+:root{--primary:#8B2000;--primary-dark:#5a1400;--primary-light:#b03000;--gold:#9a7000;--gold-light:#c8961e;--bg:#faf8f5;--surface:#ffffff;--surface2:#f5f0ea;--border:#e0d5c8;--border-strong:#c8b89a;--text:#1a1208;--text-secondary:#4a3820;--muted:#7a6550}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 a{text-decoration:none;color:inherit}
-
-/* HEADER */
-.header{background:linear-gradient(135deg,#1a0a00 0%,#2d0a00 50%,#1a0a00 100%);border-bottom:1px solid #3d1500;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:100}
+.header{background:var(--primary-dark);border-bottom:2px solid var(--primary);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(90,20,0,0.18)}
 .header-brand{display:flex;align-items:center;gap:12px}
-.header-logo{width:36px;height:36px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
-.header-title{font-size:1.1rem;font-weight:700;color:var(--white)}
-.header-sub{font-size:0.72rem;color:var(--gold);letter-spacing:0.5px}
-.back-btn{padding:8px 16px;border:1px solid #3d1500;background:transparent;color:var(--muted);border-radius:8px;cursor:pointer;font-size:0.8rem}
-.back-btn:hover{background:var(--surface);color:var(--text)}
-
-/* STATS BAR */
-.stats-bar{display:flex;gap:0;border-bottom:1px solid var(--border);background:var(--surface)}
-.stat-item{flex:1;padding:14px 20px;text-align:center;border-right:1px solid var(--border)}
+.header-logo{width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid rgba(255,255,255,0.2)}
+.header-title{font-size:1.05rem;font-weight:700;color:#fff}
+.header-sub{font-size:0.68rem;color:rgba(255,220,150,0.85);letter-spacing:0.4px;margin-top:1px}
+.back-btn{padding:7px 14px;border:1px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.75);border-radius:7px;cursor:pointer;font-size:0.78rem}
+.back-btn:hover{background:rgba(255,255,255,0.15);color:#fff}
+.stats-bar{display:flex;border-bottom:1px solid var(--border);background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.stat-item{flex:1;padding:12px 20px;text-align:center;border-right:1px solid var(--border)}
 .stat-item:last-child{border-right:none}
-.stat-num{font-size:1.4rem;font-weight:700;color:var(--primary-light)}
-.stat-label{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
-
-/* MAIN */
-.main{max-width:1100px;margin:0 auto;padding:32px 20px}
-
-/* HERO SEARCH */
-.search-hero{background:linear-gradient(135deg,var(--surface) 0%,#1e0d00 100%);border:1px solid #3d1500;border-radius:16px;padding:32px 28px;margin-bottom:12px}
-.search-hero-title{font-size:0.75rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px}
-.search-hero-heading{font-size:1.2rem;font-weight:600;color:var(--white);margin-bottom:20px}
-.search-row{display:flex;gap:10px}
-.search-input{flex:1;padding:14px 18px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:1rem;font-family:inherit;outline:none;transition:border-color 0.2s}
-.search-input:focus{border-color:var(--primary-light)}
+.stat-num{font-size:1.25rem;font-weight:700;color:var(--primary)}
+.stat-label{font-size:0.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
+.main{max-width:1100px;margin:0 auto;padding:28px 20px}
+.search-hero{background:var(--surface);border:1px solid var(--border-strong);border-top:3px solid var(--primary);border-radius:12px;padding:28px 28px 22px;margin-bottom:10px;box-shadow:0 2px 12px rgba(90,20,0,0.07)}
+.search-hero-label{font-size:0.68rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;font-weight:600}
+.search-hero-heading{font-size:1.1rem;font-weight:700;color:var(--primary-dark);margin-bottom:18px}
+.search-row{display:flex;gap:8px}
+.search-input{flex:1;padding:12px 16px;background:var(--bg);border:1.5px solid var(--border-strong);border-radius:8px;color:var(--text);font-size:0.95rem;font-family:inherit;outline:none;transition:border-color 0.2s}
+.search-input:focus{border-color:var(--primary)}
 .search-input::placeholder{color:var(--muted)}
-.search-btn{padding:14px 24px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:0.9rem;cursor:pointer;font-weight:600;transition:background 0.2s;white-space:nowrap}
+.search-btn{padding:12px 22px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:0.88rem;cursor:pointer;font-weight:600;white-space:nowrap}
 .search-btn:hover{background:var(--primary-light)}
-.search-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.search-tag{padding:5px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;font-size:0.75rem;color:var(--muted);cursor:pointer;transition:all 0.15s}
-.search-tag:hover{border-color:var(--primary);color:var(--primary-light)}
-
-/* SHIGHRA */
-.shighra{text-align:center;font-size:0.78rem;color:var(--muted);padding:12px 20px;border:1px dashed #2e2e2e;border-radius:8px;margin-bottom:28px}
-.shighra span{color:var(--gold)}
-
-/* SEARCH RESULTS */
-.result-count{font-size:0.82rem;color:var(--muted);margin-bottom:16px}
-.result-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--primary);border-radius:10px;padding:16px 20px;margin-bottom:10px;cursor:pointer;transition:border-color 0.15s}
-.result-card:hover{border-color:var(--primary-light)}
-.result-card.open{border-left-color:var(--gold)}
-.result-title{font-weight:600;color:var(--white);margin-bottom:4px;font-size:0.92rem}
-.result-source{font-size:0.68rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px}
-.result-summary{font-size:0.83rem;color:#aaa;line-height:1.5}
-.result-body{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.search-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.search-tag{padding:4px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;font-size:0.73rem;color:var(--text-secondary);cursor:pointer}
+.search-tag:hover{border-color:var(--primary);color:var(--primary);background:#fff5f0}
+.shighra{text-align:center;font-size:0.76rem;color:var(--muted);padding:10px 16px;border:1px dashed var(--border-strong);border-radius:8px;margin-bottom:24px;background:var(--surface2)}
+.shighra strong{color:var(--gold)}
+.result-count{font-size:0.8rem;color:var(--muted);margin-bottom:14px;padding:0 2px}
+.result-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--primary);border-radius:9px;padding:14px 16px;margin-bottom:9px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.result-card:hover{border-left-color:var(--gold-light);box-shadow:0 3px 12px rgba(90,20,0,0.1)}
+.result-card.open{border-left-color:var(--gold-light);background:#fffdf8}
+.result-title{font-weight:600;color:var(--primary-dark);margin-bottom:3px;font-size:0.9rem}
+.result-source{font-size:0.66rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:5px;font-weight:600}
+.result-summary{font-size:0.82rem;color:var(--text-secondary);line-height:1.55}
+.result-body{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
 .result-card.open .result-body{display:block}
-.result-body ul{padding-left:18px;font-size:0.83rem;color:var(--text);line-height:1.8}
-
-/* SECTION HEADER */
-.section-header{display:flex;align-items:center;gap:10px;margin-bottom:20px}
-.section-title{font-size:1rem;font-weight:600;color:var(--white)}
-.section-count{font-size:0.72rem;color:var(--muted);background:var(--surface2);padding:3px 10px;border-radius:20px}
-
-/* BOOK GRID */
-.book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:40px}
-.book-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
-.book-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--card-color,var(--primary))}
-.book-card:hover{transform:translateY(-2px);border-color:var(--card-color,var(--primary));box-shadow:0 8px 24px rgba(0,0,0,0.3)}
-.book-icon{font-size:1.8rem;margin-bottom:10px}
-.book-title{font-size:0.88rem;font-weight:600;color:var(--white);margin-bottom:6px;line-height:1.4}
-.book-count{font-size:0.72rem;color:var(--muted)}
-.book-arrow{position:absolute;bottom:14px;right:16px;color:var(--muted);font-size:0.8rem;transition:color 0.15s}
+.result-body ul{padding-left:16px;font-size:0.82rem;color:var(--text);line-height:1.8}
+.cite-btn{margin-top:10px;padding:5px 12px;background:var(--surface2);border:1px solid var(--border-strong);border-radius:6px;font-size:0.72rem;color:var(--text-secondary);cursor:pointer}
+.cite-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.cite-btn.copied{background:#166534;color:#fff;border-color:#166534}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.section-title{font-size:0.95rem;font-weight:700;color:var(--primary-dark)}
+.section-badge{font-size:0.7rem;color:var(--muted);background:var(--surface2);border:1px solid var(--border);padding:3px 10px;border-radius:20px}
+.book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-bottom:36px}
+.book-card{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--card-color,var(--primary));border-radius:10px;padding:18px 16px 14px;cursor:pointer;transition:all 0.18s;position:relative;box-shadow:0 1px 6px rgba(0,0,0,0.05)}
+.book-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
+.book-icon{font-size:1.6rem;margin-bottom:9px}
+.book-title{font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.4}
+.book-count{font-size:0.7rem;color:var(--muted)}
+.book-arrow{position:absolute;bottom:12px;right:14px;color:var(--border-strong);font-size:0.8rem}
 .book-card:hover .book-arrow{color:var(--card-color,var(--primary))}
-
-/* READER */
 #readerSection{display:none}
-.reader-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
-.reader-back{padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.8rem;color:var(--muted)}
-.reader-back:hover{color:var(--text)}
-.reader-title{font-size:1.1rem;font-weight:700;color:var(--white)}
-.reader-search-row{display:flex;gap:8px;margin-bottom:20px}
-.reader-search{flex:1;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.9rem;font-family:inherit;outline:none}
+.reader-top{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--primary);border-radius:10px;padding:18px 20px;margin-bottom:18px;box-shadow:0 1px 6px rgba(0,0,0,0.05)}
+.reader-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.reader-back{padding:7px 14px;background:var(--surface2);border:1px solid var(--border-strong);border-radius:7px;cursor:pointer;font-size:0.78rem;color:var(--text-secondary)}
+.reader-back:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.reader-title{font-size:1rem;font-weight:700;color:var(--primary-dark)}
+.reader-search-row{display:flex;gap:8px}
+.reader-search{flex:1;padding:9px 14px;background:var(--bg);border:1px solid var(--border-strong);border-radius:7px;color:var(--text);font-size:0.88rem;font-family:inherit;outline:none}
 .reader-search:focus{border-color:var(--primary)}
-.reader-btn{padding:10px 16px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem}
-.entry-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:10px;cursor:pointer}
-.entry-card:hover{border-color:var(--primary)}
-.entry-card.open{border-left:3px solid var(--gold)}
-.entry-title{font-weight:600;font-size:0.9rem;color:var(--white);margin-bottom:4px}
-.entry-meta{font-size:0.7rem;color:var(--muted);margin-bottom:6px}
-.entry-summary{font-size:0.82rem;color:#aaa;line-height:1.5}
-.entry-body{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:0.82rem;line-height:1.8}
+.reader-btn{padding:9px 16px;background:var(--primary);color:#fff;border:none;border-radius:7px;cursor:pointer;font-size:0.82rem;font-weight:600}
+.entry-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid transparent;border-radius:9px;padding:14px 16px;margin-bottom:8px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.entry-card:hover{border-left-color:var(--primary);box-shadow:0 3px 10px rgba(0,0,0,0.08)}
+.entry-card.open{border-left-color:var(--gold-light);background:#fffdf8}
+.entry-title{font-weight:700;font-size:0.88rem;color:var(--primary-dark);margin-bottom:3px}
+.entry-meta{font-size:0.67rem;color:var(--muted);margin-bottom:5px;font-family:monospace}
+.entry-summary{font-size:0.81rem;color:var(--text-secondary);line-height:1.55}
+.entry-body{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border)}
 .entry-card.open .entry-body{display:block}
-.entry-body ul{padding-left:18px;color:var(--text)}
-.pagination{display:flex;gap:8px;justify-content:center;margin-top:24px;flex-wrap:wrap}
-.page-btn{padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.82rem;color:var(--muted)}
+.entry-body ul{padding-left:16px;font-size:0.81rem;color:var(--text);line-height:1.85}
+.pagination{display:flex;gap:6px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.page-btn{padding:7px 13px;background:var(--surface);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:0.8rem;color:var(--muted)}
 .page-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-.page-btn:hover:not(.active){border-color:var(--primary);color:var(--text)}
-
-/* LOADING */
-.loading{text-align:center;padding:40px;color:var(--muted);font-size:0.9rem}
-.error-msg{background:#2d0a00;border:1px solid #5d1500;border-radius:10px;padding:16px;margin-bottom:16px;color:#ff6b4a;font-size:0.85rem}
-
-@media(max-width:600px){
-  .stats-bar{flex-wrap:wrap}
-  .stat-item{flex:1 1 50%;border-bottom:1px solid var(--border)}
-  .search-row{flex-direction:column}
-  .search-btn{width:100%}
-}
+.page-btn:hover:not(.active){border-color:var(--primary);color:var(--primary)}
+.loading{text-align:center;padding:36px;color:var(--muted);font-size:0.88rem}
+.error-msg{background:#fff5f0;border:1px solid #ffa07a;border-radius:9px;padding:14px;margin-bottom:14px;color:var(--primary);font-size:0.83rem}
+@media(max-width:600px){.stats-bar{flex-wrap:wrap}.stat-item{flex:1 1 50%;border-bottom:1px solid var(--border)}.search-row,.reader-search-row{flex-direction:column}}
 </style>
 </head>
 <body>
-
 <div class="header">
   <div class="header-brand">
     <div class="header-logo">⚖️</div>
-    <div>
-      <div class="header-title">ज्ञान पुस्तकालय</div>
-      <div class="header-sub">DBS · Nyaysahayak Knowledge Library</div>
-    </div>
+    <div><div class="header-title">ज्ञान पुस्तकालय</div><div class="header-sub">DBS · Nyaysahayak Knowledge Library</div></div>
   </div>
   <a href="https://nyaysahayak.co.in/" class="back-btn">← मुख्य पृष्ठ</a>
 </div>
-
 <div class="stats-bar">
   <div class="stat-item"><div class="stat-num" id="statBooks">—</div><div class="stat-label">पुस्तकें</div></div>
   <div class="stat-item"><div class="stat-num" id="statEntries">—</div><div class="stat-label">कुल प्रविष्टियाँ</div></div>
-  <div class="stat-item"><div class="stat-num">🟢 LIVE</div><div class="stat-label">Railway API</div></div>
+  <div class="stat-item"><div class="stat-num" style="color:#166534">🟢 LIVE</div><div class="stat-label">Railway API</div></div>
 </div>
-
 <div class="main">
-
-  <!-- AI SEARCH HERO -->
   <div class="search-hero">
-    <div class="search-hero-title">⚡ AI खोज</div>
-    <div class="search-hero-heading">कोई भी नियम खोजें — पुस्तक याद रखने की ज़रूरत नहीं</div>
+    <div class="search-hero-label">⚡ AI खोज</div>
+    <div class="search-hero-heading">कोई भी नियम खोजें — पुस्तक या वॉल्यूम याद रखने की आवश्यकता नहीं</div>
     <div class="search-row">
-      <input class="search-input" id="globalSearchInput" type="text"
-        placeholder="जैसे: अनुकम्पा नियुक्ति, अर्जित अवकाश नियम, वेतन वृद्धि रोकना..."
-        onkeydown="if(event.key==='Enter')globalSearch()"/>
+      <input class="search-input" id="globalSearchInput" type="text" placeholder="जैसे: अनुकम्पा नियुक्ति, अर्जित अवकाश, वेतन वृद्धि रोकना..." onkeydown="if(event.key==='Enter')globalSearch()"/>
       <button class="search-btn" onclick="globalSearch()">🔍 खोजें</button>
     </div>
     <div class="search-tags">
@@ -155,204 +118,161 @@ a{text-decoration:none;color:inherit}
       <span class="search-tag" onclick="quickSearch('विभागीय जांच')">विभागीय जांच</span>
       <span class="search-tag" onclick="quickSearch('अनुग्रह राशि')">अनुग्रह राशि</span>
       <span class="search-tag" onclick="quickSearch('क्रय नियम')">क्रय नियम</span>
+      <span class="search-tag" onclick="quickSearch('सेवानिवृत्ति')">सेवानिवृत्ति</span>
     </div>
   </div>
-
-  <div id="globalSearchResults"></div>
-
-  <!-- SHIGHRA NOTE -->
-  <div class="shighra">📚 <span>शीघ्र</span> — उत्तर प्रदेश सरकार की समस्त महत्वपूर्ण नियमावली एवं पुस्तकें यहाँ उपलब्ध होंगी</div>
-
-  <!-- BOOKS SECTION -->
+  <div id="globalSearchResults" style="margin-bottom:8px"></div>
+  <div class="shighra">📚 <strong>शीघ्र</strong> — उत्तर प्रदेश सरकार की समस्त महत्वपूर्ण नियमावली एवं पुस्तकें यहाँ उपलब्ध होंगी</div>
   <div id="booksSection">
     <div class="section-header">
       <div class="section-title">📚 उपलब्ध पुस्तकें एवं मैनुअल</div>
-      <div class="section-count" id="booksCount">लोड हो रही हैं...</div>
+      <div class="section-badge" id="booksCount">लोड हो रही हैं...</div>
     </div>
-    <div class="book-grid" id="bookGrid">
-      <div class="loading">पुस्तकें लोड हो रही हैं...</div>
-    </div>
+    <div class="book-grid" id="bookGrid"><div class="loading">पुस्तकें लोड हो रही हैं...</div></div>
   </div>
-
-  <!-- READER SECTION -->
   <div id="readerSection">
-    <div class="reader-header">
-      <button class="reader-back" onclick="goBack()">← वापस</button>
-      <div class="reader-title" id="readerTitle">—</div>
-    </div>
-    <div class="reader-search-row">
-      <input class="reader-search" id="readerSearchInput" type="text"
-        placeholder="इस पुस्तक में खोजें..."
-        onkeydown="if(event.key==='Enter')searchInBook()"/>
-      <button class="reader-btn" onclick="searchInBook()">खोजें</button>
+    <div class="reader-top">
+      <div class="reader-header">
+        <button class="reader-back" onclick="goBack()">← वापस</button>
+        <div class="reader-title" id="readerTitle">—</div>
+      </div>
+      <div class="reader-search-row">
+        <input class="reader-search" id="readerSearchInput" type="text" placeholder="इस पुस्तक में खोजें..." onkeydown="if(event.key==='Enter')searchInBook()"/>
+        <button class="reader-btn" onclick="searchInBook()">खोजें</button>
+      </div>
     </div>
     <div id="readerEntries"><div class="loading">प्रविष्टियाँ लोड हो रही हैं...</div></div>
     <div id="readerPagination" class="pagination"></div>
   </div>
-
 </div>
-
 <script>
-const API = 'https://nyaysahayak-api-production.up.railway.app';
-const PAGE_SIZE = 30;
-const BOOK_ICONS = ['📘','📗','📙','📕','📓','📔','📒','📃'];
-const CARD_COLORS = ['#c0392b','#1a7a4a','#c8761e','#1565c0','#6a1f8e','#0e7490','#92400e','#166534'];
+const API='https://nyaysahayak-api-production.up.railway.app';
+const PAGE_SIZE=30;
+const ICONS=['📘','📗','📙','📕','📓','📔','📒','📃','📜','📋'];
+const COLORS=['#8B2000','#1a5c35','#8a5e00','#1a3d7a','#5a1f7a','#006878','#7a3800','#1a5a1a','#6b1a3a','#004d6b'];
+let currentBook=null,currentPage=1,searchQuery='';
 
-let currentBook = null, currentPage = 1, allEntries = [], searchQuery = '';
-
-async function loadBooks() {
-  try {
-    const res = await fetch(`${API}/browse`);
-    if (!res.ok) throw new Error('API error');
-    const data = await res.json();
-    const books = data.books || [];
-    const total = data.books.reduce((s,b) => s + b.count, 0);
-    document.getElementById('statBooks').textContent = books.length;
-    document.getElementById('statEntries').textContent = total.toLocaleString('hi-IN');
-    document.getElementById('booksCount').textContent = books.length + ' पुस्तकें';
-    const grid = document.getElementById('bookGrid');
-    grid.innerHTML = '';
-    books.forEach((b, i) => {
-      const color = CARD_COLORS[i % CARD_COLORS.length];
-      const icon = BOOK_ICONS[i % BOOK_ICONS.length];
-      const div = document.createElement('div');
-      div.className = 'book-card';
-      div.style.setProperty('--card-color', color);
-      div.innerHTML = `<div class="book-icon">${icon}</div>
-        <div class="book-title">${escapeHtml(b.source)}</div>
-        <div class="book-count">${b.count.toLocaleString('hi-IN')} प्रविष्टियाँ</div>
-        <div class="book-arrow">→</div>`;
-      div.onclick = () => openBook(b.source);
+async function loadBooks(){
+  try{
+    const res=await fetch(API+'/browse');
+    const data=await res.json();
+    const books=data.books||[];
+    const total=data.total_entries||books.reduce((s,b)=>s+b.count,0);
+    document.getElementById('statBooks').textContent=books.length;
+    document.getElementById('statEntries').textContent=Number(total).toLocaleString('hi-IN');
+    document.getElementById('booksCount').textContent=books.length+' पुस्तकें';
+    const grid=document.getElementById('bookGrid');
+    grid.innerHTML='';
+    books.forEach((b,i)=>{
+      const color=COLORS[i%COLORS.length];
+      const name=b.name||b.source||b.book||'—';
+      const div=document.createElement('div');
+      div.className='book-card';
+      div.style.setProperty('--card-color',color);
+      div.innerHTML='<div class="book-icon">'+ICONS[i%ICONS.length]+'</div><div class="book-title">'+escHtml(name)+'</div><div class="book-count">'+Number(b.count).toLocaleString('hi-IN')+' प्रविष्टियाँ</div><div class="book-arrow">→</div>';
+      div.onclick=()=>openBook(name);
       grid.appendChild(div);
     });
-  } catch(e) {
-    document.getElementById('bookGrid').innerHTML = `<div class="error-msg">❌ API से कनेक्ट नहीं हो पाया।<br><small>${e.message}</small></div>`;
+  }catch(e){
+    document.getElementById('bookGrid').innerHTML='<div class="error-msg">❌ API से कनेक्ट नहीं हो पाया।</div>';
   }
 }
 
-async function openBook(source) {
-  currentBook = source; currentPage = 1; searchQuery = '';
-  document.getElementById('readerSearchInput').value = '';
-  document.getElementById('booksSection').style.display = 'none';
-  document.getElementById('globalSearchResults').style.display = 'none';
-  document.getElementById('readerSection').style.display = 'block';
-  document.getElementById('readerTitle').textContent = source;
+async function openBook(name){
+  currentBook=name;currentPage=1;searchQuery='';
+  document.getElementById('readerSearchInput').value='';
+  document.getElementById('booksSection').style.display='none';
+  document.getElementById('globalSearchResults').style.display='none';
+  document.getElementById('readerSection').style.display='block';
+  document.getElementById('readerTitle').textContent=name;
   await loadPage();
 }
 
-async function loadPage() {
-  document.getElementById('readerEntries').innerHTML = '<div class="loading">लोड हो रहा है...</div>';
-  try {
-    let url;
-    if (searchQuery) {
-      url = `${API}/search?q=${encodeURIComponent(searchQuery)}&book=${encodeURIComponent(currentBook)}&limit=100`;
-    } else {
-      url = `${API}/browse/${encodeURIComponent(currentBook)}?page=${currentPage}&limit=${PAGE_SIZE}`;
-    }
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('API error ' + res.status);
-    const data = await res.json();
-    const entries = data.entries || data.results || [];
-    const total = data.total || entries.length;
-    allEntries = entries;
+async function loadPage(){
+  document.getElementById('readerEntries').innerHTML='<div class="loading">लोड हो रहा है...</div>';
+  try{
+    const url=searchQuery?API+'/search?q='+encodeURIComponent(searchQuery)+'&book='+encodeURIComponent(currentBook)+'&limit=100':API+'/browse/'+encodeURIComponent(currentBook)+'?page='+currentPage+'&limit='+PAGE_SIZE;
+    const res=await fetch(url);
+    const data=await res.json();
+    const entries=data.entries||data.results||[];
+    const total=data.total||entries.length;
     renderEntries(entries);
-    if (!searchQuery) renderPagination(total);
-    else document.getElementById('readerPagination').innerHTML = '';
-  } catch(e) {
-    document.getElementById('readerEntries').innerHTML = `<div class="error-msg">त्रुटि: ${e.message}</div>`;
+    if(!searchQuery)renderPagination(total);
+    else document.getElementById('readerPagination').innerHTML='';
+  }catch(e){
+    document.getElementById('readerEntries').innerHTML='<div class="error-msg">त्रुटि: '+escHtml(e.message)+'</div>';
   }
 }
 
-function renderEntries(entries) {
-  if (!entries.length) {
-    document.getElementById('readerEntries').innerHTML = '<div class="loading">कोई प्रविष्टि नहीं मिली।</div>';
-    return;
-  }
-  let h = '';
-  entries.forEach(e => {
-    const filtered = (e.key_provisions || []).filter(p => p && p.trim().length > 10);
-    const provisions = filtered.slice(0,8).map(p => `<li>${escapeHtml(p)}</li>`).join('');
-    const metaParts = [e.date, e.file_number, e.issuing_authority].filter(Boolean);
-    h += `<div class="entry-card" onclick="this.classList.toggle('open')">
-      <div class="entry-title">${escapeHtml(e.title||'—')}</div>
-      ${metaParts.length ? `<div class="entry-meta">${metaParts.map(escapeHtml).join(' · ')}</div>` : ''}
-      <div class="entry-summary">${escapeHtml((e.summary||'').slice(0,200))}${(e.summary||'').length>200?'...':''}</div>
-      <div class="entry-body"><ul>${provisions}</ul></div>
-    </div>`;
+function renderEntries(entries){
+  if(!entries.length){document.getElementById('readerEntries').innerHTML='<div class="loading">कोई प्रविष्टि नहीं मिली।</div>';return;}
+  let h='';
+  entries.forEach(e=>{
+    const prov=(e.key_provisions||[]).filter(p=>p&&p.trim().length>10).slice(0,8).map(p=>'<li>'+escHtml(p)+'</li>').join('');
+    const meta=[e.file_number,e.date,e.issuing_authority].filter(Boolean);
+    const cite=[e.title,e.source||e.department,e.file_number,e.date].filter(Boolean).join(' | ');
+    h+='<div class="entry-card" onclick="this.classList.toggle(\'open\')"><div class="entry-title">'+escHtml(e.title||'—')+'</div>'+(meta.length?'<div class="entry-meta">'+meta.map(escHtml).join(' · ')+'</div>':'')+'<div class="entry-summary">'+escHtml((e.summary||'').slice(0,220))+((e.summary||'').length>220?'...':'')+'</div><div class="entry-body"><ul>'+prov+'</ul><button class="cite-btn" onclick="event.stopPropagation();copyCite(this,\''+escAttr(cite)+'\')">📋 Citation कॉपी करें</button></div></div>';
   });
-  document.getElementById('readerEntries').innerHTML = h;
+  document.getElementById('readerEntries').innerHTML=h;
 }
 
-function renderPagination(total) {
-  const pages = Math.ceil(total / PAGE_SIZE);
-  if (pages <= 1) { document.getElementById('readerPagination').innerHTML = ''; return; }
-  let h = '';
-  for (let i = 1; i <= Math.min(pages, 20); i++) {
-    h += `<button class="page-btn${i===currentPage?' active':''}" onclick="gotoPage(${i})">${i}</button>`;
-  }
-  document.getElementById('readerPagination').innerHTML = h;
+function renderPagination(total){
+  const pages=Math.ceil(total/PAGE_SIZE);
+  if(pages<=1){document.getElementById('readerPagination').innerHTML='';return;}
+  let h='';
+  for(let i=1;i<=Math.min(pages,25);i++)h+='<button class="page-btn'+(i===currentPage?' active':'')+'" onclick="gotoPage('+i+')">'+i+'</button>';
+  document.getElementById('readerPagination').innerHTML=h;
 }
 
-async function gotoPage(p) { currentPage = p; await loadPage(); window.scrollTo(0,0); }
+async function gotoPage(p){currentPage=p;await loadPage();window.scrollTo(0,200);}
+async function searchInBook(){searchQuery=document.getElementById('readerSearchInput').value.trim();currentPage=1;await loadPage();}
 
-async function searchInBook() {
-  searchQuery = document.getElementById('readerSearchInput').value.trim();
-  currentPage = 1;
-  await loadPage();
+function goBack(){
+  document.getElementById('readerSection').style.display='none';
+  document.getElementById('booksSection').style.display='block';
+  document.getElementById('globalSearchResults').style.display='block';
+  currentBook=null;
 }
 
-function goBack() {
-  document.getElementById('readerSection').style.display = 'none';
-  document.getElementById('booksSection').style.display = 'block';
-  document.getElementById('globalSearchResults').style.display = 'block';
-  currentBook = null; allEntries = [];
-}
-
-async function globalSearch() {
-  const q = document.getElementById('globalSearchInput').value.trim();
-  if (!q) return;
-  const div = document.getElementById('globalSearchResults');
-  div.style.display = 'block';
-  div.innerHTML = '<div class="loading">खोज रहे हैं...</div>';
-  try {
-    const res = await fetch(`${API}/search?q=${encodeURIComponent(q)}&limit=40`);
-    const data = await res.json();
-    const entries = data.entries || data.results || [];
-    if (!entries.length) { div.innerHTML = '<div class="loading">कोई परिणाम नहीं मिला।</div>'; return; }
-    let h = `<div class="result-count">${entries.length} परिणाम — "<strong>${escapeHtml(q)}</strong>"</div>`;
-    entries.forEach(e => {
-      const provisions = (e.key_provisions||[]).filter(p=>p&&p.trim().length>10).slice(0,6).map(p=>`<li>${escapeHtml(p)}</li>`).join('');
-      h += `<div class="result-card" onclick="this.classList.toggle('open')">
-        <div class="result-title">${escapeHtml(e.title||'—')}</div>
-        <div class="result-source">📖 ${escapeHtml(e.source||e.department||'')}${e.date?' · '+escapeHtml(e.date):''}</div>
-        <div class="result-summary">${escapeHtml((e.summary||'').slice(0,220))}${(e.summary||'').length>220?'...':''}</div>
-        <div class="result-body"><ul>${provisions}</ul></div>
-      </div>`;
+async function globalSearch(){
+  const q=document.getElementById('globalSearchInput').value.trim();
+  if(!q)return;
+  const div=document.getElementById('globalSearchResults');
+  div.style.display='block';
+  div.innerHTML='<div class="loading">खोज रहे हैं...</div>';
+  try{
+    const res=await fetch(API+'/search?q='+encodeURIComponent(q)+'&limit=40');
+    const data=await res.json();
+    const entries=data.entries||data.results||[];
+    if(!entries.length){div.innerHTML='<div class="loading">कोई परिणाम नहीं मिला।</div>';return;}
+    let h='<div class="result-count">'+entries.length+' परिणाम — "<strong>'+escHtml(q)+'</strong>"</div>';
+    entries.forEach(e=>{
+      const prov=(e.key_provisions||[]).filter(p=>p&&p.trim().length>10).slice(0,6).map(p=>'<li>'+escHtml(p)+'</li>').join('');
+      const cite=[e.title,e.source||e.department,e.file_number,e.date].filter(Boolean).join(' | ');
+      h+='<div class="result-card" onclick="this.classList.toggle(\'open\')"><div class="result-title">'+escHtml(e.title||'—')+'</div><div class="result-source">📖 '+escHtml(e.source||e.department||'')+(e.date?' · '+escHtml(e.date):'')+'</div><div class="result-summary">'+escHtml((e.summary||'').slice(0,220))+((e.summary||'').length>220?'...':'')+'</div><div class="result-body"><ul>'+prov+'</ul><button class="cite-btn" onclick="event.stopPropagation();copyCite(this,\''+escAttr(cite)+'\')">📋 Citation कॉपी करें</button></div></div>';
     });
-    div.innerHTML = h;
-  } catch(e) {
-    div.innerHTML = '<div class="error-msg">खोज में त्रुटि।</div>';
-  }
+    div.innerHTML=h;
+  }catch(e){div.innerHTML='<div class="error-msg">खोज में त्रुटि।</div>';}
 }
 
-function quickSearch(q) {
-  document.getElementById('globalSearchInput').value = q;
-  globalSearch();
+function quickSearch(q){document.getElementById('globalSearchInput').value=q;globalSearch();}
+
+function copyCite(btn,text){
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent='✅ Copied!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='📋 Citation कॉपी करें';btn.classList.remove('copied');},2000);
+  }).catch(()=>prompt('Citation:',text));
 }
 
-function checkURLParam() {
-  const q = new URLSearchParams(window.location.search).get('q');
-  if (q) { document.getElementById('globalSearchInput').value = q; globalSearch(); }
+function checkURLParam(){
+  const q=new URLSearchParams(window.location.search).get('q');
+  if(q){document.getElementById('globalSearchInput').value=q;globalSearch();}
 }
 
-function escapeHtml(s) {
-  if (!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+function escHtml(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function escAttr(s){if(!s)return'';return String(s).replace(/'/g,'&#39;').replace(/"/g,'&quot;');}
 
-// INIT
-loadBooks();
-checkURLParam();
+loadBooks();checkURLParam();
 </script>
 </body>
 </html>
