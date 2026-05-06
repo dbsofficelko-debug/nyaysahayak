@@ -3,183 +3,166 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>ज्ञान पुस्तकालय — Nyaysahayak</title>
+<title>ज्ञान पुस्तकालय — Nyaysahayak · DBS</title>
 <style>
-:root{--p:#8B2000;--pd:#5a1400;--pl:#b03000;--g:#9a7000;--gl:#c8961e;--bg:#faf8f5;--s:#fff;--s2:#f5f0ea;--b:#e0d5c8;--bs:#c8b89a;--t:#1a1208;--t2:#4a3820;--m:#7a6550}
+:root{--p:#8B2000;--pd:#4a1000;--pl:#b03000;--g:#9a7000;--gl:#d4a820;--bg:#faf8f5;--s:#ffffff;--s2:#f5f0ea;--b:#e2d5c5;--bs:#c8b49a;--t:#18100a;--t2:#4a3018;--m:#7a6050;--w:#fff}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--t);min-height:100vh}
 a{text-decoration:none;color:inherit}
-.hdr{background:var(--pd);border-bottom:2px solid var(--p);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(90,20,0,0.18)}
-.hdr-brand{display:flex;align-items:center;gap:12px}
-.hdr-logo{width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid rgba(255,255,255,0.2)}
-.hdr-title{font-size:1.05rem;font-weight:700;color:#fff}
-.hdr-sub{font-size:0.68rem;color:rgba(255,220,150,0.85);margin-top:1px}
-.back{padding:7px 14px;border:1px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.75);border-radius:7px;cursor:pointer;font-size:0.78rem}
-.back:hover{background:rgba(255,255,255,0.15);color:#fff}
-.sbar{display:flex;border-bottom:1px solid var(--b);background:var(--s)}
-.si{flex:1;padding:12px 20px;text-align:center;border-right:1px solid var(--b)}
-.si:last-child{border-right:none}
-.sn{font-size:1.25rem;font-weight:700;color:var(--p)}
-.sl{font-size:0.63rem;color:var(--m);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
-.main{max-width:1100px;margin:0 auto;padding:28px 20px}
-.srch-box{background:var(--s);border:1px solid var(--bs);border-top:3px solid var(--p);border-radius:12px;padding:24px 28px 20px;margin-bottom:10px;box-shadow:0 2px 12px rgba(90,20,0,0.07)}
-.srch-lbl{font-size:0.68rem;color:var(--g);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;font-weight:600}
-.srch-hd{font-size:1rem;font-weight:700;color:var(--pd);margin-bottom:14px}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#3a0800 0%,#5a1400 40%,#3a0800 100%);border-bottom:2px solid var(--p);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 3px 16px rgba(58,8,0,0.4)}
+.hdr-l{display:flex;align-items:center;gap:12px}
+.hdr-ico{width:36px;height:36px;background:rgba(255,255,255,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;border:1px solid rgba(255,255,255,0.2)}
+.hdr-title{font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:0.2px}
+.hdr-sub{font-size:0.65rem;color:rgba(255,210,120,0.85);letter-spacing:0.5px;margin-top:1px}
+.hdr-back{padding:7px 16px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.8);border-radius:8px;font-size:0.75rem;cursor:pointer}
+.hdr-back:hover{background:rgba(255,255,255,0.14);color:#fff}
+
+/* STATS */
+.stats{display:flex;background:var(--s);border-bottom:1px solid var(--b);box-shadow:0 1px 6px rgba(0,0,0,0.06)}
+.st{flex:1;padding:13px 20px;text-align:center;border-right:1px solid var(--b)}
+.st:last-child{border-right:none}
+.st-n{font-size:1.3rem;font-weight:800;color:var(--p)}
+.st-l{font-size:0.6rem;color:var(--m);text-transform:uppercase;letter-spacing:0.6px;margin-top:2px}
+
+/* MAIN */
+.main{max-width:1140px;margin:0 auto;padding:32px 22px}
+
+/* SEARCH */
+.srch{background:var(--s);border-radius:14px;border:1px solid var(--bs);border-top:4px solid var(--p);padding:26px 28px 20px;margin-bottom:10px;box-shadow:0 4px 20px rgba(90,20,0,0.08)}
+.srch-top{display:flex;align-items:baseline;gap:10px;margin-bottom:14px}
+.srch-badge{background:var(--p);color:#fff;font-size:0.62rem;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.5px;text-transform:uppercase}
+.srch-title{font-size:1rem;font-weight:700;color:var(--pd)}
 .srch-row{display:flex;gap:8px}
-.srch-inp{flex:1;padding:11px 16px;background:var(--bg);border:1.5px solid var(--bs);border-radius:8px;color:var(--t);font-size:0.92rem;font-family:inherit;outline:none}
-.srch-inp:focus{border-color:var(--p)}
+.srch-inp{flex:1;padding:12px 16px;background:var(--bg);border:1.5px solid var(--bs);border-radius:9px;color:var(--t);font-size:0.92rem;font-family:inherit;outline:none}
+.srch-inp:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(139,32,0,0.08)}
 .srch-inp::placeholder{color:var(--m)}
-.srch-btn{padding:11px 20px;background:var(--p);color:#fff;border:none;border-radius:8px;font-size:0.86rem;cursor:pointer;font-weight:600}
+.srch-btn{padding:12px 22px;background:var(--p);color:#fff;border:none;border-radius:9px;font-size:0.86rem;cursor:pointer;font-weight:700;letter-spacing:0.2px}
 .srch-btn:hover{background:var(--pl)}
-.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
-.tag{padding:4px 11px;background:var(--s2);border:1px solid var(--b);border-radius:20px;font-size:0.72rem;color:var(--t2);cursor:pointer}
-.tag:hover{border-color:var(--p);color:var(--p);background:#fff5f0}
-.shighra{text-align:center;font-size:0.75rem;color:var(--m);padding:9px 16px;border:1px dashed var(--bs);border-radius:8px;margin-bottom:22px;background:var(--s2)}
-.shighra strong{color:var(--g)}
-#srchRes{margin-bottom:6px}
-.rc{font-size:0.79rem;color:var(--m);margin-bottom:13px}
-.rcard{background:var(--s);border:1px solid var(--b);border-left:3px solid var(--p);border-radius:9px;padding:13px 16px;margin-bottom:8px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
-.rcard:hover{border-left-color:var(--gl)}
-.rcard.open{border-left-color:var(--gl);background:#fffdf8}
-.rt{font-weight:600;color:var(--pd);margin-bottom:3px;font-size:0.88rem}
-.rs{font-size:0.65rem;color:var(--g);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:5px;font-weight:600}
-.rm{font-size:0.81rem;color:var(--t2);line-height:1.5}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tag{padding:4px 12px;background:var(--s2);border:1px solid var(--b);border-radius:20px;font-size:0.71rem;color:var(--t2);cursor:pointer;transition:all 0.12s}
+.tag:hover{background:#fff5f0;border-color:var(--p);color:var(--p)}
+
+/* SHIGHRA */
+.note{text-align:center;padding:9px 16px;border:1px dashed var(--bs);border-radius:8px;margin-bottom:26px;background:var(--s2);font-size:0.74rem;color:var(--m)}
+.note strong{color:var(--g)}
+
+/* SEARCH RESULTS */
+#res{margin-bottom:8px}
+.rc{font-size:0.78rem;color:var(--m);margin-bottom:12px}
+.rcard{background:var(--s);border:1px solid var(--b);border-left:3px solid var(--p);border-radius:10px;padding:13px 16px;margin-bottom:8px;cursor:pointer;box-shadow:0 1px 5px rgba(0,0,0,0.05)}
+.rcard:hover,.rcard.open{border-left-color:var(--gl);background:#fffdf8}
+.rt{font-weight:700;color:var(--pd);margin-bottom:3px;font-size:0.88rem}
+.rs{font-size:0.64rem;color:var(--g);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:5px;font-weight:600}
+.rm{font-size:0.8rem;color:var(--t2);line-height:1.55}
 .rb{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--b)}
 .rcard.open .rb{display:block}
-.rb ul{padding-left:16px;font-size:0.81rem;color:var(--t);line-height:1.8}
-.cbtn{margin-top:9px;padding:5px 11px;background:var(--s2);border:1px solid var(--bs);border-radius:6px;font-size:0.71rem;color:var(--t2);cursor:pointer}
+.rb ul{padding-left:15px;font-size:0.8rem;color:var(--t);line-height:1.8}
+.cbtn{margin-top:9px;padding:5px 12px;background:var(--s2);border:1px solid var(--bs);border-radius:6px;font-size:0.7rem;color:var(--t2);cursor:pointer}
 .cbtn:hover{background:var(--p);color:#fff;border-color:var(--p)}
-.cbtn.ok{background:#166534;color:#fff;border-color:#166534}
-.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.sec-t{font-size:0.95rem;font-weight:700;color:var(--pd)}
-.sec-b{font-size:0.7rem;color:var(--m);background:var(--s2);border:1px solid var(--b);padding:3px 10px;border-radius:20px}
-.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:36px}
-.bcard{background:var(--s);border:1px solid var(--b);border-radius:12px;cursor:pointer;transition:all 0.18s;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.05)}
-.bcard:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
-.bcard-top{padding:18px 18px 0;position:relative}
-.bcard-stripe{height:4px;border-radius:12px 12px 0 0;position:absolute;top:0;left:0;right:0}
-.bcard-icon{font-size:2rem;margin-bottom:8px;margin-top:10px}
-.bcard-title{font-size:0.88rem;font-weight:700;color:var(--t);margin-bottom:4px;line-height:1.35}
-.bcard-desc{font-size:0.73rem;color:var(--m);line-height:1.4;margin-bottom:10px}
-.bcard-foot{padding:10px 18px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--b);background:var(--s2)}
-.bcard-count{font-size:0.71rem;color:var(--m)}
-.bcard-arrow{font-size:0.8rem;color:var(--bs)}
-.bcard:hover .bcard-arrow{color:var(--p)}
-#rdrSec{display:none}
-.rdr-top{background:var(--s);border:1px solid var(--b);border-top:3px solid var(--p);border-radius:10px;margin-bottom:16px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.05)}
-.rdr-cover{padding:20px 22px 16px;border-bottom:1px solid var(--b)}
-.rdr-hdr{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.rdr-back{padding:7px 13px;background:var(--s2);border:1px solid var(--bs);border-radius:7px;cursor:pointer;font-size:0.77rem;color:var(--t2)}
-.rdr-back:hover{background:var(--p);color:#fff;border-color:var(--p)}
-.rdr-title{font-size:1rem;font-weight:700;color:var(--pd)}
-.rdr-desc{font-size:0.8rem;color:var(--m);margin-bottom:12px;line-height:1.5}
-.rdr-meta{display:flex;gap:16px}
-.rdr-meta-item{font-size:0.71rem;color:var(--m)}
-.rdr-meta-item strong{color:var(--t2)}
-.rdr-srch{padding:14px 20px;display:flex;gap:8px}
-.rdr-inp{flex:1;padding:9px 13px;background:var(--bg);border:1px solid var(--bs);border-radius:7px;color:var(--t);font-size:0.87rem;font-family:inherit;outline:none}
-.rdr-inp:focus{border-color:var(--p)}
-.rdr-sbtn{padding:9px 16px;background:var(--p);color:#fff;border:none;border-radius:7px;cursor:pointer;font-size:0.82rem;font-weight:600}
-.ecard{background:var(--s);border:1px solid var(--b);border-left:3px solid transparent;border-radius:9px;padding:13px 15px;margin-bottom:7px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
-.ecard:hover{border-left-color:var(--p)}
-.ecard.open{border-left-color:var(--gl);background:#fffdf8}
-.et{font-weight:700;font-size:0.87rem;color:var(--pd);margin-bottom:3px}
-.em{font-size:0.66rem;color:var(--m);margin-bottom:4px;font-family:monospace}
-.es{font-size:0.8rem;color:var(--t2);line-height:1.5}
-.eb{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--b)}
-.ecard.open .eb{display:block}
-.eb ul{padding-left:15px;font-size:0.8rem;color:var(--t);line-height:1.8}
-.pgn{display:flex;gap:6px;justify-content:center;margin-top:18px;flex-wrap:wrap}
-.pb{padding:7px 12px;background:var(--s);border:1px solid var(--b);border-radius:7px;cursor:pointer;font-size:0.79rem;color:var(--m)}
-.pb.a{background:var(--p);color:#fff;border-color:var(--p)}
-.pb:hover:not(.a){border-color:var(--p);color:var(--p)}
-.load{text-align:center;padding:32px;color:var(--m);font-size:0.87rem}
-.err{background:#fff5f0;border:1px solid #ffa07a;border-radius:9px;padding:13px;margin-bottom:13px;color:var(--p);font-size:0.82rem}
-@media(max-width:600px){.sbar{flex-wrap:wrap}.si{flex:1 1 50%}.srch-row,.rdr-srch{flex-direction:column}}
+.cbtn.ok{background:#166534;color:#fff}
+
+/* BOOKS SECTION */
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.sec-t{font-size:1rem;font-weight:800;color:var(--pd)}
+.sec-ct{font-size:0.69rem;background:var(--s2);border:1px solid var(--b);color:var(--m);padding:3px 10px;border-radius:20px}
+
+/* BOOK GRID */
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-bottom:40px}
+.bcard{background:var(--s);border:1px solid var(--b);border-radius:12px;overflow:hidden;cursor:pointer;transition:all 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.bcard:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,0.12);border-color:var(--bs)}
+.bc-cover{height:100px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.bc-cover-icon{font-size:2.6rem;position:relative;z-index:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.25))}
+.bc-cover-pattern{position:absolute;inset:0;opacity:0.12;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.15) 0,rgba(255,255,255,.15) 1px,transparent 0,transparent 50%);background-size:8px 8px}
+.bc-body{padding:14px 14px 12px}
+.bc-title{font-size:0.84rem;font-weight:700;color:var(--t);margin-bottom:5px;line-height:1.35}
+.bc-desc{font-size:0.71rem;color:var(--m);line-height:1.4;margin-bottom:10px}
+.bc-foot{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--b)}
+.bc-cnt{font-size:0.68rem;color:var(--m);font-weight:600}
+.bc-read{font-size:0.72rem;color:var(--p);font-weight:700;display:flex;align-items:center;gap:4px}
+.bcard:hover .bc-read{color:var(--pl)}
+
+/* LOAD */
+.load{text-align:center;padding:40px;color:var(--m);font-size:0.88rem}
+.err{background:#fff5f0;border:1px solid #e09070;border-radius:10px;padding:14px;color:var(--p);font-size:0.83rem;margin-bottom:14px}
+
+@media(max-width:600px){.stats{flex-wrap:wrap}.st{flex:1 1 50%}.srch-row{flex-direction:column}}
 </style>
 </head>
 <body>
+
 <div class="hdr">
-  <div class="hdr-brand">
-    <div class="hdr-logo">⚖️</div>
-    <div><div class="hdr-title">ज्ञान पुस्तकालय</div><div class="hdr-sub">DBS · Nyaysahayak</div></div>
+  <div class="hdr-l">
+    <div class="hdr-ico">⚖️</div>
+    <div><div class="hdr-title">ज्ञान पुस्तकालय</div><div class="hdr-sub">DBS · Nyaysahayak · Digital Legal Library</div></div>
   </div>
-  <a href="/" class="back">← मुख्य पृष्ठ</a>
+  <a href="/" class="hdr-back">← मुख्य पृष्ठ</a>
 </div>
-<div class="sbar">
-  <div class="si"><div class="sn" id="sBooks">—</div><div class="sl">पुस्तकें</div></div>
-  <div class="si"><div class="sn" id="sEnt">—</div><div class="sl">प्रविष्टियाँ</div></div>
-  <div class="si"><div class="sn" style="color:#166534">🟢</div><div class="sl">LIVE API</div></div>
+
+<div class="stats">
+  <div class="st"><div class="st-n" id="sB">—</div><div class="st-l">पुस्तकें</div></div>
+  <div class="st"><div class="st-n" id="sE">—</div><div class="st-l">प्रविष्टियाँ</div></div>
+  <div class="st"><div class="st-n" style="color:#166534;font-size:1rem">🟢 LIVE</div><div class="st-l">Railway API</div></div>
 </div>
+
 <div class="main">
-  <div class="srch-box">
-    <div class="srch-lbl">⚡ AI खोज</div>
-    <div class="srch-hd">कोई भी नियम — पुस्तक याद रखने की आवश्यकता नहीं</div>
+
+  <div class="srch">
+    <div class="srch-top">
+      <span class="srch-badge">⚡ AI खोज</span>
+      <span class="srch-title">कोई भी नियम — पुस्तक याद रखने की आवश्यकता नहीं</span>
+    </div>
     <div class="srch-row">
-      <input class="srch-inp" id="si" type="text" placeholder="जैसे: अनुकम्पा नियुक्ति, अर्जित अवकाश, वेतन वृद्धि, पेंशन नियम..." onkeydown="if(event.key==='Enter')gs()"/>
-      <button class="srch-btn" onclick="gs()">🔍 खोजें</button>
+      <input class="srch-inp" id="si" type="text"
+        placeholder="जैसे: अनुकम्पा नियुक्ति, वेतन वृद्धि, पेंशन नियम, निलंबन प्रक्रिया..."
+        onkeydown="if(event.key==='Enter')gs()"/>
+      <button class="srch-btn" onclick="gs()">खोजें</button>
     </div>
     <div class="tags">
       <span class="tag" onclick="qs('अनुकम्पा नियुक्ति')">अनुकम्पा नियुक्ति</span>
       <span class="tag" onclick="qs('अर्जित अवकाश')">अर्जित अवकाश</span>
       <span class="tag" onclick="qs('वेतन वृद्धि')">वेतन वृद्धि</span>
-      <span class="tag" onclick="qs('पेंशन नियम')">पेंशन नियम</span>
+      <span class="tag" onclick="qs('पेंशन नियम')">पेंशन</span>
       <span class="tag" onclick="qs('निलंबन')">निलंबन</span>
       <span class="tag" onclick="qs('विभागीय जांच')">विभागीय जांच</span>
-      <span class="tag" onclick="qs('सेवानिवृत्ति')">सेवानिवृत्ति</span>
       <span class="tag" onclick="qs('यात्रा भत्ता')">यात्रा भत्ता</span>
-      <span class="tag" onclick="qs('चिकित्सा प्रतिपूर्ति')">चिकित्सा प्रतिपूर्ति</span>
+      <span class="tag" onclick="qs('चिकित्सा प्रतिपूर्ति')">चिकित्सा</span>
+      <span class="tag" onclick="qs('सेवानिवृत्ति')">सेवानिवृत्ति</span>
     </div>
   </div>
-  <div id="srchRes"></div>
-  <div class="shighra">📚 <strong>शीघ्र</strong> — उत्तर प्रदेश सरकार की समस्त महत्वपूर्ण नियमावली एवं पुस्तकें यहाँ उपलब्ध होंगी</div>
+
+  <div id="res"></div>
+
+  <div class="note">📚 <strong>शीघ्र</strong> — उत्तर प्रदेश शासन की समस्त महत्वपूर्ण नियमावली एवं पुस्तकें यहाँ उपलब्ध होंगी</div>
+
   <div id="bookSec">
     <div class="sec-hdr">
-      <div class="sec-t">📚 उपलब्ध पुस्तकें एवं मैनुअल</div>
-      <div class="sec-b" id="bCnt">लोड हो रही हैं...</div>
+      <div class="sec-t">📚 उपलब्ध पुस्तकें</div>
+      <div class="sec-ct" id="bCt">—</div>
     </div>
-    <div class="bgrid" id="bgrid"><div class="load">लोड हो रही हैं...</div></div>
+    <div class="bgrid" id="bg"><div class="load">लोड हो रही हैं...</div></div>
   </div>
-  <div id="rdrSec">
-    <div class="rdr-top">
-      <div class="rdr-cover">
-        <div class="rdr-hdr">
-          <button class="rdr-back" onclick="goBack()">← वापस</button>
-          <div class="rdr-title" id="rdrTitle">—</div>
-        </div>
-        <div class="rdr-desc" id="rdrDesc"></div>
-        <div class="rdr-meta">
-          <div class="rdr-meta-item"><strong id="rdrCount">—</strong> प्रविष्टियाँ</div>
-        </div>
-      </div>
-      <div class="rdr-srch">
-        <input class="rdr-inp" id="ri" type="text" placeholder="इस पुस्तक में खोजें..." onkeydown="if(event.key==='Enter')sb()"/>
-        <button class="rdr-sbtn" onclick="sb()">खोजें</button>
-      </div>
-    </div>
-    <div id="rdrEnt"><div class="load">लोड हो रहा है...</div></div>
-    <div id="rdrPgn" class="pgn"></div>
-  </div>
+
 </div>
+
 <script>
 const API='https://nyaysahayak-api-production.up.railway.app';
-const PS=30;
-const BOOKS={
-  'Financial Handbook Vol 2':{icon:'📘',color:'#8B2000',desc:'वेतन, भत्ते, यात्रा व्यय एवं वित्तीय नियम — उत्तर प्रदेश सरकार'},
-  'Financial Handbook Vol 3':{icon:'📗',color:'#1a5c35',desc:'आकस्मिकता निधि, लेखा, ऑडिट एवं स्टोर नियम'},
-  'Financial Handbook Vol 5 Part 1':{icon:'📙',color:'#8a5e00',desc:'पेंशन, ग्रेच्युटी एवं सेवानिवृत्ति वित्तीय नियम'},
-  'Financial Handbook Vol 5 Part 2':{icon:'📒',color:'#8a5e00',desc:'पेंशन नियमावली — भाग 2'},
-  'Seva Vidhi Vol 4 - Nivritti':{icon:'📕',color:'#6b1a3a',desc:'सेवानिवृत्ति, पेंशन, ग्रेच्युटी एवं पारिवारिक पेंशन नियमावली'},
-  'Seva Vidhi Vol 5 - Shashnadesh':{icon:'📓',color:'#1a3d7a',desc:'सेवा विधि के अन्तर्गत महत्वपूर्ण शासनादेशों का संकलन'},
-  'Civil Service Regulations (CSR)':{icon:'📔',color:'#004d6b',desc:'सिविल सेवा विनियम — पेंशन, अवकाश एवं सेवा शर्तें'},
-  'UP Procurement Manual (MSME)':{icon:'📋',color:'#5a1f7a',desc:'MSME क्रय नियमावली — उत्तर प्रदेश सरकार'},
-  'UP Budget Manual':{icon:'📃',color:'#166534',desc:'बजट नियमावली — उत्तर प्रदेश सरकार'},
-  'UP Police Kalyan Hastapustika 2012':{icon:'🛡️',color:'#7a3800',desc:'उत्तर प्रदेश पुलिस कल्याण हस्तपुस्तिका 2012'},
-  'Allahabad High Court':{icon:'⚖️',color:'#8B2000',desc:'इलाहाबाद उच्च न्यायालय — महत्वपूर्ण निर्णय'},
-  'Allahabad High Court Lucknow Bench':{icon:'⚖️',color:'#8B2000',desc:'इलाहाबाद उच्च न्यायालय लखनऊ पीठ — निर्णय'},
+const META={
+  'Financial Handbook Vol 2':{ico:'📘',bg:'linear-gradient(135deg,#8B2000,#c03000)',desc:'वेतन, भत्ते, यात्रा व्यय एवं वित्तीय नियम'},
+  'Financial Handbook Vol 3':{ico:'📗',bg:'linear-gradient(135deg,#1a5c35,#2a8c55)',desc:'आकस्मिकता निधि, लेखा एवं ऑडिट नियम'},
+  'Financial Handbook Vol 5 Part 1':{ico:'📙',bg:'linear-gradient(135deg,#7a4800,#b07020)',desc:'पेंशन एवं सेवानिवृत्ति वित्तीय नियम'},
+  'Financial Handbook Vol 5 Part 2':{ico:'📒',bg:'linear-gradient(135deg,#7a4800,#b07020)',desc:'पेंशन नियमावली — भाग 2'},
+  'Seva Vidhi Vol 4 - Nivritti':{ico:'📕',bg:'linear-gradient(135deg,#6b1a3a,#9b2a5a)',desc:'सेवानिवृत्ति, पेंशन, ग्रेच्युटी नियमावली'},
+  'Seva Vidhi Vol 5 - Shashnadesh':{ico:'📓',bg:'linear-gradient(135deg,#1a3d7a,#2a5daa)',desc:'सेवा विधि — महत्वपूर्ण शासनादेश संकलन'},
+  'Civil Service Regulations (CSR)':{ico:'📔',bg:'linear-gradient(135deg,#004d6b,#00759b)',desc:'सिविल सेवा विनियम — पेंशन एवं सेवा शर्तें'},
+  'UP Procurement Manual (MSME)':{ico:'📋',bg:'linear-gradient(135deg,#5a1f7a,#7a3faa)',desc:'MSME क्रय नियमावली — उत्तर प्रदेश'},
+  'UP Budget Manual':{ico:'🏛️',bg:'linear-gradient(135deg,#166534,#228b47)',desc:'बजट नियमावली — उत्तर प्रदेश सरकार'},
+  'UP Police Kalyan Hastapustika 2012':{ico:'🛡️',bg:'linear-gradient(135deg,#7a3800,#aa5800)',desc:'उत्तर प्रदेश पुलिस कल्याण हस्तपुस्तिका 2012'},
+  'Allahabad High Court':{ico:'⚖️',bg:'linear-gradient(135deg,#8B2000,#c03000)',desc:'इलाहाबाद उच्च न्यायालय — महत्वपूर्ण निर्णय'},
+  'Allahabad High Court Lucknow Bench':{ico:'⚖️',bg:'linear-gradient(135deg,#8B2000,#c03000)',desc:'लखनऊ पीठ — उच्च न्यायालय निर्णय'},
 };
-const DEF={icon:'📖',color:'#8B2000',desc:'नियमावली एवं प्रविष्टियाँ'};
-let curBook=null,curPage=1,curQ='';
+const DEF={ico:'📖',bg:'linear-gradient(135deg,#6b6b6b,#9b9b9b)',desc:'नियमावली एवं प्रविष्टियाँ'};
 
 async function loadBooks(){
   try{
@@ -187,104 +170,40 @@ async function loadBooks(){
     const d=await r.json();
     const books=d.books||[];
     const tot=d.total_entries||books.reduce((s,b)=>s+b.count,0);
-    document.getElementById('sBooks').textContent=books.length;
-    document.getElementById('sEnt').textContent=Number(tot).toLocaleString('hi-IN');
-    document.getElementById('bCnt').textContent=books.length+' पुस्तकें';
-    const g=document.getElementById('bgrid');
+    document.getElementById('sB').textContent=books.length;
+    document.getElementById('sE').textContent=Number(tot).toLocaleString('hi-IN');
+    document.getElementById('bCt').textContent=books.length+' पुस्तकें';
+    const g=document.getElementById('bg');
     g.innerHTML='';
     books.forEach(b=>{
-      const name=b.name||b.source||'—';
-      const meta=BOOKS[name]||DEF;
-      const div=document.createElement('div');
-      div.className='bcard';
-      div.innerHTML=`<div class="bcard-stripe" style="background:${meta.color}"></div>
-        <div class="bcard-top">
-          <div class="bcard-icon">${meta.icon}</div>
-          <div class="bcard-title">${eh(name)}</div>
-          <div class="bcard-desc">${eh(meta.desc)}</div>
+      const nm=b.name||b.source||'—';
+      const m=META[nm]||DEF;
+      const d2=document.createElement('div');
+      d2.className='bcard';
+      d2.innerHTML=`<div class="bc-cover" style="background:${m.bg}">
+        <div class="bc-cover-pattern"></div>
+        <div class="bc-cover-icon">${m.ico}</div>
+      </div>
+      <div class="bc-body">
+        <div class="bc-title">${eh(nm)}</div>
+        <div class="bc-desc">${eh(m.desc)}</div>
+        <div class="bc-foot">
+          <span class="bc-cnt">${Number(b.count).toLocaleString('hi-IN')} प्रविष्टियाँ</span>
+          <span class="bc-read">पढ़ें →</span>
         </div>
-        <div class="bcard-foot">
-          <span class="bcard-count">${Number(b.count).toLocaleString('hi-IN')} प्रविष्टियाँ</span>
-          <span class="bcard-arrow">पढ़ें →</span>
-        </div>`;
-      const readerMap = {
-  'Financial Handbook Vol 2': '/fhb-reader.html',
-  'Financial Handbook Vol 3': '/fhb-reader.html',
-  'Secretariat Manual (SAD)': '/sad-reader.html',
-  'Seva Vidhi (Service Laws)': '/sv-reader.html',
-  'UP Procurement Manual (MSME)': '/pm-reader.html',
-};
-div.onclick=()=>{ window.location.href='/reader.html?book='+encodeURIComponent(name); };
-      g.appendChild(div);
+      </div>`;
+      d2.onclick=()=>{window.location.href='/reader.html?book='+encodeURIComponent(nm);};
+      g.appendChild(d2);
     });
   }catch(e){
-    document.getElementById('bgrid').innerHTML='<div class="err">❌ API से कनेक्ट नहीं हो पाया।</div>';
+    document.getElementById('bg').innerHTML='<div class="err">❌ API से कनेक्ट नहीं हो पाया।</div>';
   }
-}
-
-async function openBook(name,meta,count){
-  curBook=name;curPage=1;curQ='';
-  document.getElementById('ri').value='';
-  document.getElementById('bookSec').style.display='none';
-  document.getElementById('srchRes').style.display='none';
-  document.getElementById('rdrSec').style.display='block';
-  document.getElementById('rdrTitle').textContent=name;
-  document.getElementById('rdrDesc').textContent=(meta||DEF).desc;
-  document.getElementById('rdrCount').textContent=Number(count||0).toLocaleString('hi-IN');
-  await lp();
-}
-
-async function lp(){
-  document.getElementById('rdrEnt').innerHTML='<div class="load">लोड हो रहा है...</div>';
-  try{
-    const url=curQ?API+'/search?q='+encodeURIComponent(curQ)+'&book='+encodeURIComponent(curBook)+'&limit=100':API+'/browse/'+encodeURIComponent(curBook)+'?page='+curPage+'&limit='+PS;
-    const r=await fetch(url);
-    const d=await r.json();
-    const ents=d.entries||d.results||[];
-    const tot=d.total||ents.length;
-    renderEnts(ents);
-    if(!curQ)renderPgn(tot);
-    else document.getElementById('rdrPgn').innerHTML='';
-  }catch(e){
-    document.getElementById('rdrEnt').innerHTML='<div class="err">त्रुटि: '+eh(e.message)+'</div>';
-  }
-}
-
-function renderEnts(ents){
-  if(!ents.length){document.getElementById('rdrEnt').innerHTML='<div class="load">कोई प्रविष्टि नहीं मिली।</div>';return;}
-  let h='';
-  ents.forEach(e=>{
-    const pv=(e.key_provisions||[]).filter(p=>p&&p.trim().length>10).slice(0,8).map(p=>'<li>'+eh(p)+'</li>').join('');
-    const meta=[e.file_number,e.date,e.issuing_authority].filter(Boolean);
-    const cite=[e.title,e.source||e.department,e.file_number,e.date].filter(Boolean).join(' | ');
-    h+='<div class="ecard" onclick="this.classList.toggle(\'open\')"><div class="et">'+eh(e.title||'—')+'</div>'+(meta.length?'<div class="em">'+meta.map(eh).join(' · ')+'</div>':'')+'<div class="es">'+eh((e.summary||'').slice(0,200))+((e.summary||'').length>200?'...':'')+'</div><div class="eb"><ul>'+pv+'</ul><button class="cbtn" onclick="event.stopPropagation();cc(this,\''+ea(cite)+'\')">📋 Citation कॉपी</button></div></div>';
-  });
-  document.getElementById('rdrEnt').innerHTML=h;
-}
-
-function renderPgn(tot){
-  const pg=Math.ceil(tot/PS);
-  if(pg<=1){document.getElementById('rdrPgn').innerHTML='';return;}
-  let h='';
-  for(let i=1;i<=Math.min(pg,25);i++)h+='<button class="pb'+(i===curPage?' a':'')+'" onclick="gp('+i+')">'+i+'</button>';
-  document.getElementById('rdrPgn').innerHTML=h;
-}
-
-async function gp(p){curPage=p;await lp();window.scrollTo(0,180);}
-async function sb(){curQ=document.getElementById('ri').value.trim();curPage=1;await lp();}
-
-function goBack(){
-  document.getElementById('rdrSec').style.display='none';
-  document.getElementById('bookSec').style.display='block';
-  document.getElementById('srchRes').style.display='block';
-  curBook=null;
 }
 
 async function gs(){
   const q=document.getElementById('si').value.trim();
   if(!q)return;
-  const div=document.getElementById('srchRes');
-  div.style.display='block';
+  const div=document.getElementById('res');
   div.innerHTML='<div class="load">खोज रहे हैं...</div>';
   try{
     const r=await fetch(API+'/search?q='+encodeURIComponent(q)+'&limit=40');
@@ -293,28 +212,25 @@ async function gs(){
     if(!ents.length){div.innerHTML='<div class="load">कोई परिणाम नहीं मिला।</div>';return;}
     let h='<div class="rc">'+ents.length+' परिणाम — "<strong>'+eh(q)+'</strong>"</div>';
     ents.forEach(e=>{
-      const pv=(e.key_provisions||[]).filter(p=>p&&p.trim().length>10).slice(0,6).map(p=>'<li>'+eh(p)+'</li>').join('');
+      const pv=(e.key_provisions||[]).filter(p=>p&&p.trim().length>10).slice(0,5).map(p=>'<li>'+eh(p)+'</li>').join('');
       const cite=[e.title,e.source||e.department,e.file_number,e.date].filter(Boolean).join(' | ');
-      h+='<div class="rcard" onclick="this.classList.toggle(\'open\')"><div class="rt">'+eh(e.title||'—')+'</div><div class="rs">📖 '+eh(e.source||e.department||'')+(e.date?' · '+eh(e.date):'')+'</div><div class="rm">'+eh((e.summary||'').slice(0,200))+((e.summary||'').length>200?'...':'')+'</div><div class="rb"><ul>'+pv+'</ul><button class="cbtn" onclick="event.stopPropagation();cc(this,\''+ea(cite)+'\')">📋 Citation कॉपी</button></div></div>';
+      const bookLink=e.source?'/reader.html?book='+encodeURIComponent(e.source):'';
+      h+='<div class="rcard" onclick="this.classList.toggle(\'open\')"><div class="rt">'+eh(e.title||'—')+'</div>'
+       +'<div class="rs">📖 '+eh(e.source||e.department||'')+(e.date?' · '+eh(e.date):'')+'</div>'
+       +'<div class="rm">'+eh((e.summary||'').slice(0,200))+((e.summary||'').length>200?'...':'')+'</div>'
+       +'<div class="rb"><ul>'+pv+'</ul>'
+       +(bookLink?'<a href="'+bookLink+'" target="_blank" style="display:inline-block;margin-top:9px;margin-right:8px;padding:5px 12px;background:#fff5f0;border:1px solid #c8b49a;border-radius:6px;font-size:0.7rem;color:#8B2000;font-weight:700;">📖 पुस्तक खोलें</a>':'')
+       +'<button class="cbtn" onclick="event.stopPropagation();cc(this,\''+ea(cite)+'\')">📋 Citation</button>'
+       +'</div></div>';
     });
     div.innerHTML=h;
   }catch(e){div.innerHTML='<div class="err">खोज में त्रुटि।</div>';}
 }
-
 function qs(q){document.getElementById('si').value=q;gs();}
-
-function cc(btn,t){
-  navigator.clipboard.writeText(t).then(()=>{btn.textContent='✅ Copied!';btn.classList.add('ok');setTimeout(()=>{btn.textContent='📋 Citation कॉपी';btn.classList.remove('ok');},2000);}).catch(()=>prompt('Citation:',t));
-}
-
-function checkQ(){
-  const q=new URLSearchParams(window.location.search).get('q');
-  if(q){document.getElementById('si').value=q;gs();}
-}
-
-function eh(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function ea(s){if(!s)return'';return String(s).replace(/'/g,'&#39;').replace(/"/g,'&quot;');}
-
+function cc(btn,t){navigator.clipboard.writeText(t).then(()=>{btn.textContent='✅';btn.classList.add('ok');setTimeout(()=>{btn.textContent='📋 Citation';btn.classList.remove('ok');},2000);}).catch(()=>prompt('Citation:',t));}
+function checkQ(){const q=new URLSearchParams(window.location.search).get('q');if(q){document.getElementById('si').value=q;gs();}}
+function eh(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function ea(s){if(!s)return'';return String(s).replace(/'/g,'&#39;');}
 loadBooks();checkQ();
 </script>
 </body>
