@@ -159,9 +159,10 @@ function init(){
     var raw=Array.isArray(data)?data:(data.chapters||[]);
     chapters=raw.map(function(c,i){
       return{
-        num:c.num||c.pages||(i+1),
+        num:i+1,
         topic:cleanTopic(c.topic,i),
         pages:c.pages||'',
+        filename:c.filename||'',
         content:c.content||''
       };
     });
@@ -227,28 +228,45 @@ function openCh(idx){
   var wrap=document.getElementById('cWrap');
   wrap.style.display='block';
 
-  wrap.innerHTML=
-    '<div class="ch-header">'+
-    '<div class="ch-badge">📖 अध्याय '+numLabel(ch.num,idx)+'</div>'+
-    '<div class="ch-main-title">'+esc(ch.topic)+'</div>'+
-    (ch.pages?'<div class="ch-meta">📄 पृष्ठ: '+esc(String(ch.pages))+'</div>':'')+
-    '</div>'+
+  function renderContent(content){
+    wrap.innerHTML=
+      '<div class="ch-header">'+
+      '<div class="ch-badge">📖 अध्याय '+ch.num+'</div>'+
+      '<div class="ch-main-title">'+esc(ch.topic)+'</div>'+
+      (ch.pages?'<div class="ch-meta">📄 पृष्ठ: '+esc(String(ch.pages))+'</div>':'')+
+      '</div>'+
 
-    '<div class="nav-bar">'+
-    '<button class="nav-btn" onclick="openCh('+(idx-1)+')" '+(prev?'':'disabled')+'>← '+(prev?trunc(prev.topic,20):'प्रथम')+'</button>'+
-    '<button class="nav-top" onclick="document.getElementById(\'readerArea\').scrollTop=0">↑ शीर्ष</button>'+
-    '<button class="nav-btn" onclick="openCh('+(idx+1)+')" '+(next?'':'disabled')+'>'+(next?trunc(next.topic,20):'अंतिम')+' →</button>'+
-    '</div>'+
+      '<div class="nav-bar">'+
+      '<button class="nav-btn" onclick="openCh('+(idx-1)+')" '+(prev?'':'disabled')+'>← '+(prev?trunc(prev.topic,20):'प्रथम')+'</button>'+
+      '<button class="nav-top" onclick="document.getElementById(\'readerArea\').scrollTop=0">↑ शीर्ष</button>'+
+      '<button class="nav-btn" onclick="openCh('+(idx+1)+')" '+(next?'':'disabled')+'>'+(next?trunc(next.topic,20):'अंतिम')+' →</button>'+
+      '</div>'+
 
-    '<div class="content-body">'+fmtContent(ch.content)+'</div>'+
+      '<div class="content-body">'+fmtContent(content)+'</div>'+
 
-    '<div class="bottom-nav">'+
-    '<button class="nav-btn" onclick="openCh('+(idx-1)+')" '+(prev?'':'disabled')+'>← पूर्व अध्याय</button>'+
-    '<button class="nav-top" onclick="document.getElementById(\'readerArea\').scrollTop=0">↑ ऊपर</button>'+
-    '<button class="nav-btn" onclick="openCh('+(idx+1)+')" '+(next?'':'disabled')+'>अगला अध्याय →</button>'+
-    '</div>';
+      '<div class="bottom-nav">'+
+      '<button class="nav-btn" onclick="openCh('+(idx-1)+')" '+(prev?'':'disabled')+'>← पूर्व अध्याय</button>'+
+      '<button class="nav-top" onclick="document.getElementById(\'readerArea\').scrollTop=0">↑ ऊपर</button>'+
+      '<button class="nav-btn" onclick="openCh('+(idx+1)+')" '+(next?'':'disabled')+'>अगला अध्याय →</button>'+
+      '</div>';
+    document.getElementById('readerArea').scrollTop=0;
+  }
 
-  document.getElementById('readerArea').scrollTop=0;
+  // If content already in memory, use it; else fetch from API
+  if(ch.content){
+    renderContent(ch.content);
+  } else if(ch.filename){
+    wrap.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:200px;gap:12px;color:var(--muted)"><div class="spinner"></div><span>सामग्री लोड हो रही है…</span></div>';
+    fetch(API+bk.ep+'/'+encodeURIComponent(ch.filename))
+      .then(function(r){return r.json();})
+      .then(function(d){
+        ch.content=d.content||'';
+        renderContent(ch.content);
+      })
+      .catch(function(){renderContent('');});
+  } else {
+    renderContent('');
+  }
   var u=new URL(location.href);
   u.searchParams.set('ch',String(idx));
   history.replaceState(null,'',u.toString());
