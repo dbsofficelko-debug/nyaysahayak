@@ -207,7 +207,16 @@ async function loadBooks(){
           <span class="bcard-count">${Number(b.count).toLocaleString('hi-IN')} प्रविष्टियाँ</span>
           <span class="bcard-arrow">पढ़ें →</span>
         </div>`;
-      div.onclick=()=>openBook(name,meta,b.count);
+      const readerMap = {
+  'Financial Handbook Vol 2': '/fhb-reader.html',
+  'Financial Handbook Vol 3': '/fhb-reader.html',
+  'Secretariat Manual (SAD)': '/sad-reader.html',
+  'Seva Vidhi (Service Laws)': '/sv-reader.html',
+  'UP Procurement Manual (MSME)': '/pm-reader.html',
+};
+const rdrUrl = readerMap[name];
+if(rdrUrl) { window.location.href = rdrUrl; return; }
+div.onclick=()=>openBook(name,meta,b.count);
       g.appendChild(div);
     });
   }catch(e){
