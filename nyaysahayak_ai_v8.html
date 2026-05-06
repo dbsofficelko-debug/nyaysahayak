@@ -2318,6 +2318,13 @@ function addActionsTo(bub, text, suggestions, msgs) {
   };
 
   actRow.appendChild(copyBtn); actRow.appendChild(waBtn);
+  const libA = document.createElement('a');
+  const libQ = encodeURIComponent(text.slice(0,80));
+  libA.href = 'https://nyaysahayak.co.in/library?q=' + libQ;
+  libA.target = '_blank';
+  libA.innerHTML = '📖 पुस्तकालय';
+  libA.style.cssText = 'background:#fff5f0;border:1px solid #c8b89a;border-radius:20px;padding:3px 12px;font-size:11px;color:#8B2000;text-decoration:none;font-weight:600;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;';
+  actRow.appendChild(libA);
   actRow.appendChild(thumbUp); actRow.appendChild(thumbDown);
   bub.appendChild(actRow);
   msgs.scrollTop = msgs.scrollHeight;
