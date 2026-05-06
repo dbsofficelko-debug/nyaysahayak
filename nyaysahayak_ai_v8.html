@@ -2319,8 +2319,19 @@ function addActionsTo(bub, text, suggestions, msgs) {
 
   actRow.appendChild(copyBtn); actRow.appendChild(waBtn);
   const libA = document.createElement('a');
+  const bookMap = {
+    'FHB':'Financial Handbook Vol 2','वित्तीय हस्तपुस्तिका':'Financial Handbook Vol 2',
+    'Financial Handbook':'Financial Handbook Vol 2','CSR':'Civil Service Regulations (CSR)',
+    'Seva Vidhi Vol 5':'Seva Vidhi Vol 5 - Shashnadesh','Seva Vidhi Vol 4':'Seva Vidhi Vol 4 - Nivritti',
+    'Procurement':'UP Procurement Manual (MSME)','Budget Manual':'UP Budget Manual',
+    'Police Kalyan':'UP Police Kalyan Hastapustika 2012'
+  };
+  let detectedBook = '';
+  for(const [kw,bk] of Object.entries(bookMap)){
+    if(text.includes(kw)){detectedBook=bk;break;}
+  }
   const libQ = encodeURIComponent(text.slice(0,80));
-  libA.href = 'https://nyaysahayak.co.in/library?q=' + libQ;
+  libA.href = detectedBook ? 'https://nyaysahayak.co.in/reader.html?book='+encodeURIComponent(detectedBook) : 'https://nyaysahayak.co.in/library?q='+libQ;
   libA.target = '_blank';
   libA.innerHTML = '📖 पुस्तकालय';
   libA.style.cssText = 'background:#fff5f0;border:1px solid #c8b89a;border-radius:20px;padding:3px 12px;font-size:11px;color:#8B2000;text-decoration:none;font-weight:600;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;';
