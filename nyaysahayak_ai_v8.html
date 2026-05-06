@@ -2196,7 +2196,15 @@ function streamTextInto(bub, text, suggestions, msgs) {
       msgs.scrollTop = msgs.scrollHeight;
     }
     
-    bub.innerHTML = mdToHtml(rendered);
+    const _html = mdToHtml(rendered);
+    bub.innerHTML = (typeof DOMPurify !== 'undefined')
+      ? DOMPurify.sanitize(_html, {
+          ALLOWED_TAGS: ['strong','em','b','i','br','p','ul','ol','li',
+                         'code','pre','table','tr','td','th','thead','tbody',
+                         'h1','h2','h3','h4','span','hr','div'],
+          ALLOWED_ATTR: ['style','class']
+        })
+      : _html;
     // Auto scroll while streaming
     const isNearBottom = msgs.scrollHeight - msgs.scrollTop - msgs.clientHeight < 80;
     if (isNearBottom) msgs.scrollTop = msgs.scrollHeight;
