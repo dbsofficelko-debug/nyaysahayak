@@ -70,10 +70,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 </div>
 <div class="layout">
   <div class="sidebar">
-    <div class="sb-head">
-      <div class="sb-label">अध्याय सूची</div>
-      <input class="sb-search" id="sbSearch" type="text" placeholder="अध्याय खोजें..." oninput="filterChapters(this.value)"/>
-    </div>
+    <div class="sb-head"><div class="sb-label">अध्याय सूची</div></div>
     <div class="sb-list" id="sbList"><div class="empty">लोड हो रहा है...</div></div>
   </div>
   <div class="content">
@@ -129,9 +126,7 @@ function renderSidebar(list){
   }).join('');
 }
 
-function filterChapters(q){
-  if(!q.trim()){renderSidebar(chapters);return;}
-  const filtered=chapters.filter(e=>(e.title||'').toLowerCase().includes(q.toLowerCase())||(e.summary||'').toLowerCase().includes(q.toLowerCase()));
+function filterChapters(q){if(!q.trim()){return;} const filtered=chapters.filter(e=>(e.title||'').toLowerCase().includes(q.toLowerCase())||(e.summary||'').toLowerCase().includes(q.toLowerCase()));
   renderSidebar(filtered);
 }
 
