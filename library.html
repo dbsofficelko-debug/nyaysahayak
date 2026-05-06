@@ -1,235 +1,118 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>ज्ञान पुस्तकालय — Nyaysahayak</title>
 <style>
-  :root {
-    --primary: #1a3a5c;
-    --accent: #c9a84c;
-    --bg: #f5f3ee;
-    --card: #ffffff;
-    --text: #1a1a2e;
-    --muted: #6b7280;
-    --border: #e2d9c8;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+:root {
+  --primary:#8B2000; --primary-light:#c0392b; --gold:#c8961e;
+  --bg:#0f0f0f; --surface:#1a1a1a; --surface2:#242424;
+  --border:#2e2e2e; --text:#e8e8e8; --muted:#888; --white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{text-decoration:none;color:inherit}
 
-  /* HEADER */
-  .header {
-    background: var(--primary);
-    padding: 18px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  }
-  .header-brand { display: flex; align-items: center; gap: 14px; }
-  .header-logo { width: 44px; height: 44px; background: var(--accent); border-radius: 8px;
-    display: flex; align-items: center; justify-content: center; font-size: 22px; }
-  .header-title { color: #fff; }
-  .header-title h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.5px; }
-  .header-title p { font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
-  .back-btn {
-    background: rgba(255,255,255,0.12);
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.25);
-    padding: 8px 18px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: background 0.2s;
-    text-decoration: none;
-    display: inline-block;
-  }
-  .back-btn:hover { background: rgba(255,255,255,0.22); }
+/* HEADER */
+.header{background:linear-gradient(135deg,#1a0a00 0%,#2d0a00 50%,#1a0a00 100%);border-bottom:1px solid #3d1500;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:100}
+.header-brand{display:flex;align-items:center;gap:12px}
+.header-logo{width:36px;height:36px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.header-title{font-size:1.1rem;font-weight:700;color:var(--white)}
+.header-sub{font-size:0.72rem;color:var(--gold);letter-spacing:0.5px}
+.back-btn{padding:8px 16px;border:1px solid #3d1500;background:transparent;color:var(--muted);border-radius:8px;cursor:pointer;font-size:0.8rem}
+.back-btn:hover{background:var(--surface);color:var(--text)}
 
-  /* MAIN */
-  .main { max-width: 1100px; margin: 0 auto; padding: 32px 20px; }
+/* STATS BAR */
+.stats-bar{display:flex;gap:0;border-bottom:1px solid var(--border);background:var(--surface)}
+.stat-item{flex:1;padding:14px 20px;text-align:center;border-right:1px solid var(--border)}
+.stat-item:last-child{border-right:none}
+.stat-num{font-size:1.4rem;font-weight:700;color:var(--primary-light)}
+.stat-label{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
 
-  /* STATS BAR */
-  .stats-bar {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px 24px;
-    margin-bottom: 28px;
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    flex-wrap: wrap;
-  }
-  .stat { text-align: center; }
-  .stat-num { font-size: 1.6rem; font-weight: 700; color: var(--primary); }
-  .stat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
-  .stat-divider { width: 1px; height: 40px; background: var(--border); }
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:32px 20px}
 
-  /* SECTION TITLE */
-  .section-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--primary);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+/* HERO SEARCH */
+.search-hero{background:linear-gradient(135deg,var(--surface) 0%,#1e0d00 100%);border:1px solid #3d1500;border-radius:16px;padding:32px 28px;margin-bottom:12px}
+.search-hero-title{font-size:0.75rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px}
+.search-hero-heading{font-size:1.2rem;font-weight:600;color:var(--white);margin-bottom:20px}
+.search-row{display:flex;gap:10px}
+.search-input{flex:1;padding:14px 18px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:1rem;font-family:inherit;outline:none;transition:border-color 0.2s}
+.search-input:focus{border-color:var(--primary-light)}
+.search-input::placeholder{color:var(--muted)}
+.search-btn{padding:14px 24px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:0.9rem;cursor:pointer;font-weight:600;transition:background 0.2s;white-space:nowrap}
+.search-btn:hover{background:var(--primary-light)}
+.search-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.search-tag{padding:5px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;font-size:0.75rem;color:var(--muted);cursor:pointer;transition:all 0.15s}
+.search-tag:hover{border-color:var(--primary);color:var(--primary-light)}
 
-  /* BOOK GRID */
-  .books-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 18px;
-  }
-  .book-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 22px;
-    cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
-    position: relative;
-    overflow: hidden;
-  }
-  .book-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 4px;
-    background: var(--accent);
-    transform: scaleX(0);
-    transition: transform 0.2s;
-    transform-origin: left;
-  }
-  .book-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); border-color: var(--accent); }
-  .book-card:hover::before { transform: scaleX(1); }
-  .book-icon { font-size: 2rem; margin-bottom: 12px; }
-  .book-name { font-size: 0.95rem; font-weight: 600; color: var(--primary); margin-bottom: 8px; line-height: 1.4; }
-  .book-count {
-    display: inline-block;
-    background: #eef3f8;
-    color: var(--primary);
-    font-size: 0.75rem;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-weight: 600;
-  }
-  .book-arrow { position: absolute; bottom: 16px; right: 18px; color: var(--accent); font-size: 1.1rem; }
+/* SHIGHRA */
+.shighra{text-align:center;font-size:0.78rem;color:var(--muted);padding:12px 20px;border:1px dashed #2e2e2e;border-radius:8px;margin-bottom:28px}
+.shighra span{color:var(--gold)}
 
-  /* READER SECTION */
-  .reader-section { display: none; }
-  .reader-section.active { display: block; }
-  .books-section { }
-  .books-section.hidden { display: none; }
+/* SEARCH RESULTS */
+.result-count{font-size:0.82rem;color:var(--muted);margin-bottom:16px}
+.result-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--primary);border-radius:10px;padding:16px 20px;margin-bottom:10px;cursor:pointer;transition:border-color 0.15s}
+.result-card:hover{border-color:var(--primary-light)}
+.result-card.open{border-left-color:var(--gold)}
+.result-title{font-weight:600;color:var(--white);margin-bottom:4px;font-size:0.92rem}
+.result-source{font-size:0.68rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px}
+.result-summary{font-size:0.83rem;color:#aaa;line-height:1.5}
+.result-body{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.result-card.open .result-body{display:block}
+.result-body ul{padding-left:18px;font-size:0.83rem;color:var(--text);line-height:1.8}
 
-  .reader-header {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px 24px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .reader-book-name { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
-  .reader-meta { font-size: 0.8rem; color: var(--muted); margin-top: 3px; }
+/* SECTION HEADER */
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.section-title{font-size:1rem;font-weight:600;color:var(--white)}
+.section-count{font-size:0.72rem;color:var(--muted);background:var(--surface2);padding:3px 10px;border-radius:20px}
 
-  /* SEARCH */
-  .search-bar {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  .search-bar input {
-    flex: 1;
-    padding: 10px 16px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 0.9rem;
-    background: var(--card);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .search-bar input:focus { border-color: var(--primary); }
-  .search-bar button {
-    padding: 10px 20px;
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
+/* BOOK GRID */
+.book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:40px}
+.book-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
+.book-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--card-color,var(--primary))}
+.book-card:hover{transform:translateY(-2px);border-color:var(--card-color,var(--primary));box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.book-icon{font-size:1.8rem;margin-bottom:10px}
+.book-title{font-size:0.88rem;font-weight:600;color:var(--white);margin-bottom:6px;line-height:1.4}
+.book-count{font-size:0.72rem;color:var(--muted)}
+.book-arrow{position:absolute;bottom:14px;right:16px;color:var(--muted);font-size:0.8rem;transition:color 0.15s}
+.book-card:hover .book-arrow{color:var(--card-color,var(--primary))}
 
-  /* ENTRIES */
-  .entries-list { display: flex; flex-direction: column; gap: 12px; }
-  .entry-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px 20px;
-    transition: box-shadow 0.15s;
-  }
-  .entry-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
-  .entry-num { font-size: 0.7rem; color: var(--accent); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
-  .entry-question { font-size: 0.95rem; font-weight: 600; color: var(--primary); margin-bottom: 10px; line-height: 1.5; }
-  .entry-answer { font-size: 0.88rem; color: #374151; line-height: 1.7; }
-  .entry-tags { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
-  .tag { background: #f0f4f8; color: var(--muted); font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; }
+/* READER */
+#readerSection{display:none}
+.reader-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.reader-back{padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.8rem;color:var(--muted)}
+.reader-back:hover{color:var(--text)}
+.reader-title{font-size:1.1rem;font-weight:700;color:var(--white)}
+.reader-search-row{display:flex;gap:8px;margin-bottom:20px}
+.reader-search{flex:1;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.9rem;font-family:inherit;outline:none}
+.reader-search:focus{border-color:var(--primary)}
+.reader-btn{padding:10px 16px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem}
+.entry-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:10px;cursor:pointer}
+.entry-card:hover{border-color:var(--primary)}
+.entry-card.open{border-left:3px solid var(--gold)}
+.entry-title{font-weight:600;font-size:0.9rem;color:var(--white);margin-bottom:4px}
+.entry-meta{font-size:0.7rem;color:var(--muted);margin-bottom:6px}
+.entry-summary{font-size:0.82rem;color:#aaa;line-height:1.5}
+.entry-body{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:0.82rem;line-height:1.8}
+.entry-card.open .entry-body{display:block}
+.entry-body ul{padding-left:18px;color:var(--text)}
+.pagination{display:flex;gap:8px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+.page-btn{padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.82rem;color:var(--muted)}
+.page-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.page-btn:hover:not(.active){border-color:var(--primary);color:var(--text)}
 
-  /* PAGINATION */
-  .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 28px; flex-wrap: wrap; }
-  .page-btn {
-    padding: 7px 13px;
-    border: 1px solid var(--border);
-    background: var(--card);
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: all 0.15s;
-    color: var(--text);
-  }
-  .page-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
-  .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); font-weight: 700; }
-  .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+/* LOADING */
+.loading{text-align:center;padding:40px;color:var(--muted);font-size:0.9rem}
+.error-msg{background:#2d0a00;border:1px solid #5d1500;border-radius:10px;padding:16px;margin-bottom:16px;color:#ff6b4a;font-size:0.85rem}
 
-  /* LOADING */
-  .loading { text-align: center; padding: 60px 20px; color: var(--muted); }
-  .spinner {
-    width: 40px; height: 40px;
-    border: 3px solid var(--border);
-    border-top-color: var(--primary);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 16px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .error-msg { text-align: center; padding: 40px; color: #dc2626; font-size: 0.9rem; }
-
-  /* FOOTER */
-  .footer {
-    text-align: center;
-    padding: 24px;
-    color: var(--muted);
-    font-size: 0.75rem;
-    border-top: 1px solid var(--border);
-    margin-top: 48px;
-  }
-  .footer span { color: var(--primary); font-weight: 600; }
-
-  @media (max-width: 600px) {
-    .header { padding: 14px 16px; }
-    .main { padding: 20px 12px; }
-    .stats-bar { gap: 16px; }
-    .reader-header { flex-direction: column; align-items: flex-start; }
-  }
+@media(max-width:600px){
+  .stats-bar{flex-wrap:wrap}
+  .stat-item{flex:1 1 50%;border-bottom:1px solid var(--border)}
+  .search-row{flex-direction:column}
+  .search-btn{width:100%}
+}
 </style>
 </head>
 <body>
@@ -237,129 +120,131 @@
 <div class="header">
   <div class="header-brand">
     <div class="header-logo">⚖️</div>
-    <div class="header-title">
-      <h1>ज्ञान पुस्तकालय</h1>
-      <p>DBS · Nyaysahayak Knowledge Library</p>
+    <div>
+      <div class="header-title">ज्ञान पुस्तकालय</div>
+      <div class="header-sub">DBS · Nyaysahayak Knowledge Library</div>
     </div>
   </div>
-  <a href="/" class="back-btn">← मुख्य पृष्ठ</a>
+  <a href="https://nyaysahayak.co.in/" class="back-btn">← मुख्य पृष्ठ</a>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-num" id="statBooks">—</div><div class="stat-label">पुस्तकें</div></div>
+  <div class="stat-item"><div class="stat-num" id="statEntries">—</div><div class="stat-label">कुल प्रविष्टियाँ</div></div>
+  <div class="stat-item"><div class="stat-num">🟢 LIVE</div><div class="stat-label">Railway API</div></div>
 </div>
 
 <div class="main">
 
-  <!-- BOOKS SECTION -->
-  <div class="books-section" id="booksSection">
-    <div class="stats-bar" id="statsBar">
-      <div class="loading" style="padding:10px 0; text-align:left;">
-        <div class="spinner" style="width:22px;height:22px;border-width:2px;display:inline-block;vertical-align:middle;margin:0 10px 0 0"></div>
-        डेटा लोड हो रहा है...
-      </div>
+  <!-- AI SEARCH HERO -->
+  <div class="search-hero">
+    <div class="search-hero-title">⚡ AI खोज</div>
+    <div class="search-hero-heading">कोई भी नियम खोजें — पुस्तक याद रखने की ज़रूरत नहीं</div>
+    <div class="search-row">
+      <input class="search-input" id="globalSearchInput" type="text"
+        placeholder="जैसे: अनुकम्पा नियुक्ति, अर्जित अवकाश नियम, वेतन वृद्धि रोकना..."
+        onkeydown="if(event.key==='Enter')globalSearch()"/>
+      <button class="search-btn" onclick="globalSearch()">🔍 खोजें</button>
     </div>
-    <div class="section-title">📚 उपलब्ध पुस्तकें एवं मैनुअल</div>
-    <div class="books-grid" id="booksGrid">
-      <div class="loading"><div class="spinner"></div>पुस्तकें लोड हो रही हैं...</div>
+    <div class="search-tags">
+      <span class="search-tag" onclick="quickSearch('अनुकम्पा नियुक्ति')">अनुकम्पा नियुक्ति</span>
+      <span class="search-tag" onclick="quickSearch('अर्जित अवकाश')">अर्जित अवकाश</span>
+      <span class="search-tag" onclick="quickSearch('वेतन वृद्धि')">वेतन वृद्धि</span>
+      <span class="search-tag" onclick="quickSearch('पेंशन नियम')">पेंशन नियम</span>
+      <span class="search-tag" onclick="quickSearch('निलंबन')">निलंबन</span>
+      <span class="search-tag" onclick="quickSearch('विभागीय जांच')">विभागीय जांच</span>
+      <span class="search-tag" onclick="quickSearch('अनुग्रह राशि')">अनुग्रह राशि</span>
+      <span class="search-tag" onclick="quickSearch('क्रय नियम')">क्रय नियम</span>
+    </div>
+  </div>
+
+  <div id="globalSearchResults"></div>
+
+  <!-- SHIGHRA NOTE -->
+  <div class="shighra">📚 <span>शीघ्र</span> — उत्तर प्रदेश सरकार की समस्त महत्वपूर्ण नियमावली एवं पुस्तकें यहाँ उपलब्ध होंगी</div>
+
+  <!-- BOOKS SECTION -->
+  <div id="booksSection">
+    <div class="section-header">
+      <div class="section-title">📚 उपलब्ध पुस्तकें एवं मैनुअल</div>
+      <div class="section-count" id="booksCount">लोड हो रही हैं...</div>
+    </div>
+    <div class="book-grid" id="bookGrid">
+      <div class="loading">पुस्तकें लोड हो रही हैं...</div>
     </div>
   </div>
 
   <!-- READER SECTION -->
-  <div class="reader-section" id="readerSection">
+  <div id="readerSection">
     <div class="reader-header">
-      <div>
-        <div class="reader-book-name" id="readerBookName">—</div>
-        <div class="reader-meta" id="readerMeta">—</div>
-      </div>
-      <button class="back-btn" style="background:#1a3a5c;border-color:#1a3a5c;" onclick="goBack()">← पुस्तक सूची</button>
+      <button class="reader-back" onclick="goBack()">← वापस</button>
+      <div class="reader-title" id="readerTitle">—</div>
     </div>
-
-    <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="इस पुस्तक में खोजें..." onkeydown="if(event.key==='Enter')doSearch()">
-      <button onclick="doSearch()">खोजें</button>
+    <div class="reader-search-row">
+      <input class="reader-search" id="readerSearchInput" type="text"
+        placeholder="इस पुस्तक में खोजें..."
+        onkeydown="if(event.key==='Enter')searchInBook()"/>
+      <button class="reader-btn" onclick="searchInBook()">खोजें</button>
     </div>
-
-    <div id="entriesContainer">
-      <div class="loading"><div class="spinner"></div>प्रविष्टियाँ लोड हो रही हैं...</div>
-    </div>
-    <div class="pagination" id="pagination"></div>
+    <div id="readerEntries"><div class="loading">प्रविष्टियाँ लोड हो रही हैं...</div></div>
+    <div id="readerPagination" class="pagination"></div>
   </div>
 
 </div>
 
-<div class="footer">
-  <span>DBS · न्यायसहायक</span> — Dhriti Business Solutions Pvt. Ltd. | Lucknow, UP
-</div>
-
 <script>
 const API = 'https://nyaysahayak-api-production.up.railway.app';
-const BOOK_ICONS = ['📘','📗','📙','📕','📓','📔','📒','📃'];
-
-let allEntries = [];
-let currentPage = 1;
-let currentBook = '';
-let totalPages = 1;
 const PAGE_SIZE = 30;
+const BOOK_ICONS = ['📘','📗','📙','📕','📓','📔','📒','📃'];
+const CARD_COLORS = ['#c0392b','#1a7a4a','#c8761e','#1565c0','#6a1f8e','#0e7490','#92400e','#166534'];
 
-// ── LOAD BOOKS ──
+let currentBook = null, currentPage = 1, allEntries = [], searchQuery = '';
+
 async function loadBooks() {
   try {
     const res = await fetch(`${API}/browse`);
     if (!res.ok) throw new Error('API error');
     const data = await res.json();
-    renderStats(data);
-    renderBooks(data.books);
+    const books = data.books || [];
+    const total = data.books.reduce((s,b) => s + b.count, 0);
+    document.getElementById('statBooks').textContent = books.length;
+    document.getElementById('statEntries').textContent = total.toLocaleString('hi-IN');
+    document.getElementById('booksCount').textContent = books.length + ' पुस्तकें';
+    const grid = document.getElementById('bookGrid');
+    grid.innerHTML = '';
+    books.forEach((b, i) => {
+      const color = CARD_COLORS[i % CARD_COLORS.length];
+      const icon = BOOK_ICONS[i % BOOK_ICONS.length];
+      const div = document.createElement('div');
+      div.className = 'book-card';
+      div.style.setProperty('--card-color', color);
+      div.innerHTML = `<div class="book-icon">${icon}</div>
+        <div class="book-title">${escapeHtml(b.source)}</div>
+        <div class="book-count">${b.count.toLocaleString('hi-IN')} प्रविष्टियाँ</div>
+        <div class="book-arrow">→</div>`;
+      div.onclick = () => openBook(b.source);
+      grid.appendChild(div);
+    });
   } catch(e) {
-    document.getElementById('booksGrid').innerHTML =
-      `<div class="error-msg">❌ API से कनेक्ट नहीं हो पाया।<br><small>${e.message}</small></div>`;
-    document.getElementById('statsBar').innerHTML =
-      `<div class="error-msg" style="padding:8px">API unavailable</div>`;
+    document.getElementById('bookGrid').innerHTML = `<div class="error-msg">❌ API से कनेक्ट नहीं हो पाया।<br><small>${e.message}</small></div>`;
   }
 }
 
-function renderStats(data) {
-  const totalEntries = data.books.reduce((s,b) => s + b.count, 0);
-  document.getElementById('statsBar').innerHTML = `
-    <div class="stat"><div class="stat-num">${data.total_books}</div><div class="stat-label">पुस्तकें</div></div>
-    <div class="stat-divider"></div>
-    <div class="stat"><div class="stat-num">${totalEntries.toLocaleString('hi-IN')}</div><div class="stat-label">कुल प्रविष्टियाँ</div></div>
-    <div class="stat-divider"></div>
-    <div class="stat"><div class="stat-num">🟢 LIVE</div><div class="stat-label">Railway API</div></div>
-  `;
+async function openBook(source) {
+  currentBook = source; currentPage = 1; searchQuery = '';
+  document.getElementById('readerSearchInput').value = '';
+  document.getElementById('booksSection').style.display = 'none';
+  document.getElementById('globalSearchResults').style.display = 'none';
+  document.getElementById('readerSection').style.display = 'block';
+  document.getElementById('readerTitle').textContent = source;
+  await loadPage();
 }
 
-function renderBooks(books) {
-  if (!books || books.length === 0) {
-    document.getElementById('booksGrid').innerHTML = '<div class="error-msg">कोई पुस्तक नहीं मिली।</div>';
-    return;
-  }
-  document.getElementById('booksGrid').innerHTML = books.map((b, i) => `
-    <div class="book-card" onclick="openBook('${escapeAttr(b.name)}')">
-      <div class="book-icon">${BOOK_ICONS[i % BOOK_ICONS.length]}</div>
-      <div class="book-name">${escapeHtml(b.name)}</div>
-      <span class="book-count">${b.count} प्रविष्टियाँ</span>
-      <div class="book-arrow">→</div>
-    </div>
-  `).join('');
-}
-
-// ── OPEN BOOK ──
-async function openBook(bookName) {
-  currentBook = bookName;
-  currentPage = 1;
-  document.getElementById('searchInput').value = '';
-  document.getElementById('booksSection').classList.add('hidden');
-  document.getElementById('readerSection').classList.add('active');
-  document.getElementById('readerBookName').textContent = bookName;
-  await loadEntries();
-}
-
-async function loadEntries(searchQuery = '') {
-  document.getElementById('entriesContainer').innerHTML =
-    '<div class="loading"><div class="spinner"></div>प्रविष्टियाँ लोड हो रही हैं...</div>';
-  document.getElementById('pagination').innerHTML = '';
-
+async function loadPage() {
+  document.getElementById('readerEntries').innerHTML = '<div class="loading">लोड हो रहा है...</div>';
   try {
     let url;
     if (searchQuery) {
-      // use main search endpoint filtered by book
       url = `${API}/search?q=${encodeURIComponent(searchQuery)}&book=${encodeURIComponent(currentBook)}&limit=100`;
     } else {
       url = `${API}/browse/${encodeURIComponent(currentBook)}?page=${currentPage}&limit=${PAGE_SIZE}`;
@@ -367,96 +252,107 @@ async function loadEntries(searchQuery = '') {
     const res = await fetch(url);
     if (!res.ok) throw new Error('API error ' + res.status);
     const data = await res.json();
-
-    // handle both /browse/:book and /search response shapes
     const entries = data.entries || data.results || [];
     const total = data.total || entries.length;
-    totalPages = data.total_pages || Math.ceil(total / PAGE_SIZE);
-
-    document.getElementById('readerMeta').textContent =
-      `कुल ${total} प्रविष्टियाँ${searchQuery ? ' (खोज परिणाम)' : ` • पृष्ठ ${currentPage}/${totalPages}`}`;
-
-    renderEntries(entries, total);
-    if (!searchQuery) renderPagination();
+    allEntries = entries;
+    renderEntries(entries);
+    if (!searchQuery) renderPagination(total);
+    else document.getElementById('readerPagination').innerHTML = '';
   } catch(e) {
-    document.getElementById('entriesContainer').innerHTML =
-      `<div class="error-msg">❌ प्रविष्टियाँ लोड नहीं हुईं।<br><small>${e.message}</small></div>`;
+    document.getElementById('readerEntries').innerHTML = `<div class="error-msg">त्रुटि: ${e.message}</div>`;
   }
 }
 
-function renderEntries(entries, total) {
-  // metadata entries filter karo
-  const filtered = entries.filter(e => {
-    const c = e.content || '';
-    return !c.startsWith('---') && c.trim().length > 50;
-  });
-  if (!filtered.length) {
-    document.getElementById('entriesContainer').innerHTML =
-      '<div class="error-msg">कोई प्रविष्टि नहीं मिली।</div>';
+function renderEntries(entries) {
+  if (!entries.length) {
+    document.getElementById('readerEntries').innerHTML = '<div class="loading">कोई प्रविष्टि नहीं मिली।</div>';
     return;
   }
-  const offset = (currentPage - 1) * PAGE_SIZE;
-  document.getElementById('entriesContainer').innerHTML = `
-    <div class="entries-list">
-      ${filtered.map((e, i) => {
-        const chapter = e.chapter || '';
-        const content = e.content || '';
-        const preview = content.substring(0, 350);
-        return `
-        <div class="entry-card">
-          <div class="entry-num">अनुच्छेद ${offset + i + 1}</div>
-          ${chapter ? `<div class="entry-question">${escapeHtml(chapter)}</div>` : ''}
-          <div class="entry-answer">${escapeHtml(preview)}${content.length > 350 ? '...' : ''}</div>
-        </div>`;
-      }).join('')}
+  let h = '';
+  entries.forEach(e => {
+    const filtered = (e.key_provisions || []).filter(p => p && p.trim().length > 10);
+    const provisions = filtered.slice(0,8).map(p => `<li>${escapeHtml(p)}</li>`).join('');
+    const metaParts = [e.date, e.file_number, e.issuing_authority].filter(Boolean);
+    h += `<div class="entry-card" onclick="this.classList.toggle('open')">
+      <div class="entry-title">${escapeHtml(e.title||'—')}</div>
+      ${metaParts.length ? `<div class="entry-meta">${metaParts.map(escapeHtml).join(' · ')}</div>` : ''}
+      <div class="entry-summary">${escapeHtml((e.summary||'').slice(0,200))}${(e.summary||'').length>200?'...':''}</div>
+      <div class="entry-body"><ul>${provisions}</ul></div>
     </div>`;
+  });
+  document.getElementById('readerEntries').innerHTML = h;
 }
 
-function renderPagination() {
-  if (totalPages <= 1) return;
-  const container = document.getElementById('pagination');
-  let html = '';
-  html += `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹ पूर्व</button>`;
-  const start = Math.max(1, currentPage - 2);
-  const end = Math.min(totalPages, currentPage + 2);
-  if (start > 1) html += `<button class="page-btn" onclick="goPage(1)">1</button>${start > 2 ? '<span>…</span>' : ''}`;
-  for (let i = start; i <= end; i++) {
-    html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+function renderPagination(total) {
+  const pages = Math.ceil(total / PAGE_SIZE);
+  if (pages <= 1) { document.getElementById('readerPagination').innerHTML = ''; return; }
+  let h = '';
+  for (let i = 1; i <= Math.min(pages, 20); i++) {
+    h += `<button class="page-btn${i===currentPage?' active':''}" onclick="gotoPage(${i})">${i}</button>`;
   }
-  if (end < totalPages) html += `${end < totalPages-1 ? '<span>…</span>' : ''}<button class="page-btn" onclick="goPage(${totalPages})">${totalPages}</button>`;
-  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>अगला ›</button>`;
-  container.innerHTML = html;
+  document.getElementById('readerPagination').innerHTML = h;
 }
 
-function goPage(p) {
-  currentPage = p;
-  loadEntries();
-  window.scrollTo(0, 200);
-}
+async function gotoPage(p) { currentPage = p; await loadPage(); window.scrollTo(0,0); }
 
-function doSearch() {
-  const q = document.getElementById('searchInput').value.trim();
+async function searchInBook() {
+  searchQuery = document.getElementById('readerSearchInput').value.trim();
   currentPage = 1;
-  loadEntries(q);
+  await loadPage();
 }
 
 function goBack() {
-  document.getElementById('booksSection').classList.remove('hidden');
-  document.getElementById('readerSection').classList.remove('active');
-  allEntries = [];
+  document.getElementById('readerSection').style.display = 'none';
+  document.getElementById('booksSection').style.display = 'block';
+  document.getElementById('globalSearchResults').style.display = 'block';
+  currentBook = null; allEntries = [];
 }
 
-// helpers
+async function globalSearch() {
+  const q = document.getElementById('globalSearchInput').value.trim();
+  if (!q) return;
+  const div = document.getElementById('globalSearchResults');
+  div.style.display = 'block';
+  div.innerHTML = '<div class="loading">खोज रहे हैं...</div>';
+  try {
+    const res = await fetch(`${API}/search?q=${encodeURIComponent(q)}&limit=40`);
+    const data = await res.json();
+    const entries = data.entries || data.results || [];
+    if (!entries.length) { div.innerHTML = '<div class="loading">कोई परिणाम नहीं मिला।</div>'; return; }
+    let h = `<div class="result-count">${entries.length} परिणाम — "<strong>${escapeHtml(q)}</strong>"</div>`;
+    entries.forEach(e => {
+      const provisions = (e.key_provisions||[]).filter(p=>p&&p.trim().length>10).slice(0,6).map(p=>`<li>${escapeHtml(p)}</li>`).join('');
+      h += `<div class="result-card" onclick="this.classList.toggle('open')">
+        <div class="result-title">${escapeHtml(e.title||'—')}</div>
+        <div class="result-source">📖 ${escapeHtml(e.source||e.department||'')}${e.date?' · '+escapeHtml(e.date):''}</div>
+        <div class="result-summary">${escapeHtml((e.summary||'').slice(0,220))}${(e.summary||'').length>220?'...':''}</div>
+        <div class="result-body"><ul>${provisions}</ul></div>
+      </div>`;
+    });
+    div.innerHTML = h;
+  } catch(e) {
+    div.innerHTML = '<div class="error-msg">खोज में त्रुटि।</div>';
+  }
+}
+
+function quickSearch(q) {
+  document.getElementById('globalSearchInput').value = q;
+  globalSearch();
+}
+
+function checkURLParam() {
+  const q = new URLSearchParams(window.location.search).get('q');
+  if (q) { document.getElementById('globalSearchInput').value = q; globalSearch(); }
+}
+
 function escapeHtml(s) {
   if (!s) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-function escapeAttr(s) {
-  return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;');
-}
 
-// ── INIT ──
+// INIT
 loadBooks();
+checkURLParam();
 </script>
 </body>
 </html>
