@@ -20,7 +20,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 /* SIDEBAR */
 .sidebar{width:var(--sidebar);background:var(--s);border-right:1px solid var(--b);display:flex;flex-direction:column;flex-shrink:0}
 .sb-head{padding:12px 14px 10px;border-bottom:1px solid var(--b);background:var(--s2)}
-.sb-label{font-size:0.6rem;color:var(--g);text-transform:uppercase;letter-spacing:0.6px;font-weight:700;margin-bottom:0}
+.sb-label{font-size:0.6rem;color:var(--g);text-transform:uppercase;letter-spacing:0.6px;font-weight:700;margin-bottom:6px}
+.sb-search{width:100%;padding:6px 10px;border:1px solid var(--b);border-radius:6px;font-size:0.77rem;background:var(--s);color:var(--t);outline:none}
+.sb-search:focus{border-color:var(--p)}
 .sb-list{flex:1;overflow-y:auto;padding:4px 6px}
 .ch-item{padding:8px 11px;border-radius:7px;cursor:pointer;margin-bottom:2px;border-left:3px solid transparent;transition:all 0.12s;display:flex;align-items:baseline;gap:8px}
 .ch-item:hover{background:var(--s2);border-left-color:var(--bs)}
@@ -69,7 +71,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 </div>
 <div class="layout">
   <div class="sidebar">
-    <div class="sb-head"><div class="sb-label">अध्याय सूची</div></div>
+    <div class="sb-head">
+      <div class="sb-label">अध्याय सूची</div>
+      <input class="sb-search" id="sbSearch" type="text" placeholder="अध्याय खोजें..." oninput="filterChapters(this.value)">
+    </div>
     <div class="sb-list" id="sbList"><div class="empty">लोड हो रहा है...</div></div>
   </div>
   <div class="content">
@@ -89,16 +94,13 @@ let chapters=[], curIdx=0;
 const params=new URLSearchParams(window.location.search);
 const bookName=params.get('book')||'';
 
-// Smart title: agar filename-jaisi hai to summary use karo
+// Title: topic > title > summary fallback
 function getTitle(e){
-  const t=(e.title||'').trim();
-  const bad=!t||/\.(html|md|pdf|txt)$/i.test(t)||/^chapter\s*file/i.test(t)||/^file\s*:/i.test(t)||/^0\d_/i.test(t);
-  if(bad){
-    const s=(e.summary||'').trim();
-    if(s)return s.length>90?s.substring(0,87)+'…':s;
-    return e.department||e.source||'अध्याय '+(chapters.indexOf(e)+1);
-  }
-  return t;
+  const t=(e.topic||e.title||'').trim();
+  if(t&&!/\.(html|md|pdf|txt)$/i.test(t)&&!/^0\d_/i.test(t))return t;
+  const s=(e.summary||'').trim();
+  if(s)return s.length>90?s.substring(0,87)+'…':s;
+  return e.department||e.source||'अध्याय '+(chapters.indexOf(e)+1);
 }
 
 // Meta: sirf tab dikhao jab meaningful ho (sirf number/digit nahi)
@@ -159,11 +161,11 @@ function loadChapter(idx){
   if(ci){ci.classList.add('active');ci.scrollIntoView({block:'nearest',behavior:'smooth'});}
 
   const meta=getMeta(e);
-  // Body: summary as flowing paragraphs
-  const bodyText=(e.summary||'').trim();
-  const bodyHtml=bodyText.split(/\n+/).filter(p=>p.trim()).map(p=>`<p>${eh(p.trim())}</p>`).join('');
-  // Provisions: only if they add info beyond summary
-  const pvs=(e.key_provisions||[]).filter(p=>p&&p.trim().length>15).map(p=>`<li>${eh(p.trim())}</li>`).join('');
+  // Body: content > summary, as flowing paragraphs
+  const bodyText=(e.content||e.summary||'').trim();
+  const bodyHtml=bodyText.split(/\n{2,}|\r\n{2,}/).filter(p=>p.trim().length>0).map(p=>`<p>${eh(p.trim())}</p>`).join('');
+  // Provisions: only meaningful ones (>60 chars), not sentence fragments
+  const pvs=(e.key_provisions||[]).filter(p=>p&&p.trim().length>60).map(p=>`<li>${eh(p.trim())}</li>`).join('');
   const cite=[displayTitle,e.source||e.department,meta].filter(Boolean).join(' | ');
 
   document.getElementById('artView').innerHTML=`
@@ -188,6 +190,10 @@ function copyCite(t){
     b.textContent='✅ Copied!';b.classList.add('ok');
     setTimeout(()=>{b.textContent='📋 Citation कॉपी';b.classList.remove('ok');},2000);
   }).catch(()=>prompt('Citation:',t));
+}
+function filterChapters(q){
+  const filtered=q.trim()?chapters.filter(e=>getTitle(e).toLowerCase().includes(q.toLowerCase())):chapters;
+  renderSidebar(filtered);
 }
 function eh(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function ea(s){if(!s)return'';return String(s).replace(/'/g,'&#39;');}
