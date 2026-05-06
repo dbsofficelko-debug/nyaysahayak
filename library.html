@@ -214,9 +214,7 @@ async function loadBooks(){
   'Seva Vidhi (Service Laws)': '/sv-reader.html',
   'UP Procurement Manual (MSME)': '/pm-reader.html',
 };
-const rdrUrl = readerMap[name];
-if(rdrUrl) { window.location.href = rdrUrl; return; }
-div.onclick=()=>openBook(name,meta,b.count);
+div.onclick=()=>{ window.location.href='/reader.html?book='+encodeURIComponent(name); };
       g.appendChild(div);
     });
   }catch(e){

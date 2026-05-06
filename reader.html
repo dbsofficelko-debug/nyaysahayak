@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title id="pgTitle">पुस्तक पाठक — Nyaysahayak</title>
+<style>
+:root{--p:#8B2000;--pd:#5a1400;--pl:#a03000;--g:#9a7000;--gl:#c8961e;--bg:#faf8f5;--s:#fff;--s2:#f5f0ea;--b:#e0d5c8;--bs:#c8b89a;--t:#1a1208;--t2:#4a3820;--m:#7a6550;--sidebar:300px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--t);height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+/* TOPBAR */
+.topbar{background:var(--pd);border-bottom:2px solid var(--p);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 2px 12px rgba(90,20,0,0.2);z-index:50}
+.tb-brand{display:flex;align-items:center;gap:10px}
+.tb-icon{width:32px;height:32px;background:rgba(255,255,255,0.12);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;border:1px solid rgba(255,255,255,0.2)}
+.tb-title{font-size:0.95rem;font-weight:700;color:#fff;max-width:400px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-sub{font-size:0.65rem;color:rgba(255,220,150,0.8);margin-top:1px}
+.tb-right{display:flex;align-items:center;gap:8px}
+.tb-btn{padding:6px 13px;border:1px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.8);border-radius:7px;cursor:pointer;font-size:0.75rem;text-decoration:none;white-space:nowrap}
+.tb-btn:hover{background:rgba(255,255,255,0.15);color:#fff}
+/* LAYOUT */
+.layout{display:flex;flex:1;overflow:hidden}
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);background:var(--s);border-right:1px solid var(--b);display:flex;flex-direction:column;flex-shrink:0}
+.sb-head{padding:14px 16px;border-bottom:1px solid var(--b);background:var(--s2)}
+.sb-label{font-size:0.63rem;color:var(--g);text-transform:uppercase;letter-spacing:0.6px;font-weight:600;margin-bottom:8px}
+.sb-search{width:100%;padding:7px 10px;border:1px solid var(--bs);border-radius:7px;font-size:0.82rem;font-family:inherit;outline:none;background:var(--bg);color:var(--t)}
+.sb-search:focus{border-color:var(--p)}
+.sb-list{flex:1;overflow-y:auto;padding:6px 8px}
+.ch-item{padding:9px 12px;border-radius:8px;cursor:pointer;margin-bottom:3px;border-left:2px solid transparent;transition:all 0.15s}
+.ch-item:hover{background:var(--s2);border-left-color:var(--bs)}
+.ch-item.active{background:#fff5f0;border-left-color:var(--p)}
+.ch-num{font-size:0.65rem;color:var(--m);font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:2px}
+.ch-title{font-size:0.8rem;font-weight:600;color:var(--t);line-height:1.3}
+.ch-meta{font-size:0.67rem;color:var(--m);margin-top:2px}
+/* CONTENT */
+.content{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.art-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;border-bottom:1px solid var(--b);background:var(--s);flex-shrink:0}
+.nav-btn{padding:7px 14px;background:var(--s2);border:1px solid var(--bs);border-radius:7px;cursor:pointer;font-size:0.78rem;color:var(--t2);display:flex;align-items:center;gap:5px}
+.nav-btn:hover{background:var(--p);color:#fff;border-color:var(--p)}
+.nav-btn:disabled{opacity:0.3;cursor:default;pointer-events:none}
+.nav-info{font-size:0.75rem;color:var(--m);text-align:center}
+.art-view{flex:1;overflow-y:auto;padding:28px 36px}
+.art-title{font-size:1.3rem;font-weight:700;color:var(--pd);margin-bottom:8px;line-height:1.35}
+.art-meta{font-size:0.73rem;color:var(--m);margin-bottom:16px;font-family:monospace;padding-bottom:16px;border-bottom:1px dashed var(--b)}
+.art-summary{font-size:0.95rem;color:var(--t2);line-height:1.75;margin-bottom:20px;padding:16px 20px;background:var(--s2);border-left:3px solid var(--p);border-radius:0 8px 8px 0}
+.art-provisions h4{font-size:0.75rem;color:var(--g);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;margin-bottom:12px}
+.art-provisions ul{list-style:none;padding:0}
+.art-provisions li{padding:10px 14px;border-bottom:1px solid var(--b);font-size:0.88rem;color:var(--t);line-height:1.65}
+.art-provisions li:last-child{border-bottom:none}
+.art-provisions li::before{content:"▸";color:var(--p);margin-right:8px;font-size:0.8rem}
+.cite-row{margin-top:20px;padding-top:16px;border-top:1px solid var(--b);display:flex;gap:8px;align-items:center}
+.cite-btn{padding:6px 14px;background:var(--s2);border:1px solid var(--bs);border-radius:6px;font-size:0.73rem;color:var(--t2);cursor:pointer}
+.cite-btn:hover{background:var(--p);color:#fff;border-color:var(--p)}
+.cite-btn.ok{background:#166534;color:#fff;border-color:#166534}
+.empty{text-align:center;padding:60px 20px;color:var(--m);font-size:0.9rem}
+.loading-art{text-align:center;padding:60px;color:var(--m)}
+@media(max-width:700px){:root{--sidebar:240px}.art-view{padding:18px 16px}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="tb-brand">
+    <div class="tb-icon">📖</div>
+    <div><div class="tb-title" id="bookName">लोड हो रहा है...</div><div class="tb-sub">DBS · Nyaysahayak</div></div>
+  </div>
+  <div class="tb-right">
+    <a href="/library.html" class="tb-btn">← पुस्तकालय</a>
+    <a href="/" class="tb-btn">मुख्य पृष्ठ</a>
+  </div>
+</div>
+<div class="layout">
+  <div class="sidebar">
+    <div class="sb-head">
+      <div class="sb-label">अध्याय सूची</div>
+      <input class="sb-search" id="sbSearch" type="text" placeholder="अध्याय खोजें..." oninput="filterChapters(this.value)"/>
+    </div>
+    <div class="sb-list" id="sbList"><div class="empty">लोड हो रहा है...</div></div>
+  </div>
+  <div class="content">
+    <div class="art-nav">
+      <button class="nav-btn" id="btnPrev" onclick="navigate(-1)" disabled>← पूर्व</button>
+      <div class="nav-info" id="navInfo">—</div>
+      <button class="nav-btn" id="btnNext" onclick="navigate(1)" disabled>अगला →</button>
+    </div>
+    <div class="art-view" id="artView"><div class="loading-art">अध्याय चुनें...</div></div>
+  </div>
+</div>
+<script>
+const API='https://nyaysahayak-api-production.up.railway.app';
+let chapters=[], curIdx=0;
+
+const params=new URLSearchParams(window.location.search);
+const bookName=params.get('book')||'';
+
+async function init(){
+  if(!bookName){document.getElementById('artView').innerHTML='<div class="empty">?book= parameter missing</div>';return;}
+  document.getElementById('bookName').textContent=bookName;
+  document.title=bookName+' — Nyaysahayak';
+  document.getElementById('pgTitle').textContent=bookName+' — Nyaysahayak';
+  try{
+    let all=[];let page=1;
+    while(true){
+      const r=await fetch(`${API}/browse/${encodeURIComponent(bookName)}?page=${page}&limit=100`);
+      const d=await r.json();
+      const ents=d.entries||[];
+      all=all.concat(ents);
+      if(ents.length<100||all.length>=d.total)break;
+      page++;
+    }
+    chapters=all;
+    renderSidebar(chapters);
+    if(chapters.length>0)loadChapter(0);
+  }catch(e){
+    document.getElementById('sbList').innerHTML='<div class="empty">API error: '+e.message+'</div>';
+  }
+}
+
+function renderSidebar(list){
+  const ul=document.getElementById('sbList');
+  if(!list.length){ul.innerHTML='<div class="empty">कोई अध्याय नहीं</div>';return;}
+  ul.innerHTML=list.map((e,i)=>{
+    const origIdx=chapters.indexOf(e);
+    const meta=[e.file_number,e.date].filter(Boolean).join(' · ');
+    return `<div class="ch-item${origIdx===curIdx?' active':''}" id="ci-${origIdx}" onclick="loadChapter(${origIdx})">
+      <div class="ch-num">अध्याय ${origIdx+1}</div>
+      <div class="ch-title">${eh(e.title||'—')}</div>
+      ${meta?`<div class="ch-meta">${eh(meta)}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function filterChapters(q){
+  if(!q.trim()){renderSidebar(chapters);return;}
+  const filtered=chapters.filter(e=>(e.title||'').toLowerCase().includes(q.toLowerCase())||(e.summary||'').toLowerCase().includes(q.toLowerCase()));
+  renderSidebar(filtered);
+}
+
+function loadChapter(idx){
+  if(idx<0||idx>=chapters.length)return;
+  curIdx=idx;
+  const e=chapters[idx];
+  document.getElementById('navInfo').textContent=`${idx+1} / ${chapters.length}`;
+  document.getElementById('btnPrev').disabled=idx===0;
+  document.getElementById('btnNext').disabled=idx===chapters.length-1;
+  document.querySelectorAll('.ch-item').forEach(el=>el.classList.remove('active'));
+  const ci=document.getElementById('ci-'+idx);
+  if(ci){ci.classList.add('active');ci.scrollIntoView({block:'nearest',behavior:'smooth'});}
+  const meta=[e.file_number,e.date,e.issuing_authority].filter(Boolean).join(' · ');
+  const pvs=(e.key_provisions||[]).filter(p=>p&&p.trim().length>5).map(p=>`<li>${eh(p)}</li>`).join('');
+  const cite=[e.title,e.source||e.department,e.file_number,e.date].filter(Boolean).join(' | ');
+  document.getElementById('artView').innerHTML=`
+    <div class="art-title">${eh(e.title||'—')}</div>
+    ${meta?`<div class="art-meta">${eh(meta)}</div>`:''}
+    ${e.summary?`<div class="art-summary">${eh(e.summary)}</div>`:''}
+    <div class="art-provisions">
+      ${pvs?`<h4>मुख्य प्रावधान</h4><ul>${pvs}</ul>`:''}
+    </div>
+    <div class="cite-row">
+      <button class="cite-btn" id="citeBtn" onclick="copyCite('${ea(cite)}')">📋 Citation कॉपी</button>
+    </div>`;
+}
+
+function navigate(dir){loadChapter(curIdx+dir);window.scrollTo?window.scrollTo(0,0):null;document.getElementById('artView').scrollTop=0;}
+
+function copyCite(t){
+  navigator.clipboard.writeText(t).then(()=>{
+    const b=document.getElementById('citeBtn');
+    b.textContent='✅ Copied!';b.classList.add('ok');
+    setTimeout(()=>{b.textContent='📋 Citation कॉपी';b.classList.remove('ok');},2000);
+  }).catch(()=>prompt('Citation:',t));
+}
+
+function eh(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function ea(s){if(!s)return'';return String(s).replace(/'/g,'&#39;');}
+
+init();
+</script>
+</body>
+</html>
