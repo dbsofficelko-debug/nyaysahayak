@@ -37,10 +37,12 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180x180.png">
 <link rel="manifest" href="/manifest.json">
 
-<!-- ============ Plausible Analytics ============ -->
-<!-- IMPORTANT: After deploying to nyaysahayak.co.in, sign up at plausible.io and add the domain. -->
-<script defer data-domain="nyaysahayak.co.in" src="https://plausible.io/js/script.outbound-links.js"></script>
-<script>window.plausible = window.plausible || function(){(window.plausible.q = window.plausible.q || []).push(arguments)}</script>
+<!-- ============ Plausible Analytics (account-specific tracker) ============ -->
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-X-8n5q-TBe24cf3mw2M81.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible('init',i)};plausible.init();
+</script>
 <!-- ============ FONTS (with display=swap for resilience) ============ -->
 <!-- IMPORTANT: For production, self-host these fonts in /fonts/ folder. CDN dependency = fail point. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
