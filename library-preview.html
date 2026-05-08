@@ -3442,5 +3442,149 @@ updateBookmarkBtn();
   }
 })();
 </script>
+  <script>
+// ============ v7.7.1 — Search container clone (kills v7.6 observer) ============
+(function(){
+  var API = 'https://nyaysahayak-api-production.up.railway.app';
+
+  function currentBookCode(){
+    var n = document.querySelector('.reader-book-name');
+    if (!n) return null;
+    var t = n.textContent || '';
+    if (/वित्तीय/.test(t)) return 'fhb';
+    if (/सचिवालय अनुदेश/.test(t)) return 'sad';
+    if (/क्रय/.test(t)) return 'pm';
+    if (/सेवा विधि/.test(t)) return 'sv';
+    if (/PUVVNL|विद्युत/.test(t)) return 'puvvnl';
+    if (/पुलिस कल्याण/.test(t)) return 'police';
+    return null;
+  }
+
+  function getList(container){
+    var list = container.querySelector('.ns-v771-list');
+    if (list) return list;
+    var olds = container.querySelectorAll('.ns-results-list, .ns-v77-list');
+    olds.forEach(function(o){ o.remove(); });
+    list = document.createElement('ul');
+    list.className = 'ns-v771-list';
+    list.style.cssText = 'list-style:none;padding:0;margin:14px 0 0';
+    container.appendChild(list);
+    return list;
+  }
+
+  function highlight(text, term){
+    if (!term || !text) return text || '';
+    try {
+      var re = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')','gi');
+      return text.replace(re,'<mark style="background:#fff3a0;padding:0 2px;border-radius:2px">$1</mark>');
+    } catch(_){ return text; }
+  }
+
+  function navigateTo(filename){
+    var sel = '[data-ns-chapter-id="' + String(filename).replace(/"/g,'\\"') + '"]';
+    var item = document.querySelector('.toc-item' + sel) || document.querySelector(sel);
+    if (item){
+      item.click();
+      if (window.innerWidth < 880 && typeof closeTOC === 'function') closeTOC();
+    } else {
+      var t = document.getElementById('toast');
+      if (t){ t.textContent = '⚠ अध्याय TOC में नहीं मिला: ' + filename; t.classList.add('show'); setTimeout(function(){t.classList.remove('show')},3000); }
+    }
+  }
+
+  function msgLi(text){
+    var li = document.createElement('li');
+    li.style.cssText = 'padding:18px;color:#777;font-style:italic;text-align:center;list-style:none';
+    li.textContent = text;
+    return li;
+  }
+
+  function renderResults(list, results, term){
+    list.innerHTML = '';
+    if (!results || results.length === 0){
+      list.appendChild(msgLi('इस ग्रंथ में परिणाम नहीं मिला।'));
+      return;
+    }
+    results.forEach(function(r){
+      var li = document.createElement('li');
+      li.style.cssText = 'padding:14px;border-bottom:1px solid #e8dfc4;cursor:pointer;list-style:none;transition:background .2s';
+      li.onmouseenter = function(){ li.style.background = 'rgba(154,112,0,.06)'; };
+      li.onmouseleave = function(){ li.style.background = ''; };
+
+      var topic = document.createElement('div');
+      topic.style.cssText = 'font-weight:600;color:#8B2000;margin-bottom:6px;font-size:.95rem;line-height:1.4;font-family:Tiro Devanagari Hindi,serif';
+      topic.textContent = r.topic || ('अध्याय ' + (r.chapter_idx + 1));
+      li.appendChild(topic);
+
+      if (r.pages){
+        var pg = document.createElement('div');
+        pg.style.cssText = 'font-size:.78rem;color:#888;margin-bottom:6px';
+        pg.textContent = r.pages;
+        li.appendChild(pg);
+      }
+
+      var snip = document.createElement('div');
+      snip.style.cssText = 'font-size:.85rem;color:#444;line-height:1.55;font-family:Tiro Devanagari Hindi,serif';
+      snip.innerHTML = highlight(r.snippet || '', r.matched || term);
+      li.appendChild(snip);
+
+      li.onclick = function(){ navigateTo(r.filename); };
+      list.appendChild(li);
+    });
+  }
+
+  var timer = null;
+  function doSearch(input, container){
+    clearTimeout(timer);
+    timer = setTimeout(function(){
+      var q = (input.value || '').trim();
+      var list = getList(container);
+      if (q.length < 2){ list.innerHTML = ''; return; }
+      var book = currentBookCode();
+      if (!book){ list.innerHTML = ''; list.appendChild(msgLi('ग्रंथ पहचाना नहीं जा सका।')); return; }
+      if (book === 'police'){ list.innerHTML = ''; list.appendChild(msgLi('इस ग्रंथ में खोज शीघ्र उपलब्ध होगी।')); return; }
+      list.innerHTML = '';
+      list.appendChild(msgLi('खोज रहे हैं…'));
+      var url = API + '/library/search?book=' + encodeURIComponent(book) + '&q=' + encodeURIComponent(q);
+      fetch(url)
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          renderResults(list, d.results || [], q);
+          try { if(typeof window.plausible === 'function'){ window.plausible('In-Book Search v771', {props:{book:book, results:(d.results||[]).length}}); } } catch(_){}
+        })
+        .catch(function(){
+          list.innerHTML = '';
+          list.appendChild(msgLi('⚠ खोज में त्रुटि — पुनः प्रयास करें।'));
+        });
+    }, 350);
+  }
+
+  function init(){
+    var oldInput = document.getElementById('in-book-search');
+    if (!oldInput){ setTimeout(init, 500); return; }
+    var oldContainer = oldInput.closest('.toc-section');
+    if (!oldContainer){ setTimeout(init, 500); return; }
+
+    // CLONE entire search container — detaches v7.6's MutationObserver
+    var newContainer = oldContainer.cloneNode(true);
+    oldContainer.parentNode.replaceChild(newContainer, oldContainer);
+
+    // Clear any stale results from cloned container
+    var staleLists = newContainer.querySelectorAll('.ns-results-list, .ns-v77-list');
+    staleLists.forEach(function(o){ o.remove(); });
+
+    var newInput = newContainer.querySelector('#in-book-search');
+    if (!newInput) return;
+    newInput.addEventListener('input', function(){ doSearch(newInput, newContainer); });
+    console.log('[v7.7.1] container cloned, observers dropped, listener attached');
+  }
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(init, 1000); });
+  } else {
+    setTimeout(init, 1000);
+  }
+})();
+</script>
 </body>
 </html>
