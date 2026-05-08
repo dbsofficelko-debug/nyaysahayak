@@ -3043,5 +3043,39 @@ updateBookmarkBtn();
   else setTimeout(init, 100);
 })();
 </script>
+  <!-- v7.4 · TTS compat — wrap paragraphs with .rule-text so सुनें picks them up -->
+<script>
+(function() {
+  'use strict';
+  function annotate(){
+    var body = document.getElementById('chapter-body');
+    if (!body) return;
+    var ps = body.querySelectorAll('p:not([data-ns-rt])');
+    ps.forEach(function(p){
+      p.dataset.nsRt = '1';
+      if (p.querySelector(':scope > .rule-text')) return;
+      var span = document.createElement('span');
+      span.className = 'rule-text';
+      while (p.firstChild) span.appendChild(p.firstChild);
+      p.appendChild(span);
+    });
+  }
+  function init(){
+    var target = document.getElementById('reader-content');
+    if (!target) return;
+    var pending = false;
+    function schedule(){
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(function(){ pending = false; annotate(); });
+    }
+    new MutationObserver(schedule).observe(target, { childList:true, subtree:true });
+    annotate();
+    console.log('[NS v7.4] TTS compat wired');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else setTimeout(init, 250);
+})();
+</script>
 </body>
 </html>
