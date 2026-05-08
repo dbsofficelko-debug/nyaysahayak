@@ -2813,5 +2813,200 @@ updateBookmarkBtn();
   } else { init(); }
 })();
 </script>
+  <!-- v7.2 · Library API wiring · 5 books (FHB/SAD/SV/PM/PUVVNL) -->
+<script>
+(function () {
+  'use strict';
+  var API = 'https://nyaysahayak-api-production.up.railway.app';
+
+  var BOOKS = {
+    fhb:    { endpoint:'/fhb',    idField:'filename', label:function(c){ return (c.topic||'')+' ('+(c.pages||'')+')'; } },
+    sad:    { endpoint:'/sad',    idField:'filename', label:function(c){ return 'प्रस्तर '+(c.prastar||'?')+' — '+(c.topic||''); } },
+    sv:     { endpoint:'/sv',     idField:'filename', label:function(c){ return 'अध्याय '+(c.chapter||'?')+' — '+(c.topic||''); } },
+    pm:     { endpoint:'/pm',     idField:'filename', label:function(c){ return 'अध्याय '+(c.chapter||'?')+' — '+(c.topic||''); } },
+    puvvnl: { endpoint:'/puvvnl', idField:'filename', label:function(c){ return (c.book?c.book+' — ':'')+(c.topic||''); } }
+    // police: no endpoint — original demo banner stays
+  };
+
+  var listCache = {}, chapterCache = {};
+
+  function escHtml(s){
+    return String(s==null?'':s).replace(/[<>&"']/g,function(c){
+      return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function toDev(n){
+    return String(n).replace(/[0-9]/g,function(d){return '०१२३४५६७८९'[+d];});
+  }
+
+  function mdToHtml(md){
+    if (!md) return '<p style="color:#888">सामग्री उपलब्ध नहीं</p>';
+    md = md.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, '');
+    var blocks = md.split(/\n\s*\n+/), html = '';
+    blocks.forEach(function(b){
+      var t = b.replace(/\s+$/,'').replace(/^\s+/,'');
+      if (!t) return;
+      var hM = t.match(/^(#{1,6})\s+(.+)$/);
+      if (hM){
+        var lvl = Math.min(hM[1].length+1, 4);
+        html += '<h'+lvl+' class="subhead" style="margin:1.4em 0 .6em;color:var(--maroon,#8B2000);font-weight:600">'+escHtml(hM[2])+'</h'+lvl+'>';
+        return;
+      }
+      if (t.indexOf('\t') !== -1){
+        html += '<pre style="white-space:pre-wrap;background:rgba(0,0,0,.03);padding:12px 14px;border-radius:4px;font-family:inherit;font-size:.95em;line-height:1.7;margin:1em 0;border-left:3px solid var(--gold,#9a7000)">'+escHtml(t)+'</pre>';
+        return;
+      }
+      html += '<p style="margin:0 0 1.1em;line-height:1.85">'+escHtml(t).replace(/\n/g,'<br>')+'</p>';
+    });
+    return html || '<p style="color:#888">सामग्री खाली है</p>';
+  }
+
+  function fetchList(book){
+    if (listCache[book]) return Promise.resolve(listCache[book]);
+    return fetch(API + BOOKS[book].endpoint)
+      .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+      .then(function(d){ listCache[book] = d.chapters||[]; return listCache[book]; });
+  }
+  function fetchChapter(book, id){
+    var k = book+':'+id;
+    if (chapterCache[k]) return Promise.resolve(chapterCache[k]);
+    return fetch(API + BOOKS[book].endpoint + '/' + encodeURIComponent(id))
+      .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+      .then(function(d){ chapterCache[k] = d; return d; });
+  }
+
+  function findTOCList(){
+    var secs = document.querySelectorAll('.toc-section');
+    for (var i=0;i<secs.length;i++){
+      if (secs[i].querySelector('.toc-item')){
+        var lst = secs[i].querySelector('.toc-list, ul, ol');
+        return lst || secs[i];
+      }
+    }
+    return document.querySelector('.toc-list') || document.querySelector('.toc-section');
+  }
+  function findOrCreateBody(){
+    var root = document.getElementById('reader-content');
+    if (!root) return null;
+    var ex = document.getElementById('chapter-body');
+    if (ex) return ex;
+    var b = document.createElement('div');
+    b.id = 'chapter-body';
+    var anchor = root.querySelector('.ch-title');
+    if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(b, anchor.nextSibling);
+    else root.appendChild(b);
+    return b;
+  }
+  function clearStatic(body){
+    var root = document.getElementById('reader-content');
+    if (!root) return;
+    Array.prototype.forEach.call(root.querySelectorAll('.rule-block, .note-callout, h2.subhead'), function(el){
+      if (!body.contains(el)) el.remove();
+    });
+  }
+  function setLoading(b, m){ b.innerHTML = '<div style="padding:40px 20px;text-align:center;color:#888;font-style:italic">'+escHtml(m||'लोड हो रहा है…')+'</div>'; }
+  function setError(b, m){ b.innerHTML = '<div style="padding:30px 20px;border:1px solid #c44;border-radius:6px;background:#fff4f4;color:#a04;margin:20px 0">⚠ '+escHtml(m)+'</div>'; }
+
+  function renderTOC(book, chapters){
+    var list = findTOCList();
+    if (!list){ console.warn('[NS] TOC not found'); return; }
+    list.innerHTML = '';
+    chapters.forEach(function(c, i){
+      var id = c[BOOKS[book].idField];
+      var label = BOOKS[book].label(c);
+      var li = document.createElement('li');
+      li.className = 'toc-item' + (i===0 ? ' active' : '');
+      li.dataset.nsChapterId = id;
+      li.dataset.nsChapterIdx = i;
+      li.innerHTML = '<span class="toc-num">अ. '+toDev(i+1)+'</span><span class="toc-title">'+escHtml(label)+'</span>';
+      li.addEventListener('click', function(){ loadChapter(book, id, i); });
+      list.appendChild(li);
+    });
+  }
+
+  function loadChapter(book, id, idx){
+    var root = document.getElementById('reader-content');
+    if (!root) return;
+    var body = findOrCreateBody();
+    if (!body) return;
+    clearStatic(body);
+    setLoading(body, 'अध्याय लोड हो रहा है…');
+
+    Array.prototype.forEach.call(document.querySelectorAll('.toc-item'), function(t){ t.classList.remove('active'); });
+    Array.prototype.forEach.call(document.querySelectorAll('.toc-item'), function(t){
+      if (t.dataset.nsChapterId === id) t.classList.add('active');
+    });
+
+    if (window.innerWidth < 880){
+      var d = document.getElementById('toc-drawer'), bd = document.getElementById('toc-backdrop');
+      if (d) d.classList.remove('open');
+      if (bd) bd.classList.remove('show');
+    }
+
+    fetchChapter(book, id).then(function(ch){
+      var titleEl = root.querySelector('.ch-title');
+      if (titleEl && titleEl.firstChild) titleEl.firstChild.textContent = ch.topic || 'अध्याय';
+      else if (titleEl) titleEl.textContent = ch.topic || 'अध्याय';
+
+      var eyebrow = root.querySelector('.ch-eyebrow');
+      if (eyebrow) eyebrow.textContent = 'अध्याय ' + toDev(idx+1);
+
+      var total = (listCache[book]||[]).length || 1;
+      var pct = Math.round((idx+1)/total*100);
+      var pf = document.getElementById('prog-fill'), pp = document.getElementById('prog-pct'), tf = document.getElementById('toc-fill');
+      if (pf) pf.style.width = pct+'%';
+      if (tf) tf.style.width = pct+'%';
+      if (pp) pp.textContent = toDev(pct)+'%';
+
+      body.innerHTML = mdToHtml(ch.content);
+
+      var botMeta = document.querySelectorAll('.reader-bottom .bot-meta')[0];
+      if (botMeta && botMeta.querySelector('span')) botMeta.querySelector('span').textContent = 'अध्याय '+toDev(idx+1)+' / '+toDev(total);
+
+      if (typeof window.plausible === 'function') window.plausible('Chapter Load', { props:{ book:book, chapter:id }});
+      window.scrollTo(0, 0);
+    }).catch(function(e){
+      console.error('[NS] chapter error', e);
+      setError(body, 'अध्याय लोड करने में त्रुटि — कृपया पुनः प्रयास करें');
+    });
+  }
+
+  function init(){
+    var orig = window.openReader;
+    if (typeof orig !== 'function'){ console.warn('[NS] openReader missing'); return; }
+
+    window.openReader = function(book){
+      try { orig.call(this, book); } catch(e){ console.error('[NS] orig openReader', e); }
+
+      if (!BOOKS[book]){
+        var b = document.getElementById('demo-banner');
+        if (b) b.innerHTML = b.innerHTML.replace('उत्पादन संस्करण में इस ग्रंथ का वास्तविक पाठ लोड होगा।', 'इस ग्रंथ का backend endpoint शीघ्र जोड़ा जाएगा।');
+        return;
+      }
+
+      var banner = document.getElementById('demo-banner');
+      if (banner) banner.remove();
+
+      var body = findOrCreateBody();
+      if (body){ clearStatic(body); setLoading(body, 'पुस्तक लोड हो रही है…'); }
+
+      fetchList(book).then(function(chapters){
+        if (!chapters || !chapters.length) throw new Error('Empty list');
+        renderTOC(book, chapters);
+        var firstId = chapters[0][BOOKS[book].idField];
+        loadChapter(book, firstId, 0);
+      }).catch(function(e){
+        console.error('[NS] book load error', e);
+        if (body) setError(body, 'पुस्तक लोड करने में त्रुटि — नेटवर्क जाँचें');
+      });
+    };
+
+    console.log('[NS] Library API wiring v7.2 ready');
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else setTimeout(init, 50);
+})();
+</script>
 </body>
 </html>
