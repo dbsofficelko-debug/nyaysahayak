@@ -3008,5 +3008,40 @@ updateBookmarkBtn();
   else setTimeout(init, 50);
 })();
 </script>
+  <!-- v7.3 · Wire next/prev chapter buttons to live TOC items -->
+<script>
+(function() {
+  'use strict';
+  function findActive(){
+    return document.querySelector('.toc-item.active[data-ns-chapter-idx]');
+  }
+  function findByIdx(idx){
+    return document.querySelector('.toc-item[data-ns-chapter-idx="' + idx + '"]');
+  }
+  function init(){
+    window.nextChapter = function(){
+      var a = findActive();
+      if (!a) return;
+      var i = parseInt(a.dataset.nsChapterIdx, 10);
+      if (isNaN(i)) return;
+      var n = findByIdx(i + 1);
+      if (n){ n.scrollIntoView({block:'nearest',behavior:'smooth'}); n.click(); }
+      else if (typeof window.toast === 'function') window.toast('अंतिम अध्याय');
+    };
+    window.prevChapter = function(){
+      var a = findActive();
+      if (!a) return;
+      var i = parseInt(a.dataset.nsChapterIdx, 10);
+      if (isNaN(i)) return;
+      var p = findByIdx(i - 1);
+      if (p){ p.scrollIntoView({block:'nearest',behavior:'smooth'}); p.click(); }
+      else if (typeof window.toast === 'function') window.toast('प्रथम अध्याय');
+    };
+    console.log('[NS v7.3] next/prev wired');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else setTimeout(init, 100);
+})();
+</script>
 </body>
 </html>
