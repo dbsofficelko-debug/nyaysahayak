@@ -3220,5 +3220,82 @@ updateBookmarkBtn();
   else setTimeout(init, 350);
 })();
 </script>
+  <!-- v7.6 · Strict in-book filter — only show results from current book -->
+<script>
+(function () {
+  'use strict';
+  var BOOK_NAMES = {
+    fhb:    'financial handbook',
+    sad:    'sad manual',
+    sv:     'seva vidhi',
+    pm:     'procurement',
+    puvvnl: 'puvvnl',
+    police: 'police kalyan'
+  };
+  function currentBookCode(){
+    var bn = document.querySelector('.reader-book-name');
+    if (!bn) return null;
+    var n = bn.textContent.trim();
+    if (/वित्तीय हस्त-पुस्तिका/.test(n)) return 'fhb';
+    if (/सचिवालय अनुदेश/.test(n))      return 'sad';
+    if (/क्रय/.test(n))                  return 'pm';
+    if (/सेवा विधि/.test(n))             return 'sv';
+    if (/PUVVNL|विद्युत/.test(n))        return 'puvvnl';
+    if (/पुलिस कल्याण/.test(n))          return 'police';
+    return null;
+  }
+  function applyFilter(){
+    var list = document.querySelector('.ns-results-list');
+    if (!list) return;
+    var code = currentBookCode();
+    if (!code) return;
+    var needle = (BOOK_NAMES[code] || '').toLowerCase();
+    if (!needle) return;
+    var visible = 0, hidden = 0;
+    var items = list.querySelectorAll('li:not(.ns-strict-empty)');
+    Array.prototype.forEach.call(items, function(li){
+      var meta = li.querySelector('div:first-child');
+      var metaTxt = meta ? (meta.textContent || '').toLowerCase() : '';
+      if (!metaTxt) return; // empty-state li, skip
+      if (metaTxt.includes(needle)){ li.style.display = ''; visible++; }
+      else { li.style.display = 'none'; hidden++; }
+    });
+    var notice = list.querySelector('.ns-strict-empty');
+    if (visible === 0 && hidden > 0){
+      if (!notice){
+        notice = document.createElement('li');
+        notice.className = 'ns-strict-empty';
+        notice.style.cssText = 'padding:14px;color:#888;text-align:center;font-size:.9em;line-height:1.5';
+        notice.innerHTML = 'इस ग्रंथ में परिणाम नहीं मिला। <button type="button" class="ns-show-all" style="background:none;border:0;color:var(--maroon,#8B2000);text-decoration:underline;cursor:pointer;font:inherit">अन्य ग्रंथों में देखें →</button>';
+        list.appendChild(notice);
+        notice.querySelector('.ns-show-all').addEventListener('click', function(){
+          Array.prototype.forEach.call(list.querySelectorAll('li[style*="display: none"]'), function(li){ li.style.display = ''; });
+          notice.remove();
+        });
+      }
+    } else if (notice && (visible > 0 || hidden === 0)){
+      notice.remove();
+    }
+  }
+  function init(){
+    var container = document.querySelector('.toc-section[data-section="search"]');
+    if (!container){
+      var inp = document.getElementById('in-book-search');
+      if (inp) container = inp.closest('.toc-section');
+    }
+    if (!container) return;
+    var pending = false;
+    function schedule(){
+      if (pending) return;
+      pending = true;
+      setTimeout(function(){ pending = false; applyFilter(); }, 60);
+    }
+    new MutationObserver(schedule).observe(container, { childList:true, subtree:true });
+    console.log('[NS v7.6] strict in-book filter active');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else setTimeout(init, 400);
+})();
+</script>
 </body>
 </html>
