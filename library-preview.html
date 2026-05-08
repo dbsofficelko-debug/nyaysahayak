@@ -2719,5 +2719,99 @@ document.addEventListener('click', function(e){
 
 updateBookmarkBtn();
 </script>
+  <!-- v7.1 · Topic chips → clickable + scroll-to-search -->
+<script>
+(function () {
+  'use strict';
+  var TOPICS = {
+    'वित्तीय मामले': 'वित्त',
+    'अनुशासन':       'अनुशासन',
+    'वरिष्ठता':      'वरिष्ठता',
+    'शिक्षक भेद':    'शिक्षक',
+    'नियुक्ति':      'नियुक्ति',
+    'निलंबन':        'निलंबन',
+    'अवकाश':         'अवकाश',
+    'पेंशन':         'पेंशन'
+  };
+  var styleEl = document.createElement('style');
+  styleEl.textContent = [
+    '.ns-topic-clickable{cursor:pointer!important;transition:transform .18s ease,box-shadow .18s ease;}',
+    '.ns-topic-clickable:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(139,32,0,.18);}',
+    '.ns-topic-clickable:active{transform:translateY(0);}',
+    '.ns-topic-clickable:focus-visible{outline:2px solid #8B2000;outline-offset:3px;}',
+    '@keyframes nsSearchPulse{0%,100%{box-shadow:0 0 0 0 rgba(139,32,0,.55);}50%{box-shadow:0 0 0 14px rgba(139,32,0,0);}}',
+    '.ns-search-pulse{animation:nsSearchPulse 1.4s ease-out 2;border-color:#8B2000!important;}'
+  ].join('\n');
+  document.head.appendChild(styleEl);
+
+  function ownText(el){
+    var t='';
+    for (var i=0;i<el.childNodes.length;i++){
+      var n=el.childNodes[i];
+      if (n.nodeType===3) t+=n.textContent;
+    }
+    return t.trim();
+  }
+  function findChip(label){
+    var all=document.querySelectorAll('span,div,button,a,li,p,h1,h2,h3,h4,h5,h6');
+    for (var i=0;i<all.length;i++){
+      if (ownText(all[i])===label) return all[i];
+    }
+    return null;
+  }
+  function findCard(el){
+    var node=el;
+    for (var i=0;i<5 && node && node.parentElement;i++){
+      var r=node.getBoundingClientRect();
+      if (r.width>=60 && r.height>=40 && r.width<=600 && r.height<=260) return node;
+      node=node.parentElement;
+    }
+    return node||el;
+  }
+  function findSearchInput(){
+    return document.querySelector('input[placeholder*="दैनिक"]')
+        || document.querySelector('input[placeholder*="खोज"]')
+        || document.querySelector('input[type="search"]')
+        || document.querySelector('input[type="text"]');
+  }
+  function init(){
+    var input=findSearchInput();
+    if (!input){ console.warn('[NS] search input not found'); return; }
+    Object.keys(TOPICS).forEach(function(label){
+      var query=TOPICS[label];
+      var leaf=findChip(label);
+      if (!leaf){ console.warn('[NS] chip not found:',label); return; }
+      var chip=findCard(leaf);
+      if (!chip || chip.dataset.nsTopic) return;
+      chip.dataset.nsTopic=label;
+      chip.classList.add('ns-topic-clickable');
+      chip.setAttribute('role','button');
+      chip.setAttribute('tabindex','0');
+      chip.setAttribute('aria-label', label+' से सम्बंधित खोजें');
+      function trigger(e){
+        if (e) e.preventDefault();
+        input.scrollIntoView({behavior:'smooth',block:'center'});
+        setTimeout(function(){
+          input.value=query;
+          input.dispatchEvent(new Event('input',{bubbles:true}));
+          input.classList.add('ns-search-pulse');
+          try{ input.focus(); }catch(_){}
+          setTimeout(function(){ input.classList.remove('ns-search-pulse'); },2900);
+        },480);
+        if (typeof window.plausible==='function'){
+          window.plausible('Topic Chip Click',{props:{topic:label}});
+        }
+      }
+      chip.addEventListener('click',trigger);
+      chip.addEventListener('keydown',function(e){
+        if (e.key==='Enter' || e.key===' ') trigger(e);
+      });
+    });
+  }
+  if (document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',init);
+  } else { init(); }
+})();
+</script>
 </body>
 </html>
