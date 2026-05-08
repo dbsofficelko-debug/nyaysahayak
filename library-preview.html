@@ -3077,5 +3077,148 @@ updateBookmarkBtn();
   else setTimeout(init, 250);
 })();
 </script>
+  <!-- v7.5 · In-book search wired to Railway /search endpoint -->
+<script>
+(function () {
+  'use strict';
+  var API = 'https://nyaysahayak-api-production.up.railway.app';
+
+  var BOOK_NAMES = {
+    fhb:    'Financial Handbook Vol 2',
+    sad:    'SAD Manual',
+    sv:     'Seva Vidhi Vol 4',
+    pm:     'UP Procurement Manual',
+    puvvnl: 'PUVVNL',
+    police: 'Police Kalyan'
+  };
+
+  function escHtml(s){return String(s==null?'':s).replace(/[<>&"']/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c];});}
+  function highlight(text, q){
+    if (!q || !text) return escHtml(text||'');
+    var safe = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return escHtml(text).replace(new RegExp('('+safe+')','gi'), '<mark style="background:#ffe066;color:inherit;padding:1px 3px;border-radius:2px">$1</mark>');
+  }
+
+  function currentBookCode(){
+    var bn = document.querySelector('.reader-book-name');
+    if (!bn) return null;
+    var n = bn.textContent.trim();
+    if (/वित्तीय हस्त-पुस्तिका/.test(n)) return 'fhb';
+    if (/सचिवालय अनुदेश/.test(n))      return 'sad';
+    if (/क्रय/.test(n))                  return 'pm';
+    if (/सेवा विधि/.test(n))             return 'sv';
+    if (/PUVVNL|विद्युत/.test(n))        return 'puvvnl';
+    if (/पुलिस कल्याण/.test(n))          return 'police';
+    return null;
+  }
+
+  function findContainer(){
+    var sec = document.querySelector('.toc-section[data-section="search"]');
+    if (sec) return sec;
+    var inp = document.getElementById('in-book-search');
+    if (inp){ var s = inp.closest('.toc-section'); if (s) return s; }
+    return null;
+  }
+
+  function getOrCreateList(container){
+    var list = container.querySelector('.ns-results-list');
+    if (list) return list;
+    list = document.createElement('ul');
+    list.className = 'ns-results-list';
+    list.style.cssText = 'list-style:none;padding:0;margin:12px 0;max-height:60vh;overflow-y:auto';
+    container.appendChild(list);
+    return list;
+  }
+
+  function snippet(content, q){
+    if (!content) return '';
+    var idx = content.toLowerCase().indexOf(q.toLowerCase());
+    if (idx < 0) return content.substring(0, 240) + (content.length > 240 ? '…' : '');
+    var start = Math.max(0, idx - 60);
+    var end = Math.min(content.length, idx + q.length + 200);
+    return (start > 0 ? '…' : '') + content.substring(start, end) + (end < content.length ? '…' : '');
+  }
+
+  function renderResults(list, results, query){
+    if (!query.trim()){
+      list.innerHTML = '<li style="padding:14px;color:#888;text-align:center;font-size:.9em">शब्द लिखें — सभी अध्यायों में परिणाम मिलेंगे</li>';
+      return;
+    }
+    if (!results || !results.length){
+      list.innerHTML = '<li style="padding:14px;color:#888;text-align:center;font-size:.9em">"'+escHtml(query)+'" के लिए कोई परिणाम नहीं मिला</li>';
+      return;
+    }
+    list.innerHTML = results.map(function(r){
+      var c = r.content || r.text || r.summary || '';
+      var s = snippet(c, query);
+      var book = r.book || r.source || '';
+      var ch = r.chapter || r.topic || r.heading || '';
+      var meta = book + (ch ? ' • ' + ch : '');
+      return '<li style="padding:12px 14px;margin:8px 0;background:rgba(0,0,0,.03);border-left:3px solid var(--gold,#9a7000);border-radius:4px">'+
+        (meta ? '<div style="font-size:.78em;color:#666;margin-bottom:6px;font-weight:500">'+escHtml(meta)+'</div>' : '')+
+        '<div style="line-height:1.65;font-size:.92em;color:var(--ink,#222)">'+highlight(s, query)+'</div>'+
+      '</li>';
+    }).join('');
+  }
+
+  var timer = null;
+  function search(query){
+    var container = findContainer();
+    if (!container) return;
+    var list = getOrCreateList(container);
+    if (!query.trim()){ renderResults(list, [], ''); return; }
+
+    list.innerHTML = '<li style="padding:14px;color:#888;text-align:center;font-size:.9em;font-style:italic">खोज रहा है…</li>';
+
+    var code = currentBookCode();
+    var bn = code ? BOOK_NAMES[code] : '';
+    var url = API + '/search?q=' + encodeURIComponent(query) + '&limit=15';
+    if (bn) url += '&book=' + encodeURIComponent(bn);
+
+    fetch(url)
+      .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+      .then(function(d){
+        renderResults(list, d.results || [], query);
+        if (typeof window.plausible === 'function') window.plausible('In-Book Search', {props:{book: code||'all', q: query.substring(0,40)}});
+      })
+      .catch(function(e){
+        console.error('[NS v7.5] search error', e);
+        list.innerHTML = '<li style="padding:14px;color:#a04;text-align:center;font-size:.9em">⚠ खोज में त्रुटि — पुनः प्रयास करें</li>';
+      });
+  }
+
+  function init(){
+    var input = document.getElementById('in-book-search');
+    if (!input){ console.warn('[NS v7.5] in-book-search not found'); return; }
+
+    // Hide original fake-results lists once
+    var container = findContainer();
+    if (container){
+      Array.prototype.forEach.call(container.querySelectorAll('ol, ul:not(.ns-results-list)'), function(l){ l.style.display = 'none'; });
+    }
+
+    input.addEventListener('input', function(e){
+      var q = e.target.value;
+      clearTimeout(timer);
+      timer = setTimeout(function(){ search(q); }, 400);
+    });
+
+    input.addEventListener('focus', function(){
+      var tab = document.querySelector('.toc-tab[data-tab="search"]');
+      if (tab && !tab.classList.contains('active')) tab.click();
+    });
+
+    setTimeout(function(){
+      var c = findContainer();
+      if (c) renderResults(getOrCreateList(c), [], '');
+    }, 200);
+
+    console.log('[NS v7.5] in-book search wired');
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else setTimeout(init, 350);
+})();
+</script>
 </body>
 </html>
