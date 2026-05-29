@@ -2020,13 +2020,24 @@ async function searchKB(query, books) {
 
 function buildCtx(chunks) {
   if (!chunks?.length) return '';
-  // Limit: top 5 chunks, 600 chars each = ~3000 chars total (fast Anthropic response)
+  // Limit: top 5 chunks (Phase-1 schema: source/chapter/rule_number/title/key_provisions[]/summary)
   const top = chunks.slice(0, 5);
   const ctx = top.map((c,i) => {
-    const title = c.section||c.title||c.filename||'';
-    const text  = (c.content||c.text||'').slice(0, 600);
-    const book  = c._book||c.book||'';
-    return `[${book}${title?' — '+title:''}]\n${text}`;
+    const source  = c._book || c.source || c.book || 'KB';
+    const chapter = c.chapter || '';
+    const ruleNum = c.rule_number || '';
+    const title   = c.title || c.section || c.filename || '';
+    const heading = [chapter, ruleNum, title].filter(Boolean).join(' — ');
+    let provisions = '';
+    if (Array.isArray(c.key_provisions)) {
+      provisions = c.key_provisions.join('\n');
+    } else if (c.key_provisions) {
+      provisions = String(c.key_provisions);
+    } else {
+      provisions = c.summary || c.content || c.text || '';
+    }
+    provisions = provisions.slice(0, 600);
+    return `[${source}${heading ? ' — ' + heading : ''}]\n${provisions}`;
   }).join('\n\n');
   // Hard cap: 3000 chars total
   return '\n\n---\nज्ञान आधार:\n' + ctx.slice(0, 3000);
