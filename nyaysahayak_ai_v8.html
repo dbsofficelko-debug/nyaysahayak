@@ -1987,7 +1987,7 @@ async function searchKB(query, books) {
 
   // Universal KB — always
   fetches.push(
-    fetch(`${RAILWAY}/search?q=${q}&dept=universal&limit=6`, { signal: AbortSignal.timeout(4000) })
+    fetch(`${RAILWAY}/search?q=${q}&dept=universal&limit=12`, { signal: AbortSignal.timeout(4000) })
       .then(r => r.ok ? r.json() : null)
       .then(d => (d?.results || d?.entries || []).map(e => ({ ...e, _book: e.book || 'Universal KB' })))
       .catch(() => [])
@@ -1996,7 +1996,7 @@ async function searchKB(query, books) {
   // Dept-specific KB
   if (useSpecific) {
     fetches.push(
-      fetch(`${RAILWAY}/search?q=${q}&dept=${encodeURIComponent(deptId)}&limit=4`, { signal: AbortSignal.timeout(4000) })
+      fetch(`${RAILWAY}/search?q=${q}&dept=${encodeURIComponent(deptId)}&limit=8`, { signal: AbortSignal.timeout(4000) })
         .then(r => r.ok ? r.json() : null)
         .then(d => (d?.results || d?.entries || []).map(e => ({ ...e, _book: e.book || deptId })))
         .catch(() => [])
@@ -2006,7 +2006,7 @@ async function searchKB(query, books) {
   // Secretariat — also SAD Manual
   if (deptId === 'secretariat') {
     fetches.push(
-      fetch(`${RAILWAY}/search?q=${q}&dept=sad&limit=4`, { signal: AbortSignal.timeout(4000) })
+      fetch(`${RAILWAY}/search?q=${q}&dept=sad&limit=8`, { signal: AbortSignal.timeout(4000) })
         .then(r => r.ok ? r.json() : null)
         .then(d => (d?.results || d?.entries || []).map(e => ({ ...e, _book: e.book || 'SAD Manual' })))
         .catch(() => [])
@@ -2015,7 +2015,7 @@ async function searchKB(query, books) {
 
   // All parallel — wait for all to complete (or timeout)
   const results = await Promise.all(fetches);
-  return results.flat().slice(0, 10);
+  return results.flat().slice(0, 15);
 }
 
 function buildCtx(chunks) {
