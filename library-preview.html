@@ -2787,9 +2787,7 @@ updateBookmarkBtn();
     fhb:    { endpoint:'/fhb',    idField:'filename', label:function(c){ return (c.topic||'')+' ('+(c.pages||'')+')'; } },
     sad:    { endpoint:'/sad',    idField:'filename', label:function(c){ return 'प्रस्तर '+(c.prastar||'?')+' — '+(c.topic||''); } },
     sv:     { endpoint:'/sv',     idField:'filename', label:function(c){ return 'अध्याय '+(c.chapter||'?')+' — '+(c.topic||''); } },
-    pm:     { endpoint:'/pm',     idField:'filename', label:function(c){ return 'अध्याय '+(c.chapter||'?')+' — '+(c.topic||''); } },
     puvvnl: { endpoint:'/puvvnl', idField:'filename', label:function(c){ return (c.book?c.book+' — ':'')+(c.topic||''); } }
-    // police: no endpoint — original demo banner stays
   };
 
   var listCache = {}, chapterCache = {};
@@ -3051,9 +3049,7 @@ updateBookmarkBtn();
     fhb:    'Financial Handbook Vol 2',
     sad:    'SAD Manual',
     sv:     'Seva Vidhi Vol 4',
-    pm:     'UP Procurement Manual',
-    puvvnl: 'PUVVNL',
-    police: 'Police Kalyan'
+    puvvnl: 'PUVVNL'
   };
 
   function escHtml(s){return String(s==null?'':s).replace(/[<>&"']/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -3069,10 +3065,8 @@ updateBookmarkBtn();
     var n = bn.textContent.trim();
     if (/वित्तीय हस्त-पुस्तिका/.test(n)) return 'fhb';
     if (/सचिवालय अनुदेश/.test(n))      return 'sad';
-    if (/क्रय/.test(n))                  return 'pm';
     if (/सेवा विधि/.test(n))             return 'sv';
     if (/PUVVNL|विद्युत/.test(n))        return 'puvvnl';
-    if (/पुलिस कल्याण/.test(n))          return 'police';
     return null;
   }
 
@@ -3202,10 +3196,8 @@ updateBookmarkBtn();
     var n = bn.textContent.trim();
     if (/वित्तीय हस्त-पुस्तिका/.test(n)) return 'fhb';
     if (/सचिवालय अनुदेश/.test(n))      return 'sad';
-    if (/क्रय/.test(n))                  return 'pm';
     if (/सेवा विधि/.test(n))             return 'sv';
     if (/PUVVNL|विद्युत/.test(n))        return 'puvvnl';
-    if (/पुलिस कल्याण/.test(n))          return 'police';
     return null;
   }
   function applyFilter(){
@@ -3272,10 +3264,8 @@ updateBookmarkBtn();
     var t = n.textContent || '';
     if (/वित्तीय/.test(t)) return 'fhb';
     if (/सचिवालय अनुदेश/.test(t)) return 'sad';
-    if (/क्रय/.test(t)) return 'pm';
     if (/सेवा विधि/.test(t)) return 'sv';
     if (/PUVVNL|विद्युत/.test(t)) return 'puvvnl';
-    if (/पुलिस कल्याण/.test(t)) return 'police';
     return null;
   }
 
@@ -3373,7 +3363,6 @@ updateBookmarkBtn();
       if (q.length < 2){ list.innerHTML = ''; return; }
       var book = currentBookCode();
       if (!book){ list.innerHTML = ''; list.appendChild(msgLi('ग्रंथ पहचाना नहीं जा सका।')); return; }
-      if (book === 'police'){ list.innerHTML = ''; list.appendChild(msgLi('इस ग्रंथ में खोज शीघ्र उपलब्ध होगी।')); return; }
       list.innerHTML = '';
       list.appendChild(msgLi('खोज रहे हैं…'));
       var url = API + '/library/search?book=' + encodeURIComponent(book) + '&q=' + encodeURIComponent(q);
@@ -3417,10 +3406,8 @@ updateBookmarkBtn();
     var t = n.textContent || '';
     if (/वित्तीय/.test(t)) return 'fhb';
     if (/सचिवालय अनुदेश/.test(t)) return 'sad';
-    if (/क्रय/.test(t)) return 'pm';
     if (/सेवा विधि/.test(t)) return 'sv';
     if (/PUVVNL|विद्युत/.test(t)) return 'puvvnl';
-    if (/पुलिस कल्याण/.test(t)) return 'police';
     return null;
   }
 
@@ -3506,7 +3493,6 @@ updateBookmarkBtn();
       if (q.length < 2){ list.innerHTML = ''; return; }
       var book = currentBookCode();
       if (!book){ list.innerHTML = ''; list.appendChild(msgLi('ग्रंथ पहचाना नहीं जा सका।')); return; }
-      if (book === 'police'){ list.innerHTML = ''; list.appendChild(msgLi('इस ग्रंथ में खोज शीघ्र उपलब्ध होगी।')); return; }
       list.innerHTML = '';
       list.appendChild(msgLi('खोज रहे हैं…'));
       var url = API + '/library/search?book=' + encodeURIComponent(book) + '&q=' + encodeURIComponent(q);
