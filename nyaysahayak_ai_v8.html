@@ -1073,10 +1073,22 @@ const BASE_SYSTEM = `आप DBS · न्यायसहायक हैं — 
 
 नियम 1 — KB-ONLY (सर्वोच्च नियम):
 हर तथ्य retrieved KB context से ही आना चाहिए। Training data / सामान्य ज्ञान से gap MAT bharo।
-• KB में पुष्ट प्रावधान है → verbatim cite करो।
-• KB में नहीं है → साफ़ बोलो: "इस विषय पर पुष्ट प्रावधान वर्तमान ज्ञान आधार में उपलब्ध नहीं है।"
-• Rule numbers / GO numbers / section numbers / formulae / dates / amounts कभी INVENT MAT karo।
+
+तीन परिदृश्य:
+
+(क) KB में पूरा उत्तर है → verbatim cite करो।
+
+(ख) KB में सम्बन्धित जानकारी है किन्तु प्रश्न का सटीक उत्तर नहीं → 
+   KB से जो उपलब्ध है वो provide करो (verbatim text + citation), फिर साफ़ अंत में लिखो:
+   "उपरोक्त सम्बन्धित प्रावधान हैं। प्रश्न के अन्य पक्षों (जैसे...) पर पुष्ट जानकारी ज्ञान आधार में उपलब्ध नहीं है — विभाग के विधि अधिकारी से सत्यापित करें।"
+
+(ग) KB में कुछ भी सम्बन्धित नहीं → साफ़ refuse करो:
+   "इस विषय पर पुष्ट प्रावधान वर्तमान ज्ञान आधार में उपलब्ध नहीं है।"
+
+NEVER (तीनों परिदृश्यों में):
+• Rule numbers / GO numbers / section numbers / formulae / dates / amounts INVENT mat karo।
 • "लगभग", "सामान्यतः", "आमतौर पर" qualifiers से KB-bahar guess MAT do।
+• Training/general knowledge se gap MAT fill karo।
 
 नियम 2 — VERBATIM CITATION (अनिवार्य):
 KB context में प्रत्येक card का source / chapter / rule_number field है — exactly वही cite karo।
@@ -1989,7 +2001,7 @@ async function searchKB(query, books) {
   fetches.push(
     fetch(`${RAILWAY}/search?q=${q}&dept=universal&limit=12`, { signal: AbortSignal.timeout(4000) })
       .then(r => r.ok ? r.json() : null)
-      .then(d => (d?.results || d?.entries || []).map(e => ({ ...e, _book: e.book || 'Universal KB' })))
+      .then(d => (d?.results || d?.entries || []).map(e => ({ ...e, _book: e.book || e.source || 'KB' })))
       .catch(() => [])
   );
 
@@ -1998,7 +2010,7 @@ async function searchKB(query, books) {
     fetches.push(
       fetch(`${RAILWAY}/search?q=${q}&dept=${encodeURIComponent(deptId)}&limit=8`, { signal: AbortSignal.timeout(4000) })
         .then(r => r.ok ? r.json() : null)
-        .then(d => (d?.results || d?.entries || []).map(e => ({ ...e, _book: e.book || deptId })))
+        .then(d => (d?.results || d?.entries || []).map(e => ({ ...e, _book: e.book || e.source || deptId })))
         .catch(() => [])
     );
   }
@@ -2008,7 +2020,7 @@ async function searchKB(query, books) {
     fetches.push(
       fetch(`${RAILWAY}/search?q=${q}&dept=sad&limit=8`, { signal: AbortSignal.timeout(4000) })
         .then(r => r.ok ? r.json() : null)
-        .then(d => (d?.results || d?.entries || []).map(e => ({ ...e, _book: e.book || 'SAD Manual' })))
+        .then(d => (d?.results || d?.entries || []).map(e => ({ ...e, _book: e.book || e.source || 'SAD Manual' })))
         .catch(() => [])
     );
   }
