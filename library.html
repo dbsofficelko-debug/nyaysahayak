@@ -1327,6 +1327,24 @@ body::before{
         </div>
       </article>
 
+      <article class="book-card" data-book="aacharan" role="button" tabindex="0" onclick="openReader('aacharan')">
+        <div class="book-cover" style="--cover-from:#7a4a28;--cover-to:#3d2614">
+          <div class="cover-content">
+            <div class="cover-eyebrow">कार्मिक · आचरण</div>
+            <div class="cover-title">आचरण<br>नियमावली<br>१९५६</div>
+          </div>
+          <div>
+            <div class="cover-rule"></div>
+            <div class="cover-vol">३३ नियम</div>
+            <div class="cover-foot" style="margin-top:14px">UP सरकारी सेवक</div>
+          </div>
+        </div>
+        <div class="book-meta">
+          <div class="book-name">उ.प्र. सरकारी सेवक आचरण नियमावली, १९५६</div>
+          <div class="book-stat">३३ नियम <span class="dot">·</span> सेवा आचार</div>
+        </div>
+      </article>
+
     </div>
   </section>
 
@@ -1699,12 +1717,12 @@ const bookData = {
     chTitle: 'PUVVNL — सेवा एवं प्रशासन',
     sampleSearch: 'विद्युत'
   },
-  police: {
-    name: 'पुलिस कल्याण हस्तपुस्तिका, २०१२',
-    cite: 'पुलिस कल्याण हस्तपुस्तिका, २०१२, अध्याय १ — कल्याण नियमों की पृष्ठभूमि, गृह विभाग, उ.प्र. शासन।',
-    chapters: 12,
-    chTitle: 'कल्याण नियम — पृष्ठभूमि',
-    sampleSearch: 'कल्याण'
+  aacharan: {
+    name: 'उ.प्र. सरकारी सेवक आचरण नियमावली, १९५६',
+    cite: 'उत्तर प्रदेश सरकारी सेवक आचरण नियमावली, १९५६, नियम १ — संक्षिप्त नाम, उ.प्र. कार्मिक विभाग।',
+    chapters: 33,
+    chTitle: 'आचरण नियम — संक्षिप्त नाम',
+    sampleSearch: 'भेंट'
   }
 };
 
@@ -2784,10 +2802,11 @@ updateBookmarkBtn();
   var API = 'https://nyaysahayak-api-production.up.railway.app';
 
   var BOOKS = {
-    fhb:    { endpoint:'/fhb',    idField:'filename', label:function(c){ return (c.topic||'')+' ('+(c.pages||'')+')'; } },
-    sad:    { endpoint:'/sad',    idField:'filename', label:function(c){ return 'प्रस्तर '+(c.prastar||'?')+' — '+(c.topic||''); } },
-    sv:     { endpoint:'/sv',     idField:'filename', label:function(c){ return 'अध्याय '+(c.chapter||'?')+' — '+(c.topic||''); } },
-    puvvnl: { endpoint:'/puvvnl', idField:'filename', label:function(c){ return (c.book?c.book+' — ':'')+(c.topic||''); } }
+    fhb:      { endpoint:'/fhb',      idField:'filename', label:function(c){ return (c.topic||'')+' ('+(c.pages||'')+')'; } },
+    sad:      { endpoint:'/sad',      idField:'filename', label:function(c){ return 'प्रस्तर '+(c.prastar||'?')+' — '+(c.topic||''); } },
+    sv:       { endpoint:'/sv',       idField:'filename', label:function(c){ return 'अध्याय '+(c.chapter||'?')+' — '+(c.topic||''); } },
+    puvvnl:   { endpoint:'/puvvnl',   idField:'filename', label:function(c){ return (c.book?c.book+' — ':'')+(c.topic||''); } },
+    aacharan: { endpoint:'/aacharan', idField:'filename', label:function(c){ return 'नियम '+(c.chapter||'?')+' — '+(c.topic||''); } }
   };
 
   var listCache = {}, chapterCache = {};
@@ -3046,10 +3065,11 @@ updateBookmarkBtn();
   var API = 'https://nyaysahayak-api-production.up.railway.app';
 
   var BOOK_NAMES = {
-    fhb:    'Financial Handbook Vol 2',
-    sad:    'SAD Manual',
-    sv:     'Seva Vidhi Vol 4',
-    puvvnl: 'PUVVNL'
+    fhb:      'Financial Handbook Vol 2',
+    sad:      'SAD Manual',
+    sv:       'Seva Vidhi Vol 4',
+    puvvnl:   'PUVVNL',
+    aacharan: 'UP Aacharan Niyamavali 1956'
   };
 
   function escHtml(s){return String(s==null?'':s).replace(/[<>&"']/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -3266,6 +3286,7 @@ updateBookmarkBtn();
     if (/सचिवालय अनुदेश/.test(t)) return 'sad';
     if (/सेवा विधि/.test(t)) return 'sv';
     if (/PUVVNL|विद्युत/.test(t)) return 'puvvnl';
+    if (/आचरण/.test(t)) return 'aacharan';
     return null;
   }
 
@@ -3408,6 +3429,7 @@ updateBookmarkBtn();
     if (/सचिवालय अनुदेश/.test(t)) return 'sad';
     if (/सेवा विधि/.test(t)) return 'sv';
     if (/PUVVNL|विद्युत/.test(t)) return 'puvvnl';
+    if (/आचरण/.test(t)) return 'aacharan';
     return null;
   }
 
