@@ -1345,6 +1345,78 @@ body::before{
         </div>
       </article>
 
+      <article class="book-card" data-book="dar" role="button" tabindex="0" onclick="openReader('dar')">
+        <div class="book-cover" style="--cover-from:#6a2a2a;--cover-to:#3a1414">
+          <div class="cover-content">
+            <div class="cover-eyebrow">कार्मिक · अनुशासन</div>
+            <div class="cover-title">अनुशासन<br>एवं<br>अपील १९९९</div>
+          </div>
+          <div>
+            <div class="cover-rule"></div>
+            <div class="cover-vol">१७ नियम + शा.आ.</div>
+            <div class="cover-foot" style="margin-top:14px">UP सरकारी सेवक</div>
+          </div>
+        </div>
+        <div class="book-meta">
+          <div class="book-name">उ.प्र. सरकारी सेवक (अनुशासन एवं अपील) नियमावली, १९९९</div>
+          <div class="book-stat">१९ अध्याय <span class="dot">·</span> अनुशासन/अपील</div>
+        </div>
+      </article>
+
+      <article class="book-card" data-book="res" role="button" tabindex="0" onclick="openReader('res')">
+        <div class="book-cover" style="--cover-from:#1f5a4a;--cover-to:#0f3328">
+          <div class="cover-content">
+            <div class="cover-eyebrow">कार्मिक · आरक्षण</div>
+            <div class="cover-title">लोक सेवा<br>आरक्षण<br>१९९४</div>
+          </div>
+          <div>
+            <div class="cover-rule"></div>
+            <div class="cover-vol">१६ धारा + अनुसूची</div>
+            <div class="cover-foot" style="margin-top:14px">SC/ST/OBC</div>
+          </div>
+        </div>
+        <div class="book-meta">
+          <div class="book-name">उ.प्र. लोक सेवा (अनुसूचित जाति/जनजाति/अन्य पिछड़े वर्ग आरक्षण) अधिनियम, १९९४</div>
+          <div class="book-stat">१८ अध्याय <span class="dot">·</span> आरक्षण</div>
+        </div>
+      </article>
+
+      <article class="book-card" data-book="bea" role="button" tabindex="0" onclick="openReader('bea')">
+        <div class="book-cover" style="--cover-from:#2a4a7a;--cover-to:#16263d">
+          <div class="cover-content">
+            <div class="cover-eyebrow">शिक्षा · बेसिक</div>
+            <div class="cover-title">बेसिक<br>शिक्षा<br>१९७२</div>
+          </div>
+          <div>
+            <div class="cover-rule"></div>
+            <div class="cover-vol">२० धारा</div>
+            <div class="cover-foot" style="margin-top:14px">UP बेसिक शिक्षा परिषद्</div>
+          </div>
+        </div>
+        <div class="book-meta">
+          <div class="book-name">उत्तर प्रदेश बेसिक शिक्षा अधिनियम, १९७२</div>
+          <div class="book-stat">२३ अध्याय <span class="dot">·</span> बेसिक शिक्षा</div>
+        </div>
+      </article>
+
+      <article class="book-card" data-book="rte" role="button" tabindex="0" onclick="openReader('rte')">
+        <div class="book-cover" style="--cover-from:#3a3a7a;--cover-to:#1a1a3d">
+          <div class="cover-content">
+            <div class="cover-eyebrow">शिक्षा · अधिकार</div>
+            <div class="cover-title">शिक्षा का<br>अधिकार<br>RTE २००९</div>
+          </div>
+          <div>
+            <div class="cover-rule"></div>
+            <div class="cover-vol">३९ धारा + अनुसूची</div>
+            <div class="cover-foot" style="margin-top:14px">६–१४ वर्ष</div>
+          </div>
+        </div>
+        <div class="book-meta">
+          <div class="book-name">नि:शुल्क और अनिवार्य बाल शिक्षा का अधिकार अधिनियम, २००९</div>
+          <div class="book-stat">४० अध्याय <span class="dot">·</span> शिक्षा अधिकार</div>
+        </div>
+      </article>
+
     </div>
   </section>
 
@@ -1723,6 +1795,34 @@ const bookData = {
     chapters: 33,
     chTitle: 'आचरण नियम — संक्षिप्त नाम',
     sampleSearch: 'भेंट'
+  },
+  dar: {
+    name: 'उ.प्र. सरकारी सेवक (अनुशासन एवं अपील) नियमावली, १९९९',
+    cite: 'उत्तर प्रदेश सरकारी सेवक (अनुशासन एवं अपील) नियमावली, १९९९, नियम ७ — दीर्घ शास्ति की प्रक्रिया, उ.प्र. कार्मिक विभाग।',
+    chapters: 19,
+    chTitle: 'अनुशासन एवं अपील — नियम',
+    sampleSearch: 'निलम्बन'
+  },
+  res: {
+    name: 'उ.प्र. लोक सेवा (अनुसूचित जाति/जनजाति/अन्य पिछड़े वर्ग आरक्षण) अधिनियम, १९९४',
+    cite: 'उत्तर प्रदेश लोक सेवा (आरक्षण) अधिनियम, १९९४, धारा ३ — आरक्षण के प्रतिशत, उ.प्र. कार्मिक विभाग।',
+    chapters: 18,
+    chTitle: 'आरक्षण अधिनियम — धाराएं',
+    sampleSearch: 'आरक्षण'
+  },
+  bea: {
+    name: 'उत्तर प्रदेश बेसिक शिक्षा अधिनियम, १९७२',
+    cite: 'उत्तर प्रदेश बेसिक शिक्षा अधिनियम, १९७२, धारा ३ — परिषद् का संगठन, उ.प्र. बेसिक शिक्षा।',
+    chapters: 23,
+    chTitle: 'बेसिक शिक्षा अधिनियम — धाराएं',
+    sampleSearch: 'परिषद्'
+  },
+  rte: {
+    name: 'नि:शुल्क और अनिवार्य बाल शिक्षा का अधिकार अधिनियम, २००९',
+    cite: 'नि:शुल्क और अनिवार्य बाल शिक्षा का अधिकार अधिनियम, २००९, धारा ३ — शिक्षा का अधिकार, भारत सरकार।',
+    chapters: 40,
+    chTitle: 'शिक्षा का अधिकार — धाराएं',
+    sampleSearch: 'प्रवेश'
   }
 };
 
@@ -2806,7 +2906,11 @@ updateBookmarkBtn();
     sad:      { endpoint:'/sad',      idField:'filename', label:function(c){ return 'प्रस्तर '+(c.prastar||'?')+' — '+(c.topic||''); } },
     sv:       { endpoint:'/sv',       idField:'filename', label:function(c){ return 'अध्याय '+(c.chapter||'?')+' — '+(c.topic||''); } },
     puvvnl:   { endpoint:'/puvvnl',   idField:'filename', label:function(c){ return (c.book?c.book+' — ':'')+(c.topic||''); } },
-    aacharan: { endpoint:'/aacharan', idField:'filename', label:function(c){ return 'नियम '+(c.chapter||'?')+' — '+(c.topic||''); } }
+    aacharan: { endpoint:'/aacharan', idField:'filename', label:function(c){ return 'नियम '+(c.chapter||'?')+' — '+(c.topic||''); } },
+    dar:      { endpoint:'/dar',      idField:'filename', label:function(c){ var ch=String(c.chapter||''); return (/^[0-9]/.test(ch)?'नियम ':'')+ch+(c.topic?' — '+c.topic:''); } },
+    res:      { endpoint:'/res',      idField:'filename', label:function(c){ var ch=String(c.chapter||''); return (/^[0-9]/.test(ch)?'धारा ':'')+ch+(c.topic?' — '+c.topic:''); } },
+    bea:      { endpoint:'/bea',      idField:'filename', label:function(c){ var ch=String(c.chapter||''); return (/^[0-9]/.test(ch)?'धारा ':'')+ch+(c.topic?' — '+c.topic:''); } },
+    rte:      { endpoint:'/rte',      idField:'filename', label:function(c){ var ch=String(c.chapter||''); return (/^[0-9]/.test(ch)?'धारा ':'')+ch+(c.topic?' — '+c.topic:''); } }
   };
 
   var listCache = {}, chapterCache = {};
@@ -3069,7 +3173,11 @@ updateBookmarkBtn();
     sad:      'SAD Manual',
     sv:       'Seva Vidhi Vol 4',
     puvvnl:   'PUVVNL',
-    aacharan: 'UP Aacharan Niyamavali 1956'
+    aacharan: 'UP Aacharan Niyamavali 1956',
+    dar:      'UP Discipline & Appeal Rules 1999',
+    res:      'UP Reservation Act 1994',
+    bea:      'UP Basic Education Act 1972',
+    rte:      'RTE Act 2009'
   };
 
   function escHtml(s){return String(s==null?'':s).replace(/[<>&"']/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -3087,6 +3195,11 @@ updateBookmarkBtn();
     if (/सचिवालय अनुदेश/.test(n))      return 'sad';
     if (/सेवा विधि/.test(n))             return 'sv';
     if (/PUVVNL|विद्युत/.test(n))        return 'puvvnl';
+    if (/आचरण/.test(n))                   return 'aacharan';
+    if (/अनुशासन|अपील/.test(n))           return 'dar';
+    if (/आरक्षण/.test(n))                 return 'res';
+    if (/बेसिक\s*शिक्षा/.test(n))         return 'bea';
+    if (/शिक्षा\s*का\s*अधिकार|नि:?शुल्क|RTE/.test(n)) return 'rte';
     return null;
   }
 
@@ -3218,6 +3331,11 @@ updateBookmarkBtn();
     if (/सचिवालय अनुदेश/.test(n))      return 'sad';
     if (/सेवा विधि/.test(n))             return 'sv';
     if (/PUVVNL|विद्युत/.test(n))        return 'puvvnl';
+    if (/आचरण/.test(n))                   return 'aacharan';
+    if (/अनुशासन|अपील/.test(n))           return 'dar';
+    if (/आरक्षण/.test(n))                 return 'res';
+    if (/बेसिक\s*शिक्षा/.test(n))         return 'bea';
+    if (/शिक्षा\s*का\s*अधिकार|नि:?शुल्क|RTE/.test(n)) return 'rte';
     return null;
   }
   function applyFilter(){
@@ -3287,6 +3405,10 @@ updateBookmarkBtn();
     if (/सेवा विधि/.test(t)) return 'sv';
     if (/PUVVNL|विद्युत/.test(t)) return 'puvvnl';
     if (/आचरण/.test(t)) return 'aacharan';
+    if (/अनुशासन|अपील/.test(t)) return 'dar';
+    if (/आरक्षण/.test(t)) return 'res';
+    if (/बेसिक\s*शिक्षा/.test(t)) return 'bea';
+    if (/शिक्षा\s*का\s*अधिकार|नि:?शुल्क|RTE/.test(t)) return 'rte';
     return null;
   }
 
@@ -3430,6 +3552,10 @@ updateBookmarkBtn();
     if (/सेवा विधि/.test(t)) return 'sv';
     if (/PUVVNL|विद्युत/.test(t)) return 'puvvnl';
     if (/आचरण/.test(t)) return 'aacharan';
+    if (/अनुशासन|अपील/.test(t)) return 'dar';
+    if (/आरक्षण/.test(t)) return 'res';
+    if (/बेसिक\s*शिक्षा/.test(t)) return 'bea';
+    if (/शिक्षा\s*का\s*अधिकार|नि:?शुल्क|RTE/.test(t)) return 'rte';
     return null;
   }
 
