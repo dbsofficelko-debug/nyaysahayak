@@ -1417,6 +1417,24 @@ body::before{
         </div>
       </article>
 
+      <article class="book-card" data-book="nyv" role="button" tabindex="0" onclick="openReader('nyv')">
+        <div class="book-cover" style="--cover-from:#4a5a6a;--cover-to:#22303a">
+          <div class="cover-content">
+            <div class="cover-eyebrow">आवास · नगर योजना</div>
+            <div class="cover-title">नगर योजना<br>एवं<br>विकास १९७३</div>
+          </div>
+          <div>
+            <div class="cover-rule"></div>
+            <div class="cover-vol">धारा १–६०</div>
+            <div class="cover-foot" style="margin-top:14px">विकास प्राधिकरण</div>
+          </div>
+        </div>
+        <div class="book-meta">
+          <div class="book-name">उत्तर प्रदेश नगर योजना और विकास अधिनियम, १९७३</div>
+          <div class="book-stat">२० अध्याय <span class="dot">·</span> विकास प्राधिकरण</div>
+        </div>
+      </article>
+
     </div>
   </section>
 
@@ -2910,7 +2928,8 @@ updateBookmarkBtn();
     dar:      { endpoint:'/dar',      idField:'filename', label:function(c){ var ch=String(c.chapter||''); return (/^[0-9]/.test(ch)?'नियम ':'')+ch+(c.topic?' — '+c.topic:''); } },
     res:      { endpoint:'/res',      idField:'filename', label:function(c){ var ch=String(c.chapter||''); return (/^[0-9]/.test(ch)?'धारा ':'')+ch+(c.topic?' — '+c.topic:''); } },
     bea:      { endpoint:'/bea',      idField:'filename', label:function(c){ var ch=String(c.chapter||''); return (/^[0-9]/.test(ch)?'धारा ':'')+ch+(c.topic?' — '+c.topic:''); } },
-    rte:      { endpoint:'/rte',      idField:'filename', label:function(c){ var ch=String(c.chapter||''); return (/^[0-9]/.test(ch)?'धारा ':'')+ch+(c.topic?' — '+c.topic:''); } }
+    rte:      { endpoint:'/rte',      idField:'filename', label:function(c){ var ch=String(c.chapter||''); return (/^[0-9]/.test(ch)?'धारा ':'')+ch+(c.topic?' — '+c.topic:''); } },
+    nyv:      { endpoint:'/nyv',      idField:'filename', label:function(c){ var ch=String(c.chapter||''); return ch+(c.topic?' — '+c.topic:''); } }
   };
 
   var listCache = {}, chapterCache = {};
