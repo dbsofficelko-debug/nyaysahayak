@@ -1453,6 +1453,24 @@ body::before{
         </div>
       </article>
 
+      <article class="book-card" data-book="kzp" role="button" tabindex="0" onclick="openReader('kzp')">
+        <div class="book-cover" style="--cover-from:#6b1d2b;--cover-to:#3d0f17">
+          <div class="cover-content">
+            <div class="cover-eyebrow">पंचायती राज</div>
+            <div class="cover-title">क्षेत्र/जिला<br>पंचायत<br>१९६१</div>
+          </div>
+          <div>
+            <div class="cover-rule"></div>
+            <div class="cover-vol">धारा १–२७४ + अनुसूची १–८</div>
+            <div class="cover-foot" style="margin-top:14px">क्षेत्र · जिला पंचायत</div>
+          </div>
+        </div>
+        <div class="book-meta">
+          <div class="book-name">उत्तर प्रदेश (क्षेत्र पंचायत तथा जिला पंचायत) अधिनियम, १९६१</div>
+          <div class="book-stat">६१ अध्याय <span class="dot">·</span> क्षेत्र/जिला पंचायत</div>
+        </div>
+      </article>
+
     </div>
   </section>
 
@@ -2948,7 +2966,8 @@ updateBookmarkBtn();
     bea:      { endpoint:'/bea',      idField:'filename', label:function(c){ var ch=String(c.chapter||''); return (/^[0-9]/.test(ch)?'धारा ':'')+ch+(c.topic?' — '+c.topic:''); } },
     rte:      { endpoint:'/rte',      idField:'filename', label:function(c){ var ch=String(c.chapter||''); return (/^[0-9]/.test(ch)?'धारा ':'')+ch+(c.topic?' — '+c.topic:''); } },
     nyv:      { endpoint:'/nyv',      idField:'filename', label:function(c){ var ch=String(c.chapter||''); return ch+(c.topic?' — '+c.topic:''); } },
-    prj:      { endpoint:'/prj',      idField:'filename', label:function(c){ var ch=String(c.chapter||''); return ch+(c.topic?' — '+c.topic:''); } }
+    prj:      { endpoint:'/prj',      idField:'filename', label:function(c){ var ch=String(c.chapter||''); return ch+(c.topic?' — '+c.topic:''); } },
+    kzp:      { endpoint:'/kzp',      idField:'filename', label:function(c){ var ch=String(c.chapter||''); return ch+(c.topic?' — '+c.topic:''); } }
   };
 
   var listCache = {}, chapterCache = {};
